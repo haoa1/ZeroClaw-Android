@@ -179,15 +179,19 @@ fn event_to_kind_and_data(event: &ObserverEvent) -> (&'static str, String) {
             duration,
             success,
             error_message,
+            input_tokens,
+            output_tokens,
         } => {
             let error_json = error_message.as_ref().map_or_else(
                 || "null".to_string(),
                 |e| format!(r#""{}""#, escape_json_string(e)),
             );
+            let in_tok = input_tokens.map_or_else(|| "null".to_string(), |t| t.to_string());
+            let out_tok = output_tokens.map_or_else(|| "null".to_string(), |t| t.to_string());
             (
                 "llm_response",
                 format!(
-                    r#"{{"provider":"{}","model":"{}","duration_ms":{},"success":{success},"error":{error_json}}}"#,
+                    r#"{{"provider":"{}","model":"{}","duration_ms":{},"success":{success},"error":{error_json},"input_tokens":{in_tok},"output_tokens":{out_tok}}}"#,
                     escape_json_string(provider),
                     escape_json_string(model),
                     duration.as_millis()
@@ -237,14 +241,20 @@ fn event_to_kind_and_data(event: &ObserverEvent) -> (&'static str, String) {
             ),
         ),
         ObserverEvent::AgentEnd {
+            provider,
+            model,
             duration,
             tokens_used,
+            cost_usd,
         } => {
             let tokens_json = tokens_used.map_or_else(|| "null".to_string(), |t| t.to_string());
+            let cost_json = cost_usd.map_or_else(|| "null".to_string(), |c| format!("{c}"));
             (
                 "agent_end",
                 format!(
-                    r#"{{"duration_ms":{},"tokens":{tokens_json}}}"#,
+                    r#"{{"provider":"{}","model":"{}","duration_ms":{},"tokens":{tokens_json},"cost_usd":{cost_json}}}"#,
+                    escape_json_string(provider),
+                    escape_json_string(model),
                     duration.as_millis()
                 ),
             )
@@ -387,6 +397,8 @@ mod tests {
             duration: Duration::from_millis(150),
             success: true,
             error_message: None,
+            input_tokens: Some(100),
+            output_tokens: Some(50),
         };
         let json_str = format_event_json(42, &event);
         let parsed: serde_json::Value = serde_json::from_str(&json_str).unwrap();
@@ -395,6 +407,8 @@ mod tests {
         assert_eq!(parsed["data"]["provider"], "openai");
         assert_eq!(parsed["data"]["success"], true);
         assert!(parsed["data"]["error"].is_null());
+        assert_eq!(parsed["data"]["input_tokens"], 100);
+        assert_eq!(parsed["data"]["output_tokens"], 50);
     }
 
     #[test]
@@ -405,12 +419,16 @@ mod tests {
             duration: Duration::from_secs(1),
             success: false,
             error_message: Some("rate limited".into()),
+            input_tokens: None,
+            output_tokens: None,
         };
         let json_str = format_event_json(99, &event);
         let parsed: serde_json::Value = serde_json::from_str(&json_str).unwrap();
         assert_eq!(parsed["kind"], "llm_response");
         assert_eq!(parsed["data"]["error"], "rate limited");
         assert_eq!(parsed["data"]["success"], false);
+        assert!(parsed["data"]["input_tokens"].is_null());
+        assert!(parsed["data"]["output_tokens"].is_null());
     }
 
     #[test]
@@ -455,25 +473,35 @@ mod tests {
     #[test]
     fn test_format_event_json_agent_end() {
         let event = ObserverEvent::AgentEnd {
+            provider: "anthropic".into(),
+            model: "claude-sonnet-4".into(),
             duration: Duration::from_secs(5),
             tokens_used: Some(1200),
+            cost_usd: Some(0.042),
         };
         let json_str = format_event_json(3, &event);
         let parsed: serde_json::Value = serde_json::from_str(&json_str).unwrap();
         assert_eq!(parsed["kind"], "agent_end");
+        assert_eq!(parsed["data"]["provider"], "anthropic");
+        assert_eq!(parsed["data"]["model"], "claude-sonnet-4");
         assert_eq!(parsed["data"]["tokens"], 1200);
         assert_eq!(parsed["data"]["duration_ms"], 5000);
+        assert_eq!(parsed["data"]["cost_usd"], 0.042);
     }
 
     #[test]
     fn test_format_event_json_agent_end_no_tokens() {
         let event = ObserverEvent::AgentEnd {
+            provider: "openai".into(),
+            model: "gpt-4o".into(),
             duration: Duration::from_millis(100),
             tokens_used: None,
+            cost_usd: None,
         };
         let json_str = format_event_json(4, &event);
         let parsed: serde_json::Value = serde_json::from_str(&json_str).unwrap();
         assert!(parsed["data"]["tokens"].is_null());
+        assert!(parsed["data"]["cost_usd"].is_null());
     }
 
     #[test]

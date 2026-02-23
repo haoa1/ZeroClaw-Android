@@ -20,6 +20,7 @@ mod error;
 mod events;
 mod health;
 mod memory_browse;
+mod provider_info;
 mod runtime;
 mod skills;
 mod tools_browse;
