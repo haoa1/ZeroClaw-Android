@@ -3,11 +3,14 @@ tags:
   - journey
   - onboarding
 ---
-- clearState
-- launchApp
+- stopApp
+- launchApp:
+    clearState: true
 
 # Step 1: Permissions
-- assertVisible: "Permissions"
+- extendedWaitUntil:
+    visible: "Permissions"
+    timeout: 30000
 - assertVisible: "Step 1 of 5"
 - tapOn: "Next"
 

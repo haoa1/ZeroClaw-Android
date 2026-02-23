@@ -7,28 +7,27 @@ tags:
 
 # Start daemon
 - tapOn: "Start Daemon"
-- assertVisible:
-    text: "Running"
+- extendedWaitUntil:
+    visible: "Running"
     timeout: 30000
 
 # Stop daemon
 - tapOn: "Stop Daemon"
-- assertVisible:
-    text: "Stopped"
+- extendedWaitUntil:
+    visible: "Stopped"
     timeout: 10000
 
 # Restart daemon
 - tapOn: "Start Daemon"
-- assertVisible:
-    text: "Running"
+- extendedWaitUntil:
+    visible: "Running"
     timeout: 30000
 
 # Verify it still works
 - tapOn: "Console"
 - tapOn: "Type a message"
 - inputText: "Are you still working after restart?"
-- tapOn:
-    id: "Send message"
-- assertVisible:
-    text: ".*"
+- tapOn: "Send message"
+- extendedWaitUntil:
+    visible: ".*"
     timeout: 30000

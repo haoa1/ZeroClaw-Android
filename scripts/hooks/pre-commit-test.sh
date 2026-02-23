@@ -65,7 +65,7 @@ fi
 if [ "$RUN_SCREEN" = true ]; then
     echo "Running Compose screen tests (needs emulator)..."
     if adb devices | grep -q "device$"; then
-        if ! ./gradlew pixel7Api35DebugAndroidTest --tests "com.zeroclaw.android.screen.*" -q; then
+        if ! ./gradlew pixel7Api35DebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.package=com.zeroclaw.android.screen -q; then
             FAILED=true
         fi
     else

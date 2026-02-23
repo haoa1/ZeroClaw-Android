@@ -119,7 +119,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Run Compose screen tests on managed device
-        run: ./gradlew pixel7Api35DebugAndroidTest --tests "com.zeroclaw.android.screen.*"
+        run: ./gradlew pixel7Api35DebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.package=com.zeroclaw.android.screen
 
   maestro-test:
     name: Maestro E2E

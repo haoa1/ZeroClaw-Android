@@ -12,26 +12,23 @@ tags:
 # Send first message
 - tapOn: "Type a message"
 - inputText: "What is 2+2?"
-- tapOn:
-    id: "Send message"
-- assertVisible:
-    text: ".*"
+- tapOn: "Send message"
+- extendedWaitUntil:
+    visible: ".*"
     timeout: 30000
 
 # Send follow-up
 - tapOn: "Type a message"
 - inputText: "Now multiply that by 3"
-- tapOn:
-    id: "Send message"
-- assertVisible:
-    text: ".*"
+- tapOn: "Send message"
+- extendedWaitUntil:
+    visible: ".*"
     timeout: 30000
 
 # Send closing message
 - tapOn: "Type a message"
 - inputText: "Thank you"
-- tapOn:
-    id: "Send message"
-- assertVisible:
-    text: ".*"
+- tapOn: "Send message"
+- extendedWaitUntil:
+    visible: ".*"
     timeout: 30000

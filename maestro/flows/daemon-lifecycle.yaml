@@ -5,10 +5,10 @@ tags:
 ---
 - runFlow: ../subflows/complete-onboarding.yaml
 - tapOn: "Start Daemon"
-- assertVisible:
-    text: "Running"
+- extendedWaitUntil:
+    visible: "Running"
     timeout: 10000
 - tapOn: "Stop Daemon"
-- assertVisible:
-    text: "Stopped"
+- extendedWaitUntil:
+    visible: "Stopped"
     timeout: 5000

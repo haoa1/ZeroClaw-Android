@@ -3,11 +3,14 @@ tags:
   - real-daemon
   - integration
 ---
-- clearState
-- launchApp
+- stopApp
+- launchApp:
+    clearState: true
 
 # Complete onboarding with LM Studio endpoint
-- assertVisible: "Permissions"
+- extendedWaitUntil:
+    visible: "Permissions"
+    timeout: 30000
 - tapOn: "Next"
 - assertVisible: "API Provider"
 - tapOn: "Next"
@@ -18,19 +21,22 @@ tags:
 - assertVisible: "Ready to Go"
 - tapOn: "Start Daemon"
 
-# Verify daemon starts
-- assertVisible:
-    text: "Running"
+# Wait for dashboard then verify daemon starts
+- extendedWaitUntil:
+    visible: "Daemon Status"
+    timeout: 30000
+- tapOn: "Start Daemon"
+- extendedWaitUntil:
+    visible: "Running"
     timeout: 30000
 
 # Navigate to console and send a message
 - tapOn: "Console"
 - tapOn: "Type a message"
 - inputText: "Hello, are you there?"
-- tapOn:
-    id: "Send message"
+- tapOn: "Send message"
 
 # Wait for response
-- assertVisible:
-    text: ".*"
+- extendedWaitUntil:
+    visible: ".*"
     timeout: 30000

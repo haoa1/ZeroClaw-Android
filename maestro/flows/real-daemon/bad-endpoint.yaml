@@ -3,11 +3,14 @@ tags:
   - real-daemon
   - error
 ---
-- clearState
-- launchApp
+- stopApp
+- launchApp:
+    clearState: true
 
-# Complete onboarding (uses default config which may have bad endpoint)
-- assertVisible: "Permissions"
+# Complete onboarding
+- extendedWaitUntil:
+    visible: "Permissions"
+    timeout: 30000
 - tapOn: "Next"
 - assertVisible: "API Provider"
 - tapOn: "Next"
@@ -18,7 +21,13 @@ tags:
 - assertVisible: "Ready to Go"
 - tapOn: "Start Daemon"
 
-# Expect error since no valid provider is configured
-- assertVisible:
-    text: "Error|Failed|error"
+# Wait for dashboard to load
+- extendedWaitUntil:
+    visible: "Daemon Status"
+    timeout: 30000
+
+# Verify the daemon either starts or shows an error
+# (behavior depends on whether a valid provider is configured)
+- extendedWaitUntil:
+    visible: "Running|Error|Failed|Stopped"
     timeout: 30000

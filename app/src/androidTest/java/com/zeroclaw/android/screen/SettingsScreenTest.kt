@@ -9,6 +9,7 @@ package com.zeroclaw.android.screen
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.zeroclaw.android.screen.helpers.fakeAppSettings
@@ -40,9 +41,9 @@ class SettingsScreenTest {
             )
         }
         composeTestRule.onNodeWithText("Daemon").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Security").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Network").assertIsDisplayed()
-        composeTestRule.onNodeWithText("App").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Security").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("Network").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("App").performScrollTo().assertIsDisplayed()
     }
 
     @Test
@@ -59,9 +60,9 @@ class SettingsScreenTest {
             )
         }
         composeTestRule.onNodeWithText("Service Configuration").assertIsDisplayed()
-        composeTestRule.onNodeWithText("API Keys").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Theme").assertIsDisplayed()
-        composeTestRule.onNodeWithText("About").assertIsDisplayed()
+        composeTestRule.onNodeWithText("API Keys").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("Theme").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("About").performScrollTo().assertIsDisplayed()
     }
 
     @Test
@@ -118,6 +119,7 @@ class SettingsScreenTest {
         }
         composeTestRule
             .onNodeWithText("System default")
+            .performScrollTo()
             .assertIsDisplayed()
     }
 }

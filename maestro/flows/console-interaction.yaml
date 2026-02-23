@@ -11,5 +11,4 @@ tags:
 - assertVisible: "Type a message"
 - tapOn: "Type a message"
 - inputText: "Hello"
-- tapOn:
-    id: "Send message"
+- tapOn: "Send message"

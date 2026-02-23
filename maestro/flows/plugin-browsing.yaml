@@ -4,11 +4,14 @@ tags:
   - plugins
 ---
 - runFlow: ../subflows/complete-onboarding.yaml
-- runFlow:
-    file: ../subflows/navigate-to-tab.yaml
-    env:
-      tab: "Plugins"
-- assertVisible: "Installed"
+
+# Navigate to Plugins tab (index: 1 avoids tapping the metric card)
+- tapOn:
+    text: "Plugins"
+    index: 1
+- extendedWaitUntil:
+    visible: "Installed"
+    timeout: 10000
 - tapOn: "Available"
 - assertVisible: "Available"
 - tapOn: "Skills"

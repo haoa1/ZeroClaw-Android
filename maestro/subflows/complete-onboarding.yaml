@@ -1,10 +1,13 @@
 appId: com.zeroclaw.android
 ---
-- clearState
-- launchApp
+- stopApp
+- launchApp:
+    clearState: true
 
 # Step 1: Permissions
-- assertVisible: "Permissions"
+- extendedWaitUntil:
+    visible: "Permissions"
+    timeout: 30000
 - assertVisible: "Step 1 of 5"
 - tapOn: "Next"
 
@@ -24,3 +27,8 @@ appId: com.zeroclaw.android
 # Step 5: Activation
 - assertVisible: "Ready to Go"
 - tapOn: "Start Daemon"
+
+# Wait for dashboard to appear
+- extendedWaitUntil:
+    visible: "Daemon Status"
+    timeout: 30000

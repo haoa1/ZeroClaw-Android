@@ -4,10 +4,18 @@ tags:
   - settings
 ---
 - runFlow: ../subflows/complete-onboarding.yaml
-- runFlow:
-    file: ../subflows/navigate-to-tab.yaml
-    env:
-      tab: "Settings"
-- assertVisible: "Daemon"
+
+# Navigate to Settings tab (no conflict with metric cards)
+- tapOn: "Settings"
+- extendedWaitUntil:
+    visible: "Daemon"
+    timeout: 10000
 - assertVisible: "Security"
+
+# Scroll to bottom to find About (settings has 7+ sections)
+- scroll
+- scroll
+- scroll
+- scroll
+- scroll
 - assertVisible: "About"
