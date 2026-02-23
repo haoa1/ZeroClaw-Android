@@ -1,0 +1,24 @@
+appId: com.zeroclaw.android
+tags:
+  - real-daemon
+  - error
+---
+- clearState
+- launchApp
+
+# Complete onboarding (uses default config which may have bad endpoint)
+- assertVisible: "Permissions"
+- tapOn: "Next"
+- assertVisible: "API Provider"
+- tapOn: "Next"
+- assertVisible: "Step 3 of 5"
+- tapOn: "Next"
+- assertVisible: "Step 4 of 5"
+- tapOn: "Next"
+- assertVisible: "Ready to Go"
+- tapOn: "Start Daemon"
+
+# Expect error since no valid provider is configured
+- assertVisible:
+    text: "Error|Failed|error"
+    timeout: 30000

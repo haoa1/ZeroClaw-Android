@@ -1,0 +1,34 @@
+appId: com.zeroclaw.android
+tags:
+  - real-daemon
+  - restart
+---
+- runFlow: ../../subflows/complete-onboarding.yaml
+
+# Start daemon
+- tapOn: "Start Daemon"
+- assertVisible:
+    text: "Running"
+    timeout: 30000
+
+# Stop daemon
+- tapOn: "Stop Daemon"
+- assertVisible:
+    text: "Stopped"
+    timeout: 10000
+
+# Restart daemon
+- tapOn: "Start Daemon"
+- assertVisible:
+    text: "Running"
+    timeout: 30000
+
+# Verify it still works
+- tapOn: "Console"
+- tapOn: "Type a message"
+- inputText: "Are you still working after restart?"
+- tapOn:
+    id: "Send message"
+- assertVisible:
+    text: ".*"
+    timeout: 30000

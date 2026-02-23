@@ -1,0 +1,36 @@
+appId: com.zeroclaw.android
+tags:
+  - real-daemon
+  - integration
+---
+- clearState
+- launchApp
+
+# Complete onboarding with LM Studio endpoint
+- assertVisible: "Permissions"
+- tapOn: "Next"
+- assertVisible: "API Provider"
+- tapOn: "Next"
+- assertVisible: "Step 3 of 5"
+- tapOn: "Next"
+- assertVisible: "Step 4 of 5"
+- tapOn: "Next"
+- assertVisible: "Ready to Go"
+- tapOn: "Start Daemon"
+
+# Verify daemon starts
+- assertVisible:
+    text: "Running"
+    timeout: 30000
+
+# Navigate to console and send a message
+- tapOn: "Console"
+- tapOn: "Type a message"
+- inputText: "Hello, are you there?"
+- tapOn:
+    id: "Send message"
+
+# Wait for response
+- assertVisible:
+    text: ".*"
+    timeout: 30000
