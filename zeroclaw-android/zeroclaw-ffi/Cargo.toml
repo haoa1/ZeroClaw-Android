@@ -15,6 +15,11 @@ workspace = true
 [dependencies]
 uniffi = "0.29"
 thiserror = "2.0"
+# default-features = false: The FFI layer communicates via the gateway
+# REST API, so no optional upstream features are needed (channel-matrix,
+# channel-lark, memory-postgres, observability-otel, hardware, browser-native,
+# sandbox-*, probe, rag-pdf, whatsapp-web are all excluded). The daemon
+# binary enables platform-specific features independently.
 zeroclaw = { path = "../../zeroclaw", default-features = false }
 tokio = { version = "1.42", features = ["rt-multi-thread", "sync", "macros"] }
 serde = { version = "1.0", features = ["derive"] }
