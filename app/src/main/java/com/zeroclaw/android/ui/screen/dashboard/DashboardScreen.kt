@@ -43,12 +43,17 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.zeroclaw.android.model.ActivityEvent
 import com.zeroclaw.android.model.ComponentHealth
+import com.zeroclaw.android.model.CostSummary
+import com.zeroclaw.android.model.CronJob
 import com.zeroclaw.android.model.DaemonStatus
 import com.zeroclaw.android.model.HealthDetail
+import com.zeroclaw.android.model.KeyRejectionEvent
 import com.zeroclaw.android.model.ServiceState
 import com.zeroclaw.android.ui.component.LoadingIndicator
 import com.zeroclaw.android.ui.component.SectionHeader
@@ -57,8 +62,38 @@ import com.zeroclaw.android.viewmodel.DaemonUiState
 import com.zeroclaw.android.viewmodel.DaemonViewModel
 
 /**
+ * Aggregated state for the dashboard content composable.
+ *
+ * @property serviceState Current daemon service lifecycle state.
+ * @property statusState Daemon status with loading/error variants.
+ * @property keyRejection Latest API key rejection event, if any.
+ * @property healthDetail Component health breakdown, if available.
+ * @property costSummary Accumulated cost summary, if available.
+ * @property cronJobs Active cron job list.
+ * @property enabledAgentCount Number of enabled agent connections.
+ * @property installedPluginCount Number of installed plugins.
+ * @property daemonStatus Latest daemon status snapshot, if available.
+ * @property activityEvents Recent activity feed events.
+ */
+data class DashboardState(
+    val serviceState: ServiceState,
+    val statusState: DaemonUiState<DaemonStatus>,
+    val keyRejection: KeyRejectionEvent?,
+    val healthDetail: HealthDetail?,
+    val costSummary: CostSummary?,
+    val cronJobs: List<CronJob>,
+    val enabledAgentCount: Int,
+    val installedPluginCount: Int,
+    val daemonStatus: DaemonStatus?,
+    val activityEvents: List<ActivityEvent>,
+)
+
+/**
  * Dashboard home screen displaying daemon status, component health,
  * cost summary, cron summary, metrics, and an activity feed.
+ *
+ * Thin stateful wrapper that collects ViewModel flows and delegates
+ * rendering to [DashboardContent].
  *
  * @param edgeMargin Horizontal padding based on window width size class.
  * @param onNavigateToCostDetail Callback to navigate to the cost detail screen.
@@ -68,7 +103,7 @@ import com.zeroclaw.android.viewmodel.DaemonViewModel
  */
 @Composable
 fun DashboardScreen(
-    edgeMargin: androidx.compose.ui.unit.Dp,
+    edgeMargin: Dp,
     onNavigateToCostDetail: () -> Unit = {},
     onNavigateToCronJobs: () -> Unit = {},
     viewModel: DaemonViewModel = viewModel(),
@@ -80,6 +115,60 @@ fun DashboardScreen(
     val healthDetail by viewModel.healthDetail.collectAsStateWithLifecycle()
     val costSummary by viewModel.costSummary.collectAsStateWithLifecycle()
     val cronJobs by viewModel.cronJobs.collectAsStateWithLifecycle()
+    val enabledAgentCount by viewModel.enabledAgentCount.collectAsStateWithLifecycle()
+    val installedPluginCount by viewModel.installedPluginCount.collectAsStateWithLifecycle()
+    val daemonStatus by viewModel.daemonStatus.collectAsStateWithLifecycle()
+    val activityEvents by viewModel.activityEvents.collectAsStateWithLifecycle()
+
+    DashboardContent(
+        state = DashboardState(
+            serviceState = serviceState,
+            statusState = statusState,
+            keyRejection = keyRejection,
+            healthDetail = healthDetail,
+            costSummary = costSummary,
+            cronJobs = cronJobs,
+            enabledAgentCount = enabledAgentCount,
+            installedPluginCount = installedPluginCount,
+            daemonStatus = daemonStatus,
+            activityEvents = activityEvents,
+        ),
+        edgeMargin = edgeMargin,
+        onNavigateToCostDetail = onNavigateToCostDetail,
+        onNavigateToCronJobs = onNavigateToCronJobs,
+        onStartDaemon = viewModel::requestStart,
+        onStopDaemon = viewModel::requestStop,
+        onDismissKeyRejection = viewModel::dismissKeyRejection,
+        modifier = modifier,
+    )
+}
+
+/**
+ * Stateless dashboard content composable for testing.
+ *
+ * Receives all state and callbacks as parameters, rendering the full
+ * dashboard layout without any ViewModel dependency.
+ *
+ * @param state Aggregated dashboard state snapshot.
+ * @param edgeMargin Horizontal padding based on window width size class.
+ * @param onNavigateToCostDetail Callback to navigate to cost detail.
+ * @param onNavigateToCronJobs Callback to navigate to cron jobs.
+ * @param onStartDaemon Callback to start the daemon.
+ * @param onStopDaemon Callback to stop the daemon.
+ * @param onDismissKeyRejection Callback to dismiss the key rejection banner.
+ * @param modifier Modifier applied to the root layout.
+ */
+@Composable
+internal fun DashboardContent(
+    state: DashboardState,
+    edgeMargin: Dp,
+    onNavigateToCostDetail: () -> Unit,
+    onNavigateToCronJobs: () -> Unit,
+    onStartDaemon: () -> Unit,
+    onStopDaemon: () -> Unit,
+    onDismissKeyRejection: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     val oemType = remember { BatteryOptimization.detectAggressiveOem() }
     val isExempt = remember { BatteryOptimization.isExempt(context) }
@@ -108,33 +197,33 @@ fun DashboardScreen(
             )
         }
 
-        if (keyRejection != null) {
-            KeyRejectionBanner(
-                onDismiss = { viewModel.dismissKeyRejection() },
-            )
+        if (state.keyRejection != null) {
+            KeyRejectionBanner(onDismiss = onDismissKeyRejection)
         }
 
         StatusHeroCard(
-            serviceState = serviceState,
-            errorMessage = (statusState as? DaemonUiState.Error)?.detail,
-            onStart = { viewModel.requestStart() },
-            onStop = { viewModel.requestStop() },
+            serviceState = state.serviceState,
+            errorMessage = (state.statusState as? DaemonUiState.Error)?.detail,
+            onStart = onStartDaemon,
+            onStop = onStopDaemon,
         )
 
-        if (serviceState == ServiceState.RUNNING) {
-            healthDetail?.let { detail ->
+        if (state.serviceState == ServiceState.RUNNING) {
+            state.healthDetail?.let { detail ->
                 ComponentHealthRow(healthDetail = detail)
             }
         }
 
         SectionHeader(title = "At a Glance")
         MetricCardsRow(
-            viewModel = viewModel,
-            serviceState = serviceState,
+            enabledAgentCount = state.enabledAgentCount,
+            installedPluginCount = state.installedPluginCount,
+            daemonStatus = state.daemonStatus,
+            serviceState = state.serviceState,
         )
 
-        if (serviceState == ServiceState.RUNNING) {
-            costSummary?.let { cost ->
+        if (state.serviceState == ServiceState.RUNNING) {
+            state.costSummary?.let { cost ->
                 CostSummaryCard(
                     costSummary = cost,
                     onClick = onNavigateToCostDetail,
@@ -142,16 +231,15 @@ fun DashboardScreen(
             }
         }
 
-        if (serviceState == ServiceState.RUNNING && cronJobs.isNotEmpty()) {
+        if (state.serviceState == ServiceState.RUNNING && state.cronJobs.isNotEmpty()) {
             CronSummaryCard(
-                cronJobs = cronJobs,
+                cronJobs = state.cronJobs,
                 onClick = onNavigateToCronJobs,
             )
         }
 
         SectionHeader(title = "Recent Activity")
-        val activityEvents by viewModel.activityEvents.collectAsStateWithLifecycle()
-        ActivityFeedSection(events = activityEvents)
+        ActivityFeedSection(events = state.activityEvents)
 
         Spacer(modifier = Modifier.height(16.dp))
     }
@@ -331,22 +419,19 @@ private const val SECONDS_PER_HOUR = 3600L
  * Row of three compact metric cards summarising agent count, plugin count,
  * and daemon uptime. Each card occupies equal width via [Modifier.weight].
  *
- * State reads are scoped to this composable so that changes to agent/plugin
- * counts or daemon status only recompose this row rather than the entire
- * dashboard screen.
- *
- * @param viewModel The [DaemonViewModel] providing derived metric flows.
+ * @param enabledAgentCount Number of enabled agent connections.
+ * @param installedPluginCount Number of installed plugins.
+ * @param daemonStatus Latest daemon status snapshot, or null if unavailable.
  * @param serviceState Current service lifecycle state; used to determine whether
  *   to show uptime or "Offline".
  */
 @Composable
 private fun MetricCardsRow(
-    viewModel: DaemonViewModel,
+    enabledAgentCount: Int,
+    installedPluginCount: Int,
+    daemonStatus: DaemonStatus?,
     serviceState: ServiceState,
 ) {
-    val enabledAgentCount by viewModel.enabledAgentCount.collectAsStateWithLifecycle()
-    val installedPluginCount by viewModel.installedPluginCount.collectAsStateWithLifecycle()
-    val daemonStatus by viewModel.daemonStatus.collectAsStateWithLifecycle()
     val uptimeText = formatUptime(daemonStatus, serviceState)
 
     Row(
