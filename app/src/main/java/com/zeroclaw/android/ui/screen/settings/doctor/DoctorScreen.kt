@@ -4,6 +4,8 @@
  * Licensed under the MIT License. See LICENSE in the project root.
  */
 
+@file:Suppress("MatchingDeclarationName")
+
 package com.zeroclaw.android.ui.screen.settings.doctor
 
 import androidx.compose.foundation.background
@@ -84,11 +86,12 @@ fun DoctorScreen(
     val summary by doctorViewModel.summary.collectAsStateWithLifecycle()
 
     DoctorContent(
-        state = DoctorState(
-            checks = checks,
-            isRunning = isRunning,
-            summary = summary,
-        ),
+        state =
+            DoctorState(
+                checks = checks,
+                isRunning = isRunning,
+                summary = summary,
+            ),
         edgeMargin = edgeMargin,
         onNavigateToRoute = onNavigateToRoute,
         onRunDiagnostics = doctorViewModel::runAllChecks,

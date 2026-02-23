@@ -4,6 +4,8 @@
  * Licensed under the MIT License. See LICENSE in the project root.
  */
 
+@file:Suppress("MatchingDeclarationName")
+
 package com.zeroclaw.android.ui.screen.onboarding
 
 import androidx.compose.foundation.layout.Arrangement
@@ -95,13 +97,13 @@ fun OnboardingScreen(
     }
 
     OnboardingContent(
-        state = OnboardingState(
-            currentStep = currentStep,
-            totalSteps = totalSteps,
-            isCompleting = isCompleting,
-        ),
+        state =
+            OnboardingState(
+                currentStep = currentStep,
+                totalSteps = totalSteps,
+                isCompleting = isCompleting,
+            ),
         snackbarHostState = snackbarHostState,
-        onComplete = onComplete,
         onNextStep = onboardingViewModel::nextStep,
         onPreviousStep = onboardingViewModel::previousStep,
         onActivate = { onboardingViewModel.complete(onDone = onComplete) },
@@ -122,7 +124,6 @@ fun OnboardingScreen(
  *
  * @param state Aggregated onboarding state snapshot.
  * @param snackbarHostState Snackbar host state for error messages.
- * @param onComplete Callback when onboarding finishes.
  * @param onNextStep Callback to advance to the next step.
  * @param onPreviousStep Callback to go back to the previous step.
  * @param onActivate Callback when the activation button is tapped.
@@ -133,7 +134,6 @@ fun OnboardingScreen(
 internal fun OnboardingContent(
     state: OnboardingState,
     snackbarHostState: SnackbarHostState,
-    onComplete: () -> Unit,
     onNextStep: () -> Unit,
     onPreviousStep: () -> Unit,
     onActivate: () -> Unit,

@@ -4,6 +4,8 @@
  * Licensed under the MIT License. See LICENSE in the project root.
  */
 
+@file:Suppress("MatchingDeclarationName")
+
 package com.zeroclaw.android.ui.screen.console
 
 import android.content.ClipData
@@ -77,7 +79,6 @@ import com.zeroclaw.android.model.ChatMessage
 import com.zeroclaw.android.model.ProcessedImage
 import com.zeroclaw.android.ui.component.LoadingIndicator
 import com.zeroclaw.android.util.LocalPowerSaveMode
-
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -187,12 +188,13 @@ fun ConsoleScreen(
     val isProcessingImages by consoleViewModel.isProcessingImages.collectAsStateWithLifecycle()
 
     ConsoleContent(
-        state = ConsoleState(
-            messages = messages,
-            isLoading = isLoading,
-            pendingImages = pendingImages,
-            isProcessingImages = isProcessingImages,
-        ),
+        state =
+            ConsoleState(
+                messages = messages,
+                isLoading = isLoading,
+                pendingImages = pendingImages,
+                isProcessingImages = isProcessingImages,
+            ),
         edgeMargin = edgeMargin,
         onSendMessage = consoleViewModel::sendMessage,
         onClearHistory = consoleViewModel::clearHistory,

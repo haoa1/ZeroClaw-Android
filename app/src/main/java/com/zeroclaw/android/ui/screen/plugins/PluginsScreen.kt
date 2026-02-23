@@ -4,6 +4,8 @@
  * Licensed under the MIT License. See LICENSE in the project root.
  */
 
+@file:Suppress("MatchingDeclarationName")
+
 package com.zeroclaw.android.ui.screen.plugins
 
 import androidx.compose.foundation.layout.Arrangement
@@ -100,12 +102,13 @@ fun PluginsScreen(
     }
 
     PluginsContent(
-        state = PluginsState(
-            plugins = plugins,
-            selectedTab = selectedTab,
-            searchQuery = searchQuery,
-            syncState = syncState,
-        ),
+        state =
+            PluginsState(
+                plugins = plugins,
+                selectedTab = selectedTab,
+                searchQuery = searchQuery,
+                syncState = syncState,
+            ),
         edgeMargin = edgeMargin,
         snackbarHostState = snackbarHostState,
         onNavigateToDetail = onNavigateToDetail,

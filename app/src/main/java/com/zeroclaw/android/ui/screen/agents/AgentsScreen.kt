@@ -4,6 +4,8 @@
  * Licensed under the MIT License. See LICENSE in the project root.
  */
 
+@file:Suppress("MatchingDeclarationName")
+
 package com.zeroclaw.android.ui.screen.agents
 
 import androidx.compose.foundation.layout.Arrangement

@@ -4,6 +4,8 @@
  * Licensed under the MIT License. See LICENSE in the project root.
  */
 
+@file:Suppress("MatchingDeclarationName")
+
 package com.zeroclaw.android.ui.screen.settings.apikeys
 
 import androidx.compose.foundation.clickable
@@ -130,13 +132,14 @@ fun ApiKeysScreen(
     }
 
     ApiKeysContent(
-        state = ApiKeysState(
-            keys = keys,
-            revealedKeyId = revealedKeyId,
-            corruptCount = corruptCount,
-            unusedKeyIds = unusedKeyIds,
-            storageHealth = apiKeysViewModel.storageHealth,
-        ),
+        state =
+            ApiKeysState(
+                keys = keys,
+                revealedKeyId = revealedKeyId,
+                corruptCount = corruptCount,
+                unusedKeyIds = unusedKeyIds,
+                storageHealth = apiKeysViewModel.storageHealth,
+            ),
         snackbarHostState = snackbarHostState,
         edgeMargin = edgeMargin,
         onNavigateToDetail = onNavigateToDetail,

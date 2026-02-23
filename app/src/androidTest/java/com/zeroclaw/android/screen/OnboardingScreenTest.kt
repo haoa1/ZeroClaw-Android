@@ -12,7 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.zeroclaw.android.screen.helpers.fakeOnboardingState
 import com.zeroclaw.android.ui.screen.onboarding.OnboardingContent
@@ -25,7 +24,6 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class OnboardingScreenTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -35,7 +33,6 @@ class OnboardingScreenTest {
             OnboardingContent(
                 state = fakeOnboardingState(),
                 snackbarHostState = remember { SnackbarHostState() },
-                onComplete = {},
                 onNextStep = {},
                 onPreviousStep = {},
                 onActivate = {},
@@ -53,7 +50,6 @@ class OnboardingScreenTest {
             OnboardingContent(
                 state = fakeOnboardingState(),
                 snackbarHostState = remember { SnackbarHostState() },
-                onComplete = {},
                 onNextStep = {},
                 onPreviousStep = {},
                 onActivate = {},
@@ -71,7 +67,6 @@ class OnboardingScreenTest {
             OnboardingContent(
                 state = fakeOnboardingState(),
                 snackbarHostState = remember { SnackbarHostState() },
-                onComplete = {},
                 onNextStep = {},
                 onPreviousStep = {},
                 onActivate = {},
@@ -89,7 +84,6 @@ class OnboardingScreenTest {
             OnboardingContent(
                 state = fakeOnboardingState().copy(currentStep = 2),
                 snackbarHostState = remember { SnackbarHostState() },
-                onComplete = {},
                 onNextStep = {},
                 onPreviousStep = {},
                 onActivate = {},
@@ -107,7 +101,6 @@ class OnboardingScreenTest {
             OnboardingContent(
                 state = fakeOnboardingState(),
                 snackbarHostState = remember { SnackbarHostState() },
-                onComplete = {},
                 onNextStep = {},
                 onPreviousStep = {},
                 onActivate = {},

@@ -1,5 +1,7 @@
 // Copyright 2026 ZeroClaw Community, MIT License
 
+@file:Suppress("MatchingDeclarationName")
+
 package com.zeroclaw.android.ui.screen.dashboard
 
 import android.content.Intent
@@ -121,18 +123,19 @@ fun DashboardScreen(
     val activityEvents by viewModel.activityEvents.collectAsStateWithLifecycle()
 
     DashboardContent(
-        state = DashboardState(
-            serviceState = serviceState,
-            statusState = statusState,
-            keyRejection = keyRejection,
-            healthDetail = healthDetail,
-            costSummary = costSummary,
-            cronJobs = cronJobs,
-            enabledAgentCount = enabledAgentCount,
-            installedPluginCount = installedPluginCount,
-            daemonStatus = daemonStatus,
-            activityEvents = activityEvents,
-        ),
+        state =
+            DashboardState(
+                serviceState = serviceState,
+                statusState = statusState,
+                keyRejection = keyRejection,
+                healthDetail = healthDetail,
+                costSummary = costSummary,
+                cronJobs = cronJobs,
+                enabledAgentCount = enabledAgentCount,
+                installedPluginCount = installedPluginCount,
+                daemonStatus = daemonStatus,
+                activityEvents = activityEvents,
+            ),
         edgeMargin = edgeMargin,
         onNavigateToCostDetail = onNavigateToCostDetail,
         onNavigateToCronJobs = onNavigateToCronJobs,
