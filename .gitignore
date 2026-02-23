@@ -39,6 +39,9 @@ app/src/main/jniLibs/
 # Design documents (local only)
 docs/
 
+# Hook scripts (local machine paths)
+scripts/hooks/
+
 # AI agent instructions (local only — agents.md.default is the tracked template)
 .claude/
 CLAUDE.md
@@ -46,4 +49,7 @@ agents.md
 
 # Agent task output files
 *.output
+
+# Git worktrees
+.worktrees/
 
