@@ -8,7 +8,6 @@ package com.zeroclaw.android.ui.screen.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,11 +19,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -34,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.zeroclaw.android.ui.component.SectionHeader
+import com.zeroclaw.android.ui.component.SettingsToggleRow
 
 /** Number of slider steps for weight sliders. */
 private const val WEIGHT_STEPS = 10
@@ -69,12 +67,12 @@ fun MemoryAdvancedScreen(
 
         SectionHeader(title = "Memory Hygiene")
 
-        MemoryToggle(
+        SettingsToggleRow(
             title = "Enable hygiene",
             subtitle = "Automatically archive and purge old memory entries",
             checked = settings.memoryHygieneEnabled,
             onCheckedChange = { settingsViewModel.updateMemoryHygieneEnabled(it) },
-            description = "Enable memory hygiene",
+            contentDescription = "Enable memory hygiene",
         )
 
         OutlinedTextField(
@@ -154,43 +152,5 @@ fun MemoryAdvancedScreen(
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-    }
-}
-
-/**
- * Toggle row used on the memory advanced screen.
- *
- * @param title Primary label text.
- * @param subtitle Descriptive text below the title.
- * @param checked Current toggle state.
- * @param onCheckedChange Callback for state changes.
- * @param description Accessibility content description.
- */
-@Composable
-private fun MemoryToggle(
-    title: String,
-    subtitle: String,
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-    description: String,
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(text = title, style = MaterialTheme.typography.bodyLarge)
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        Switch(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
-            modifier = Modifier.semantics { contentDescription = description },
-        )
     }
 }

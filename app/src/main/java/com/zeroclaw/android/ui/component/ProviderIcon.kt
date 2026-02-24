@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
@@ -82,31 +83,41 @@ private const val COLOR_CLOUDFLARE = 0xFFF48120
 private const val COLOR_BEDROCK = 0xFFFF9900
 
 /**
- * Pre-computed brand color pairs (background, foreground) keyed by provider ID.
+ * Pre-computed brand background colors keyed by provider ID.
  *
- * File-level constant map avoids allocating new [Color] and [Pair] objects on
- * every recomposition. Providers not in this map fall back to Material theme
- * colors at the call site.
+ * Foreground color is determined dynamically via [contrastingForeground]
+ * to guarantee WCAG AA contrast (4.5:1) regardless of background luminance.
  */
-private val PROVIDER_COLORS: Map<String, Pair<Color, Color>> =
+private val PROVIDER_BRAND_COLORS: Map<String, Color> =
     mapOf(
-        "anthropic" to Pair(Color(COLOR_ANTHROPIC), Color.White),
-        "openai" to Pair(Color(COLOR_OPENAI), Color.White),
-        "google-gemini" to Pair(Color(COLOR_GOOGLE), Color.White),
-        "mistral" to Pair(Color(COLOR_MISTRAL), Color.White),
-        "meta" to Pair(Color(COLOR_META), Color.White),
-        "openrouter" to Pair(Color(COLOR_OPENROUTER), Color.White),
-        "groq" to Pair(Color(COLOR_GROQ), Color.White),
-        "xai" to Pair(Color(COLOR_XAI), Color.White),
-        "deepseek" to Pair(Color(COLOR_DEEPSEEK), Color.White),
-        "together" to Pair(Color(COLOR_TOGETHER), Color.White),
-        "fireworks" to Pair(Color(COLOR_FIREWORKS), Color.White),
-        "perplexity" to Pair(Color(COLOR_PERPLEXITY), Color.White),
-        "cohere" to Pair(Color(COLOR_COHERE), Color.White),
-        "ollama" to Pair(Color(COLOR_OLLAMA), Color.White),
-        "cloudflare" to Pair(Color(COLOR_CLOUDFLARE), Color.White),
-        "bedrock" to Pair(Color(COLOR_BEDROCK), Color.White),
+        "anthropic" to Color(COLOR_ANTHROPIC),
+        "openai" to Color(COLOR_OPENAI),
+        "google-gemini" to Color(COLOR_GOOGLE),
+        "mistral" to Color(COLOR_MISTRAL),
+        "meta" to Color(COLOR_META),
+        "openrouter" to Color(COLOR_OPENROUTER),
+        "groq" to Color(COLOR_GROQ),
+        "xai" to Color(COLOR_XAI),
+        "deepseek" to Color(COLOR_DEEPSEEK),
+        "together" to Color(COLOR_TOGETHER),
+        "fireworks" to Color(COLOR_FIREWORKS),
+        "perplexity" to Color(COLOR_PERPLEXITY),
+        "cohere" to Color(COLOR_COHERE),
+        "ollama" to Color(COLOR_OLLAMA),
+        "cloudflare" to Color(COLOR_CLOUDFLARE),
+        "bedrock" to Color(COLOR_BEDROCK),
     )
+
+/** Luminance threshold below which white text is used, ensuring 4.5:1 contrast. */
+private const val LUMINANCE_THRESHOLD = 0.179f
+
+/**
+ * Returns [Color.White] or [Color.Black] to ensure WCAG AA contrast against [background].
+ *
+ * @param background The background color to contrast against.
+ * @return White for dark backgrounds, black for light backgrounds.
+ */
+private fun contrastingForeground(background: Color): Color = if (background.luminance() <= LUMINANCE_THRESHOLD) Color.White else Color.Black
 
 /**
  * Circular icon showing the provider's logo fetched via Coil, with a
@@ -173,9 +184,9 @@ private fun InitialCircle(
 ) {
     val fallbackBg = MaterialTheme.colorScheme.secondaryContainer
     val fallbackFg = MaterialTheme.colorScheme.onSecondaryContainer
-    val (bgColor, fgColor) =
-        PROVIDER_COLORS[providerId]
-            ?: Pair(fallbackBg, fallbackFg)
+    val brandBg = PROVIDER_BRAND_COLORS[providerId]
+    val bgColor = brandBg ?: fallbackBg
+    val fgColor = if (brandBg != null) contrastingForeground(brandBg) else fallbackFg
     val initial = displayName.firstOrNull()?.uppercase() ?: "?"
 
     Box(

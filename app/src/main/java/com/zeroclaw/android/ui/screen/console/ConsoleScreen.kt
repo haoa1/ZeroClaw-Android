@@ -415,6 +415,7 @@ private fun PendingImageStrip(
             itemsIndexed(
                 items = images,
                 key = { _, img -> img.originalUri },
+                contentType = { _, _ -> "pending_thumbnail" },
             ) { index, image ->
                 val stableOnRemove =
                     remember(index) {

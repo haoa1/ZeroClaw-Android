@@ -145,6 +145,7 @@ fun NetworkScanSheet(
                 itemsIndexed(
                     items = discoveredServers,
                     key = { _, server -> "${server.host}:${server.port}" },
+                    contentType = { _, _ -> "server_card" },
                 ) { index, server ->
                     AnimatedVisibility(
                         visible = true,
