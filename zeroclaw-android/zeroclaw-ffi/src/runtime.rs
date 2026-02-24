@@ -159,8 +159,9 @@ pub(crate) fn get_or_create_runtime() -> Result<&'static Runtime, FfiError> {
             detail: format!("failed to create tokio runtime: {e}"),
         })?;
     let _ = RUNTIME.set(rt);
-    // Safe: we just called set() — at least one thread succeeded.
-    Ok(RUNTIME.get().expect("just set"))
+    RUNTIME.get().ok_or_else(|| FfiError::StateCorrupted {
+        detail: "runtime not initialized after set".to_string(),
+    })
 }
 
 /// Starts the `ZeroClaw` daemon with the provided configuration.

@@ -124,8 +124,8 @@ pub(crate) fn get_monthly_cost_inner(year: i32, month: u32) -> Result<f64, FfiEr
 
     let now = chrono::Utc::now();
     #[allow(clippy::cast_possible_wrap)]
-    let current_year = now.format("%Y").to_string().parse::<i32>().unwrap_or(0);
-    let current_month = now.format("%m").to_string().parse::<u32>().unwrap_or(0);
+    let current_year = chrono::Datelike::year(&now);
+    let current_month = chrono::Datelike::month(&now);
 
     if year == current_year && month == current_month {
         let summary = get_cost_summary_inner()?;

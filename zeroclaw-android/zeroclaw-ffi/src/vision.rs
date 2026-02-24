@@ -378,10 +378,9 @@ async fn dispatch_vision_request(
     let status = response.status();
     if !status.is_success() {
         let error_body = response.text().await.unwrap_or_default();
-        let truncated = if error_body.len() > 500 {
-            format!("{}...", &error_body[..500])
-        } else {
-            error_body
+        let truncated = match error_body.char_indices().nth(500) {
+            Some((idx, _)) => format!("{}...", &error_body[..idx]),
+            None => error_body,
         };
         return Err(FfiError::SpawnError {
             detail: format!("vision API returned status {status}: {truncated}"),
