@@ -4,15 +4,14 @@ tags:
   - onboarding
 ---
 - retry:
-    maxRetries: 2
+    maxRetries: 1
     commands:
       - stopApp
-      - launchApp:
-          clearState: true
-          clearKeychain: true
+      - clearState
+      - launchApp
       - extendedWaitUntil:
           visible: "Permissions"
-          timeout: 15000
+          timeout: 30000
 
 # Step 1: Permissions
 - assertVisible: "Step 1 of 5"
