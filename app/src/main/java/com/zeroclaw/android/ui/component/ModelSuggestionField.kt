@@ -114,7 +114,9 @@ fun ModelSuggestionField(
                 }
             },
             supportingText =
-                if (showStaticHint) {
+                if (isLoadingLive) {
+                    { Text("Fetching models\u2026") }
+                } else if (showStaticHint) {
                     { Text("Suggestions as of Feb 2026") }
                 } else {
                     null

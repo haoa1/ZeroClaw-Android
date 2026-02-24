@@ -22,6 +22,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.zeroclaw.android.ZeroClawApplication
 import com.zeroclaw.android.service.ZeroClawDaemonService
 import com.zeroclaw.android.ui.screen.agents.AddAgentScreen
 import com.zeroclaw.android.ui.screen.agents.AgentDetailScreen
@@ -213,6 +214,7 @@ fun ZeroClawNavHost(
                 },
                 restartRequired = restartRequired,
                 onRestartDaemon = {
+                    val app = context.applicationContext as ZeroClawApplication
                     val stopIntent =
                         Intent(
                             context,
@@ -221,6 +223,7 @@ fun ZeroClawNavHost(
                             action = ZeroClawDaemonService.ACTION_STOP
                         }
                     context.startService(stopIntent)
+                    app.chatMessageRepository.clear()
                     val startIntent =
                         Intent(
                             context,
@@ -229,6 +232,12 @@ fun ZeroClawNavHost(
                             action = ZeroClawDaemonService.ACTION_START
                         }
                     context.startForegroundService(startIntent)
+                    navController.navigate(DashboardRoute) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = false
+                        }
+                        launchSingleTop = true
+                    }
                 },
                 edgeMargin = edgeMargin,
                 settingsViewModel = settingsViewModel,
