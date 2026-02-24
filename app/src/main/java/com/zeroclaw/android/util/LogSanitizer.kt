@@ -17,14 +17,26 @@ object LogSanitizer {
     /** Matches OpenAI-style API keys (`sk-...`). */
     private val API_KEY_PATTERN = Regex("""sk-[A-Za-z0-9_-]{8,}""")
 
+    /** Matches Anthropic API keys (`sk-ant-...`). */
+    private val ANTHROPIC_KEY_PATTERN = Regex("""sk-ant-[A-Za-z0-9_-]{8,}""")
+
+    /** Matches Google AI API keys (`AIza...`). */
+    private val GOOGLE_KEY_PATTERN = Regex("""AIza[A-Za-z0-9_-]{30,}""")
+
     /** Matches OAuth bearer tokens (`Bearer ...`). */
     private val BEARER_PATTERN = Regex("""Bearer\s+[A-Za-z0-9\-_.~+/]+=*""")
 
     /** Matches Slack bot tokens (`xoxb-...`). */
     private val BOT_TOKEN_PATTERN = Regex("""xoxb-[0-9]+-[A-Za-z0-9]+""")
 
+    /** Matches ngrok authentication tokens. */
+    private val NGROK_TOKEN_PATTERN = Regex("""ngrok[_-]?[A-Za-z0-9]{20,}""")
+
     /** Matches Authorization header values. */
     private val AUTH_HEADER_PATTERN = Regex("""Authorization:\s*\S+""")
+
+    /** Matches `x-api-key` header values. */
+    private val X_API_KEY_PATTERN = Regex("""x-api-key:\s*\S+""", RegexOption.IGNORE_CASE)
 
     /** Matches suspiciously long URLs that may contain credentials. */
     private val LONG_URL_PATTERN = Regex("""https?://[^\s]{50,}""")
@@ -41,8 +53,12 @@ object LogSanitizer {
     fun sanitizeLogMessage(message: String): String =
         message
             .replace(BEARER_PATTERN, "Bearer $REDACTION_PLACEHOLDER")
+            .replace(ANTHROPIC_KEY_PATTERN, REDACTION_PLACEHOLDER)
             .replace(API_KEY_PATTERN, REDACTION_PLACEHOLDER)
+            .replace(GOOGLE_KEY_PATTERN, REDACTION_PLACEHOLDER)
             .replace(BOT_TOKEN_PATTERN, REDACTION_PLACEHOLDER)
+            .replace(NGROK_TOKEN_PATTERN, REDACTION_PLACEHOLDER)
             .replace(AUTH_HEADER_PATTERN, "Authorization: $REDACTION_PLACEHOLDER")
+            .replace(X_API_KEY_PATTERN, "x-api-key: $REDACTION_PLACEHOLDER")
             .replace(LONG_URL_PATTERN, REDACTED_URL)
 }

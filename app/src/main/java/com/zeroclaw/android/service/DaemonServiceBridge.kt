@@ -196,7 +196,9 @@ class DaemonServiceBridge(
         val status =
             try {
                 parseStatus(json)
-            } catch (@Suppress("SwallowedException") e: IllegalStateException) {
+            } catch (
+                @Suppress("SwallowedException") e: IllegalStateException,
+            ) {
                 throw FfiException.StateException(
                     e.message ?: "malformed status JSON",
                 )

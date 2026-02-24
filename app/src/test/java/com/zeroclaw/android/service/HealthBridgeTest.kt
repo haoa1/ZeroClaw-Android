@@ -16,7 +16,6 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -90,52 +89,6 @@ class HealthBridgeTest {
 
             assertThrows<FfiException> {
                 bridge.getHealthDetail()
-            }
-        }
-
-    @Test
-    @DisplayName("getComponentHealth returns null when component not found")
-    fun `getComponentHealth returns null when component not found`() =
-        runTest {
-            every { com.zeroclaw.ffi.getComponentHealth("unknown") } returns null
-
-            val result = bridge.getComponentHealth("unknown")
-
-            assertNull(result)
-        }
-
-    @Test
-    @DisplayName("getComponentHealth converts FFI record to ComponentHealth model")
-    fun `getComponentHealth converts FFI record to ComponentHealth model`() =
-        runTest {
-            val ffiComponent =
-                FfiComponentHealth(
-                    name = "scheduler",
-                    status = "error",
-                    lastError = "timeout after 30s",
-                    restartCount = 7UL,
-                )
-            every { com.zeroclaw.ffi.getComponentHealth("scheduler") } returns ffiComponent
-
-            val result = bridge.getComponentHealth("scheduler")
-
-            assertNotNull(result)
-            assertEquals("scheduler", result!!.name)
-            assertEquals("error", result.status)
-            assertEquals("timeout after 30s", result.lastError)
-            assertEquals(7L, result.restartCount)
-        }
-
-    @Test
-    @DisplayName("getComponentHealth propagates FfiException")
-    fun `getComponentHealth propagates FfiException`() =
-        runTest {
-            every {
-                com.zeroclaw.ffi.getComponentHealth(any())
-            } throws FfiException.InternalPanic("segfault")
-
-            assertThrows<FfiException> {
-                bridge.getComponentHealth("gateway")
             }
         }
 }

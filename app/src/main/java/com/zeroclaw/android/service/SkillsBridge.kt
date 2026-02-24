@@ -1,4 +1,8 @@
-// Copyright 2026 ZeroClaw Community, MIT License
+/*
+ * Copyright 2026 ZeroClaw Community
+ *
+ * Licensed under the MIT License. See LICENSE in the project root.
+ */
 
 package com.zeroclaw.android.service
 

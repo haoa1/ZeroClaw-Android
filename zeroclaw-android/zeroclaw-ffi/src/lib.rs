@@ -22,7 +22,6 @@ mod ffi_health;
 mod gateway_client;
 mod health;
 mod memory_browse;
-mod provider_info;
 mod runtime;
 mod skills;
 mod tools_browse;
