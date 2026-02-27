@@ -6,8 +6,8 @@
 
 package com.zeroclaw.android.data.repository
 
-import com.zeroclaw.android.data.MapSharedPreferences
 import com.zeroclaw.android.data.StorageHealth
+import com.zeroclaw.android.data.TestSharedPreferences
 import com.zeroclaw.android.model.KeyStatus
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test
 
 /**
  * Unit tests for [EncryptedApiKeyRepository] using an injected
- * [MapSharedPreferences] to avoid Android Keystore dependencies.
+ * [TestSharedPreferences] to avoid Android Keystore dependencies.
  */
 @DisplayName("EncryptedApiKeyRepository")
 class EncryptedApiKeyRepositoryTest {
@@ -26,7 +26,7 @@ class EncryptedApiKeyRepositoryTest {
     @DisplayName("loads valid keys from preferences")
     fun `loads valid keys from preferences`() =
         runTest {
-            val prefs = MapSharedPreferences()
+            val prefs = TestSharedPreferences()
             prefs
                 .edit()
                 .putString(
@@ -50,7 +50,7 @@ class EncryptedApiKeyRepositoryTest {
     @DisplayName("counts corrupt entries and skips them")
     fun `counts corrupt entries and skips them`() =
         runTest {
-            val prefs = MapSharedPreferences()
+            val prefs = TestSharedPreferences()
             prefs
                 .edit()
                 .putString(
@@ -75,7 +75,7 @@ class EncryptedApiKeyRepositoryTest {
     @DisplayName("corrupt count resets on reload after import")
     fun `corrupt count resets on reload after import`() =
         runTest {
-            val prefs = MapSharedPreferences()
+            val prefs = TestSharedPreferences()
             prefs.edit().putString("bad", "broken json").apply()
 
             val repo = EncryptedApiKeyRepository(prefsOverride = prefs)
@@ -101,7 +101,7 @@ class EncryptedApiKeyRepositoryTest {
     @Test
     @DisplayName("storageHealth is Healthy with prefs override")
     fun `storageHealth is Healthy with prefs override`() {
-        val prefs = MapSharedPreferences()
+        val prefs = TestSharedPreferences()
         val repo = EncryptedApiKeyRepository(prefsOverride = prefs)
         assertEquals(StorageHealth.Healthy, repo.storageHealth)
     }
@@ -110,7 +110,7 @@ class EncryptedApiKeyRepositoryTest {
     @DisplayName("save persists KeyStatus")
     fun `save persists KeyStatus`() =
         runTest {
-            val prefs = MapSharedPreferences()
+            val prefs = TestSharedPreferences()
             val repo = EncryptedApiKeyRepository(prefsOverride = prefs)
             repo.save(
                 com.zeroclaw.android.model.ApiKey(
@@ -129,7 +129,7 @@ class EncryptedApiKeyRepositoryTest {
     @DisplayName("load parses KeyStatus from stored JSON")
     fun `load parses KeyStatus from stored JSON`() =
         runTest {
-            val prefs = MapSharedPreferences()
+            val prefs = TestSharedPreferences()
             prefs
                 .edit()
                 .putString(
@@ -153,7 +153,7 @@ class EncryptedApiKeyRepositoryTest {
     @DisplayName("unknown status string maps to UNKNOWN")
     fun `unknown status string maps to UNKNOWN`() =
         runTest {
-            val prefs = MapSharedPreferences()
+            val prefs = TestSharedPreferences()
             prefs
                 .edit()
                 .putString(
@@ -177,7 +177,7 @@ class EncryptedApiKeyRepositoryTest {
     @DisplayName("missing status field defaults to ACTIVE")
     fun `missing status field defaults to ACTIVE`() =
         runTest {
-            val prefs = MapSharedPreferences()
+            val prefs = TestSharedPreferences()
             prefs
                 .edit()
                 .putString(
@@ -200,7 +200,7 @@ class EncryptedApiKeyRepositoryTest {
     @DisplayName("save persists baseUrl")
     fun `save persists baseUrl`() =
         runTest {
-            val prefs = MapSharedPreferences()
+            val prefs = TestSharedPreferences()
             val repo = EncryptedApiKeyRepository(prefsOverride = prefs)
             repo.save(
                 com.zeroclaw.android.model.ApiKey(
@@ -219,7 +219,7 @@ class EncryptedApiKeyRepositoryTest {
     @DisplayName("load parses baseUrl from stored JSON")
     fun `load parses baseUrl from stored JSON`() =
         runTest {
-            val prefs = MapSharedPreferences()
+            val prefs = TestSharedPreferences()
             prefs
                 .edit()
                 .putString(
@@ -243,7 +243,7 @@ class EncryptedApiKeyRepositoryTest {
     @DisplayName("missing baseUrl field defaults to empty string")
     fun `missing baseUrl field defaults to empty string`() =
         runTest {
-            val prefs = MapSharedPreferences()
+            val prefs = TestSharedPreferences()
             prefs
                 .edit()
                 .putString(
@@ -266,7 +266,7 @@ class EncryptedApiKeyRepositoryTest {
     @DisplayName("save persists refreshToken and expiresAt")
     fun `save persists refreshToken and expiresAt`() =
         runTest {
-            val prefs = MapSharedPreferences()
+            val prefs = TestSharedPreferences()
             val repo = EncryptedApiKeyRepository(prefsOverride = prefs)
             repo.save(
                 com.zeroclaw.android.model.ApiKey(
@@ -287,7 +287,7 @@ class EncryptedApiKeyRepositoryTest {
     @DisplayName("load parses refreshToken and expiresAt")
     fun `load parses refreshToken and expiresAt`() =
         runTest {
-            val prefs = MapSharedPreferences()
+            val prefs = TestSharedPreferences()
             prefs
                 .edit()
                 .putString(
@@ -313,7 +313,7 @@ class EncryptedApiKeyRepositoryTest {
     @DisplayName("missing OAuth fields default to empty/zero for backward compat")
     fun `missing OAuth fields default to empty and zero for backward compat`() =
         runTest {
-            val prefs = MapSharedPreferences()
+            val prefs = TestSharedPreferences()
             prefs
                 .edit()
                 .putString(

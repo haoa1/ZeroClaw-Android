@@ -133,8 +133,8 @@ class ProviderValidatorTest {
         }
 
         @Test
-        @DisplayName("provider with NONE model list format returns Success with no-endpoint message")
-        fun `provider with NONE format returns Success with no endpoint message`() {
+        @DisplayName("xai provider with empty model list returns Success with 0 models")
+        fun `xai provider with empty model list returns Success with zero models`() {
             val result =
                 ProviderValidator.classifyProbeResult(
                     providerId = "xai",
@@ -142,7 +142,7 @@ class ProviderValidatorTest {
                 )
             assertTrue(result is ValidationResult.Success)
             val success = result as ValidationResult.Success
-            assertTrue("no endpoint" in success.details.lowercase())
+            assertTrue("0" in success.details)
         }
     }
 }

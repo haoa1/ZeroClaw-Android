@@ -163,7 +163,7 @@ class OnboardingCoordinatorTest {
             assertEquals("", state.userName)
             assertEquals(TimeZone.getDefault().id, state.timezone)
             assertEquals("", state.communicationStyle)
-            assertEquals("openclaw", state.identityFormat)
+            assertEquals("aieos", state.identityFormat)
         }
 
         @Test
