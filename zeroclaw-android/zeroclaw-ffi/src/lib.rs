@@ -885,21 +885,29 @@ pub fn session_seed(messages: Vec<session::SessionMessage>) -> Result<(), FfiErr
 /// callback in real time. The send can be cancelled by calling
 /// [`session_cancel`].
 ///
+/// Images are optional. When provided, each entry in `image_data` is a
+/// base64-encoded image and `mime_types` holds the corresponding MIME
+/// type (e.g. `image/jpeg`). The images are embedded as `[IMAGE:...]`
+/// markers in the user message so the upstream provider can convert
+/// them to multimodal content parts.
+///
 /// # Errors
 ///
-/// Returns [`FfiError::ConfigError`] for oversized messages,
-/// [`FfiError::StateError`] if no session is active,
-/// [`FfiError::StateCorrupted`] if the session mutex is poisoned,
-/// [`FfiError::SpawnError`] if the agent loop or provider creation fails,
-/// or [`FfiError::InternalPanic`] if native code panics.
+/// Returns [`FfiError::ConfigError`] for oversized messages or
+/// mismatched image arrays, [`FfiError::StateError`] if no session is
+/// active, [`FfiError::StateCorrupted`] if the session mutex is
+/// poisoned, [`FfiError::SpawnError`] if the agent loop or provider
+/// creation fails, or [`FfiError::InternalPanic`] if native code panics.
 #[uniffi::export]
 pub fn session_send(
     message: String,
+    image_data: Vec<String>,
+    mime_types: Vec<String>,
     listener: Box<dyn session::FfiSessionListener>,
 ) -> Result<(), FfiError> {
     let listener: Arc<dyn session::FfiSessionListener> = Arc::from(listener);
     catch_unwind(AssertUnwindSafe(|| {
-        session::session_send_inner(message, listener)
+        session::session_send_inner(message, image_data, mime_types, listener)
     }))
     .unwrap_or_else(|e| {
         Err(FfiError::InternalPanic {
@@ -993,7 +1001,7 @@ mod tests {
     #[test]
     fn test_get_version() {
         let version = get_version().unwrap();
-        assert_eq!(version, "0.0.30");
+        assert_eq!(version, "0.0.31");
     }
 
     #[test]

@@ -137,7 +137,8 @@ class TerminalViewModel(
         super.onCleared()
         try {
             sessionDestroy()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            logRepository.append(LogSeverity.WARN, TAG, "Session destroy failed: ${e.message}")
         }
     }
 
@@ -293,16 +294,17 @@ class TerminalViewModel(
     }
 
     /**
-     * Dispatches a chat message through the agent session or Rhai bridge.
+     * Dispatches a chat message through the live agent session.
      *
-     * Plain text messages are routed through the live agent session via
-     * [executeAgentTurn]. Vision requests (with attached images) are still
-     * evaluated through the Rhai `send_vision()` bridge because
-     * `session_send_vision` is not yet implemented on the FFI side.
+     * Both text-only and vision (image-attached) messages are routed
+     * through [executeAgentTurn]. Images are passed as base64 data and
+     * MIME types to the FFI layer where they are embedded as `[IMAGE:...]`
+     * markers for the upstream provider.
      *
      * @param displayText The original user input shown in the scrollback.
-     * @param escapedText The Rhai-escaped message text.
+     * @param escapedText The Rhai-escaped message text (unused for agent path).
      */
+    @Suppress("UnusedParameter")
     private fun executeChatMessage(
         displayText: String,
         escapedText: String,
@@ -326,13 +328,7 @@ class TerminalViewModel(
                 return@launch
             }
 
-            if (images.isNotEmpty()) {
-                val expression = buildVisionExpression(escapedText, images)
-                loadingState.value = true
-                executeRhaiExpression(expression)
-            } else {
-                executeAgentTurn(displayText)
-            }
+            executeAgentTurn(displayText, images)
         }
     }
 
@@ -344,20 +340,29 @@ class TerminalViewModel(
      * [KotlinSessionListener] callback. On completion, the full response
      * is persisted to the terminal repository.
      *
-     * The caller is responsible for persisting the user input entry and
-     * verifying that a chat provider is configured before calling this
-     * method. See [executeChatMessage] for the call-site contract.
+     * Images are passed as separate lists of base64 data and MIME types.
+     * The Rust layer composes `[IMAGE:...]` markers so the upstream
+     * provider can convert them to multimodal content parts.
      *
      * @param message The message text to send to the agent.
+     * @param images Attached images to include in the request.
      */
     @Suppress("TooGenericExceptionCaught")
-    private fun executeAgentTurn(message: String) {
+    private fun executeAgentTurn(
+        message: String,
+        images: List<ProcessedImage> = emptyList(),
+    ) {
         viewModelScope.launch {
             _streamingState.update { StreamingState(phase = StreamingPhase.THINKING) }
 
             try {
                 withContext(Dispatchers.IO) {
-                    sessionSend(message, KotlinSessionListener())
+                    sessionSend(
+                        message,
+                        images.map { it.base64Data },
+                        images.map { it.mimeType },
+                        KotlinSessionListener(),
+                    )
                 }
             } catch (e: FfiException) {
                 val sanitized = ErrorSanitizer.sanitizeForUi(e)
@@ -388,7 +393,8 @@ class TerminalViewModel(
     fun cancelAgentTurn() {
         try {
             sessionCancel()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            logRepository.append(LogSeverity.WARN, TAG, "Cancel failed: ${e.message}")
         }
     }
 

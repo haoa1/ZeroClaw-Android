@@ -402,7 +402,7 @@ mod tests {
     #[test]
     fn test_version_returns_string() {
         let result = eval_repl_inner("version()".into()).unwrap();
-        assert_eq!(result, "0.0.30");
+        assert_eq!(result, "0.0.31");
     }
 
     #[test]

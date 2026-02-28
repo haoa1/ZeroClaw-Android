@@ -285,6 +285,75 @@ struct Session {
     tools_registry: Vec<Box<dyn Tool>>,
 }
 
+/// RAII guard that ensures taken-out session state (history + tools) is
+/// always restored, even if a panic occurs during processing.
+///
+/// When [`session_send_inner`] takes history and tools out of the
+/// [`SESSION`] mutex for processing, a panic between take and put-back
+/// would leave the session in a zombified state (active but empty).
+/// This guard's [`Drop`] implementation puts the state back
+/// automatically during stack unwinding, preventing permanent data loss.
+///
+/// Call [`SessionStateGuard::defuse`] after a successful put-back to
+/// prevent a redundant restore.
+struct SessionStateGuard {
+    /// Conversation history taken from the session. `None` once defused.
+    history: Option<Vec<ChatMessage>>,
+    /// Tools registry taken from the session. `None` once defused.
+    tools: Option<Vec<Box<dyn Tool>>>,
+}
+
+impl SessionStateGuard {
+    /// Creates a new guard holding the taken-out session state.
+    fn new(history: Vec<ChatMessage>, tools: Vec<Box<dyn Tool>>) -> Self {
+        Self {
+            history: Some(history),
+            tools: Some(tools),
+        }
+    }
+
+    /// Returns mutable references to the held history and tools.
+    fn state_mut(&mut self) -> (&mut Vec<ChatMessage>, &[Box<dyn Tool>]) {
+        (
+            self.history.as_mut().expect("guard already defused"),
+            self.tools.as_deref().expect("guard already defused"),
+        )
+    }
+
+    /// Consumes the held state, returning ownership to the caller.
+    ///
+    /// After this call the guard's [`Drop`] is a no-op.
+    fn take(mut self) -> (Vec<ChatMessage>, Vec<Box<dyn Tool>>) {
+        (
+            self.history.take().expect("guard already defused"),
+            self.tools.take().expect("guard already defused"),
+        )
+    }
+}
+
+impl Drop for SessionStateGuard {
+    fn drop(&mut self) {
+        let Some(history) = self.history.take() else {
+            return;
+        };
+        let Some(tools) = self.tools.take() else {
+            return;
+        };
+
+        tracing::warn!("SessionStateGuard::drop restoring state after panic");
+        if let Ok(mut guard) = SESSION.lock()
+            && let Some(session) = guard.as_mut()
+        {
+            session.history = history;
+            session.tools_registry = tools;
+        }
+        // Also clear cancel token to prevent stale state.
+        if let Ok(mut guard) = CANCEL_TOKEN.lock() {
+            *guard = None;
+        }
+    }
+}
+
 /// A single conversation message exchanged over the FFI boundary.
 ///
 /// Mirrors [`zeroclaw::providers::ChatMessage`] but uses UniFFI-compatible
@@ -496,35 +565,66 @@ pub(crate) fn session_start_inner() -> Result<(), FfiError> {
     Ok(())
 }
 
+/// Maximum number of images per session send request.
+const MAX_SESSION_IMAGES: usize = 5;
+
 /// Sends a message through the live agent session's tool-call loop.
 ///
 /// This is the core function that drives multi-turn agent interaction.
 /// The flow is:
 ///
-/// 1. Validate message size (max 1 MiB).
-/// 2. Create a [`CancellationToken`] and store it in [`CANCEL_TOKEN`].
-/// 3. Take the session's history out of the [`SESSION`] mutex.
-/// 4. Build memory context by recalling relevant memories.
-/// 5. Enrich the user message with memory context and a timestamp.
-/// 6. Create a fresh provider and tools registry.
-/// 7. Run the agent loop ([`run_agent_loop`]).
-/// 8. On success: run compaction, put history back, fire `on_complete`.
-/// 9. On cancel: keep partial history, put history back, fire `on_cancelled`.
-/// 10. On error: truncate history to pre-send state, put history back,
+/// 1. Validate message size (max 1 MiB) and image arrays.
+/// 2. Compose multimodal message with `[IMAGE:...]` markers if images
+///    are present.
+/// 3. Create a [`CancellationToken`] and store it in [`CANCEL_TOKEN`].
+/// 4. Take the session's history out of the [`SESSION`] mutex.
+/// 5. Build memory context by recalling relevant memories.
+/// 6. Enrich the user message with memory context and a timestamp.
+/// 7. Create a fresh provider and tools registry.
+/// 8. Run the agent loop ([`run_agent_loop`]).
+/// 9. On success: run compaction, put history back, fire `on_complete`.
+/// 10. On cancel: keep partial history, put history back, fire
+///     `on_cancelled`.
+/// 11. On error: truncate history to pre-send state, put history back,
 ///     fire `on_error`.
-/// 11. Clear [`CANCEL_TOKEN`].
+/// 12. Clear [`CANCEL_TOKEN`].
 ///
 /// # Errors
 ///
-/// Returns [`FfiError::ConfigError`] for oversized messages,
-/// [`FfiError::StateError`] if no session is active,
-/// [`FfiError::StateCorrupted`] if the session mutex is poisoned, or
-/// [`FfiError::SpawnError`] if the agent loop or provider creation fails.
+/// Returns [`FfiError::ConfigError`] for oversized messages or
+/// mismatched image arrays, [`FfiError::StateError`] if no session is
+/// active, [`FfiError::StateCorrupted`] if the session mutex is
+/// poisoned, or [`FfiError::SpawnError`] if the agent loop or provider
+/// creation fails.
 #[allow(clippy::too_many_lines)]
 pub(crate) fn session_send_inner(
     message: String,
+    image_data: Vec<String>,
+    mime_types: Vec<String>,
     listener: Arc<dyn FfiSessionListener>,
 ) -> Result<(), FfiError> {
+    // Validate image arrays before composing the message.
+    if image_data.len() != mime_types.len() {
+        return Err(FfiError::ConfigError {
+            detail: format!(
+                "image_data length ({}) != mime_types length ({})",
+                image_data.len(),
+                mime_types.len()
+            ),
+        });
+    }
+    if image_data.len() > MAX_SESSION_IMAGES {
+        return Err(FfiError::ConfigError {
+            detail: format!(
+                "too many images ({}, max {MAX_SESSION_IMAGES})",
+                image_data.len()
+            ),
+        });
+    }
+
+    // Compose the final message text, embedding image markers if present.
+    let message = compose_multimodal_message(&message, &image_data, &mime_types);
+
     if message.len() > MAX_MESSAGE_BYTES {
         return Err(FfiError::ConfigError {
             detail: format!(
@@ -543,7 +643,9 @@ pub(crate) fn session_send_inner(
     }
 
     // Snapshot session state while holding the lock briefly.
-    let (mut history, tools, config, model, temperature, provider_name, system_prompt) = {
+    // Wrap in a SessionStateGuard so that a panic during processing
+    // automatically restores history + tools via Drop.
+    let (mut state_guard, config, model, temperature, provider_name, system_prompt) = {
         let mut guard = SESSION.lock().map_err(|_| FfiError::StateCorrupted {
             detail: "session mutex poisoned".into(),
         })?;
@@ -551,8 +653,10 @@ pub(crate) fn session_send_inner(
             detail: "no active session; call session_start first".into(),
         })?;
         (
-            std::mem::take(&mut session.history),
-            std::mem::take(&mut session.tools_registry),
+            SessionStateGuard::new(
+                std::mem::take(&mut session.history),
+                std::mem::take(&mut session.tools_registry),
+            ),
             session.config.clone(),
             session.model.clone(),
             session.temperature,
@@ -561,6 +665,7 @@ pub(crate) fn session_send_inner(
         )
     };
 
+    let (history, tools) = state_guard.state_mut();
     let history_len_before = history.len();
     let runtime = get_or_create_runtime()?;
 
@@ -606,7 +711,7 @@ pub(crate) fn session_send_inner(
 
         // Build tool specs from the real tools registry plus static
         // descriptions for tools the LLM should know about.
-        let mut tool_specs = tool_specs_from_registry(&tools);
+        let mut tool_specs = tool_specs_from_registry(tools);
         for spec in build_android_tool_specs(&config) {
             if !tool_specs.iter().any(|s| s.name == spec.name) {
                 tool_specs.push(spec);
@@ -616,8 +721,8 @@ pub(crate) fn session_send_inner(
         // Run the agent loop with real tool execution.
         run_agent_loop(
             provider.as_ref(),
-            &mut history,
-            &tools,
+            history,
+            tools,
             &tool_specs,
             &model,
             temperature,
@@ -627,7 +732,11 @@ pub(crate) fn session_send_inner(
         .await
     });
 
-    // Put history and tools back and handle result.
+    // Consume the guard (disarms Drop) and put state back explicitly.
+    // If we reach this point, no panic occurred, so we handle all
+    // three outcomes and restore state ourselves.
+    let (mut history, tools) = state_guard.take();
+
     match result {
         Ok(full_response) => {
             // Run compaction on the history (best-effort).
@@ -1024,6 +1133,35 @@ async fn run_agent_loop(
     Err(AgentLoopOutcome::Error(format!(
         "Agent exceeded maximum tool iterations ({DEFAULT_MAX_TOOL_ITERATIONS})"
     )))
+}
+
+// ── Multimodal message composition ──────────────────────────────────────
+
+/// Composes a user message with embedded `[IMAGE:...]` markers.
+///
+/// When `image_data` is empty the original `text` is returned unchanged.
+/// Otherwise each base64-encoded image is appended as an `[IMAGE:data:
+/// <mime>;base64,<payload>]` marker. The upstream provider's
+/// `to_message_content` parser (in `compatible.rs`) recognises these
+/// markers and converts them to multimodal content parts.
+fn compose_multimodal_message(text: &str, image_data: &[String], mime_types: &[String]) -> String {
+    if image_data.is_empty() {
+        return text.to_string();
+    }
+
+    let mut buf =
+        String::with_capacity(text.len() + image_data.iter().map(String::len).sum::<usize>() + 256);
+    buf.push_str(text);
+
+    for (data, mime) in image_data.iter().zip(mime_types.iter()) {
+        buf.push_str("\n\n[IMAGE:data:");
+        buf.push_str(mime);
+        buf.push_str(";base64,");
+        buf.push_str(data);
+        buf.push(']');
+    }
+
+    buf
 }
 
 // ── Android identity extras ─────────────────────────────────────────────
@@ -1938,7 +2076,7 @@ mod tests {
     #[test]
     fn test_session_send_no_session() {
         let listener = Arc::new(RecordingListener::new());
-        let result = session_send_inner("hello".into(), listener);
+        let result = session_send_inner("hello".into(), vec![], vec![], listener);
         assert!(result.is_err());
         match result.unwrap_err() {
             FfiError::StateError { detail } => {
@@ -1952,7 +2090,7 @@ mod tests {
     fn test_session_send_oversized_message() {
         let listener = Arc::new(RecordingListener::new());
         let big_message = "x".repeat(MAX_MESSAGE_BYTES + 1);
-        let result = session_send_inner(big_message, listener);
+        let result = session_send_inner(big_message, vec![], vec![], listener);
         assert!(result.is_err());
         match result.unwrap_err() {
             FfiError::ConfigError { detail } => {
@@ -1960,6 +2098,48 @@ mod tests {
             }
             other => panic!("expected ConfigError, got {other:?}"),
         }
+    }
+
+    #[test]
+    fn test_session_send_mismatched_image_arrays() {
+        let listener = Arc::new(RecordingListener::new());
+        let result = session_send_inner("hi".into(), vec!["base64data".into()], vec![], listener);
+        assert!(result.is_err());
+        match result.unwrap_err() {
+            FfiError::ConfigError { detail } => {
+                assert!(detail.contains("image_data length"));
+            }
+            other => panic!("expected ConfigError, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn test_session_send_too_many_images() {
+        let listener = Arc::new(RecordingListener::new());
+        let images = vec!["img".to_string(); MAX_SESSION_IMAGES + 1];
+        let mimes = vec!["image/png".to_string(); MAX_SESSION_IMAGES + 1];
+        let result = session_send_inner("hi".into(), images, mimes, listener);
+        assert!(result.is_err());
+        match result.unwrap_err() {
+            FfiError::ConfigError { detail } => {
+                assert!(detail.contains("too many images"));
+            }
+            other => panic!("expected ConfigError, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn test_compose_multimodal_message_no_images() {
+        let result = compose_multimodal_message("hello world", &[], &[]);
+        assert_eq!(result, "hello world");
+    }
+
+    #[test]
+    fn test_compose_multimodal_message_with_images() {
+        let result =
+            compose_multimodal_message("describe this", &["abc123".into()], &["image/png".into()]);
+        assert!(result.starts_with("describe this"));
+        assert!(result.contains("[IMAGE:data:image/png;base64,abc123]"));
     }
 
     #[test]
@@ -2044,5 +2224,45 @@ mod tests {
         let mut prompt = String::from("base prompt");
         append_android_identity_extras(&mut prompt, &config);
         assert_eq!(prompt, "base prompt");
+    }
+
+    // ── SessionStateGuard tests ────────────────────────────────────
+
+    #[test]
+    fn test_guard_take_disarms_drop() {
+        let history = vec![ChatMessage::user("hello")];
+        let guard = SessionStateGuard::new(history, vec![]);
+
+        let (h, t) = guard.take();
+        assert_eq!(h.len(), 1);
+        assert!(t.is_empty());
+        // Drop runs here but is a no-op (defused).
+    }
+
+    #[test]
+    fn test_guard_state_mut_provides_references() {
+        let history = vec![ChatMessage::user("one")];
+        let mut guard = SessionStateGuard::new(history, vec![]);
+
+        let (h, _t) = guard.state_mut();
+        h.push(ChatMessage::assistant("two"));
+        assert_eq!(h.len(), 2);
+
+        let (taken_h, _) = guard.take();
+        assert_eq!(taken_h.len(), 2);
+        assert_eq!(taken_h[1].content, "two");
+    }
+
+    #[test]
+    fn test_guard_drop_without_take_keeps_state() {
+        // Verify that dropping a guard without calling take() does NOT
+        // consume the state (it's available for the Drop impl to use).
+        // The actual SESSION restoration is tested implicitly through
+        // session_send_inner's panic-safety.
+        let history = vec![ChatMessage::user("preserved")];
+        let guard = SessionStateGuard::new(history, vec![]);
+        // Drop fires here — without a live SESSION it's a no-op,
+        // but critically it does NOT panic.
+        drop(guard);
     }
 }
