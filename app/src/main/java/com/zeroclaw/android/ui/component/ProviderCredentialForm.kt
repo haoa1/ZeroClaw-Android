@@ -119,7 +119,8 @@ fun ProviderCredentialForm(
     val needsKey = authType == ProviderAuthType.API_KEY_ONLY
     val showKeyField =
         !oauthConnected &&
-            authType != ProviderAuthType.URL_ONLY && authType != ProviderAuthType.NONE
+            authType != ProviderAuthType.URL_ONLY &&
+            authType != ProviderAuthType.NONE
 
     var showScanSheet by remember { mutableStateOf(false) }
 
