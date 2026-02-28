@@ -109,13 +109,13 @@ class TerminalViewModelTest {
             val entry =
                 TerminalEntry(
                     id = 6,
-                    content = "ZeroClaw Terminal v0.0.29",
+                    content = "ZeroClaw Terminal v0.0.30",
                     entryType = "system",
                     timestamp = 6000L,
                 )
             val block = TerminalViewModel.toBlock(entry)
             assertTrue(block is TerminalBlock.System)
-            assertEquals("ZeroClaw Terminal v0.0.29", (block as TerminalBlock.System).text)
+            assertEquals("ZeroClaw Terminal v0.0.30", (block as TerminalBlock.System).text)
         }
 
         @Test
