@@ -104,6 +104,10 @@ fn build_engine() -> Engine {
         },
     );
 
+    engine.register_fn("config", || -> Result<String, Box<EvalAltResult>> {
+        runtime::get_running_config_inner().map_err(ffi_err)
+    });
+
     // ── Channel Binding ─────────────────────────────────────────
 
     engine.register_fn(

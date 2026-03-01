@@ -197,6 +197,27 @@ pub fn validate_config(config_toml: String) -> Result<String, FfiError> {
     })
 }
 
+/// Returns the TOML config the running daemon was started with.
+///
+/// Useful for verifying the daemon's active configuration matches
+/// what the Kotlin layer expects. The returned TOML may differ from
+/// the original input because path overrides and default-filling
+/// have been applied during [`start_daemon`].
+///
+/// # Errors
+///
+/// Returns [`FfiError::StateError`] if the daemon is not running,
+/// [`FfiError::SpawnError`] if serialisation fails,
+/// or [`FfiError::InternalPanic`] if native code panics.
+#[uniffi::export]
+pub fn get_running_config() -> Result<String, FfiError> {
+    catch_unwind(runtime::get_running_config_inner).unwrap_or_else(|e| {
+        Err(FfiError::InternalPanic {
+            detail: panic_detail(&e),
+        })
+    })
+}
+
 /// Runs channel health checks without starting the daemon.
 ///
 /// Parses the TOML config, overrides paths with `data_dir`, then

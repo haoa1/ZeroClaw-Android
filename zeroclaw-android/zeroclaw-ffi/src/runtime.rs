@@ -520,6 +520,25 @@ where
     })
 }
 
+/// Returns the TOML representation of the currently running daemon config.
+///
+/// Serialises the in-memory [`Config`] back to TOML using
+/// `toml::to_string_pretty`. This may differ from the original TOML that
+/// was passed to [`start_daemon_inner`] because path overrides and
+/// default-filling have been applied.
+///
+/// # Errors
+///
+/// Returns [`FfiError::StateError`] if the daemon is not running,
+/// or [`FfiError::SpawnError`] if serialisation fails.
+pub(crate) fn get_running_config_inner() -> Result<String, FfiError> {
+    with_daemon_config(|config| {
+        toml::to_string_pretty(config).map_err(|e| FfiError::SpawnError {
+            detail: format!("failed to serialize config: {e}"),
+        })
+    })?
+}
+
 /// Validates a TOML config string without starting the daemon.
 ///
 /// Parses `config_toml` using the same `toml::from_str::<Config>()` call
