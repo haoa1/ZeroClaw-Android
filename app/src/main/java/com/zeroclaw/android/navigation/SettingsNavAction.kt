@@ -88,4 +88,7 @@ sealed interface SettingsNavAction {
 
     /** Navigate to the web access configuration screen. */
     data object WebAccess : SettingsNavAction
+
+    /** Navigate to the auth profiles management screen. */
+    data object AuthProfiles : SettingsNavAction
 }

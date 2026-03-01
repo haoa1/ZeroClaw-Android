@@ -187,6 +187,10 @@ data object WebAccessRoute
 @Serializable
 data object OnboardingRoute
 
+/** Auth profiles management sub-screen. */
+@Serializable
+data object AuthProfilesRoute
+
 /** Post-onboarding daemon setup and channel initialization screen. */
 @Serializable
 data object SetupRoute

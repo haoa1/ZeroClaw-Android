@@ -19,6 +19,7 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Subject
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.BatteryAlert
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Fingerprint
@@ -192,6 +193,12 @@ internal fun SettingsContent(
             title = "API Keys",
             subtitle = "Manage provider credentials",
             onClick = { onNavigate(SettingsNavAction.ApiKeys) },
+        )
+        SettingsListItem(
+            icon = Icons.Outlined.AccountCircle,
+            title = "Auth Profiles",
+            subtitle = "OAuth tokens and stored credentials",
+            onClick = { onNavigate(SettingsNavAction.AuthProfiles) },
         )
         SettingsListItem(
             icon = Icons.Outlined.Security,

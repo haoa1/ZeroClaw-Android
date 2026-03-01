@@ -61,6 +61,7 @@ import com.zeroclaw.android.ui.screen.settings.UpdatesScreen
 import com.zeroclaw.android.ui.screen.settings.apikeys.ApiKeyDetailScreen
 import com.zeroclaw.android.ui.screen.settings.apikeys.ApiKeysScreen
 import com.zeroclaw.android.ui.screen.settings.apikeys.ApiKeysViewModel
+import com.zeroclaw.android.ui.screen.settings.apikeys.AuthProfilesScreen
 import com.zeroclaw.android.ui.screen.settings.channels.ChannelDetailScreen
 import com.zeroclaw.android.ui.screen.settings.channels.ConnectedChannelsScreen
 import com.zeroclaw.android.ui.screen.settings.cron.CronJobsScreen
@@ -250,6 +251,8 @@ fun ZeroClawNavHost(
                             navController.navigate(EmbeddingRoutesRoute)
                         SettingsNavAction.WebAccess ->
                             navController.navigate(WebAccessRoute)
+                        SettingsNavAction.AuthProfiles ->
+                            navController.navigate(AuthProfilesRoute)
                     }
                 },
                 onRerunWizard = {
@@ -555,6 +558,10 @@ fun ZeroClawNavHost(
 
         composable<CronJobsRoute> {
             CronJobsScreen(edgeMargin = edgeMargin)
+        }
+
+        composable<AuthProfilesRoute> {
+            AuthProfilesScreen(edgeMargin = edgeMargin)
         }
     }
 }
