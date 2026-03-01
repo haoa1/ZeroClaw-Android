@@ -255,11 +255,34 @@ class DaemonServiceBridge(
             _restartRequired.value = false
             eventBridge?.register()
         } catch (e: FfiException) {
+            if (isDaemonAlreadyRunning(e)) {
+                Log.i(TAG, "Daemon already running, syncing state to RUNNING")
+                _lastError.value = null
+                _serviceState.value = ServiceState.RUNNING
+                _restartRequired.value = false
+                eventBridge?.register()
+                return
+            }
             _lastError.value = e.errorDetail()
             _serviceState.value = ServiceState.ERROR
             throw e
         }
     }
+
+    /**
+     * Checks whether an [FfiException] indicates the daemon is already running.
+     *
+     * This happens when the Kotlin-side state is desynchronised from the Rust
+     * runtime (e.g. after process death where the foreground service kept the
+     * daemon alive). Rather than treating this as an error, callers should
+     * sync the bridge state to [ServiceState.RUNNING].
+     *
+     * @param e The FFI exception to inspect.
+     * @return `true` if the error is specifically "daemon already running".
+     */
+    private fun isDaemonAlreadyRunning(e: FfiException): Boolean =
+        e is FfiException.StateException &&
+            e.errorDetail().contains("already running", ignoreCase = true)
 
     /**
      * Stops the running daemon.
