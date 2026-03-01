@@ -10,6 +10,7 @@ import android.util.Log
 import com.zeroclaw.ffi.engageEstop
 import com.zeroclaw.ffi.getEstopStatus
 import com.zeroclaw.ffi.resumeEstop
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +34,8 @@ class EstopRepository(
     private val scope: CoroutineScope,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
+    private val polling = AtomicBoolean(false)
+
     private val _engaged = MutableStateFlow(false)
 
     /** Whether the emergency stop is currently engaged. */
@@ -47,9 +50,11 @@ class EstopRepository(
      * Starts polling estop status from the FFI layer.
      *
      * Safe to call multiple times; only one polling loop runs.
+     * Uses an [AtomicBoolean] guard to prevent duplicate loops.
      */
     @Suppress("TooGenericExceptionCaught")
     fun startPolling() {
+        if (!polling.compareAndSet(false, true)) return
         scope.launch(ioDispatcher) {
             while (true) {
                 try {

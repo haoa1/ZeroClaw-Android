@@ -231,6 +231,7 @@ class ZeroClawApplication :
         terminalEntryRepository =
             RoomTerminalEntryRepository(database.terminalEntryDao(), ioScope)
         estopRepository = EstopRepository(scope = ioScope)
+        estopRepository.startPolling()
         healthBridge = HealthBridge()
         costBridge = CostBridge()
         cronBridge = CronBridge()
