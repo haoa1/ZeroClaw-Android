@@ -416,6 +416,31 @@ class SettingsViewModel(
         updateDaemonSetting { setWebSearchTimeoutSecs(secs) }
     }
 
+    /** @see com.zeroclaw.android.data.repository.SettingsRepository.setTranscriptionEnabled */
+    fun updateTranscriptionEnabled(enabled: Boolean) {
+        updateDaemonSetting { setTranscriptionEnabled(enabled) }
+    }
+
+    /** @see com.zeroclaw.android.data.repository.SettingsRepository.setTranscriptionApiUrl */
+    fun updateTranscriptionApiUrl(url: String) {
+        updateDaemonSetting { setTranscriptionApiUrl(url) }
+    }
+
+    /** @see com.zeroclaw.android.data.repository.SettingsRepository.setTranscriptionModel */
+    fun updateTranscriptionModel(model: String) {
+        updateDaemonSetting { setTranscriptionModel(model) }
+    }
+
+    /** @see com.zeroclaw.android.data.repository.SettingsRepository.setTranscriptionLanguage */
+    fun updateTranscriptionLanguage(language: String) {
+        updateDaemonSetting { setTranscriptionLanguage(language) }
+    }
+
+    /** @see com.zeroclaw.android.data.repository.SettingsRepository.setTranscriptionMaxDurationSecs */
+    fun updateTranscriptionMaxDurationSecs(secs: Int) {
+        updateDaemonSetting { setTranscriptionMaxDurationSecs(secs) }
+    }
+
     /** @see com.zeroclaw.android.data.repository.SettingsRepository.setMultimodalMaxImages */
     fun updateMultimodalMaxImages(max: Int) {
         updateDaemonSetting { setMultimodalMaxImages(max) }

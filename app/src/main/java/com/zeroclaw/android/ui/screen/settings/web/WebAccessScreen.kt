@@ -44,10 +44,11 @@ import com.zeroclaw.android.ui.screen.settings.SettingsViewModel
 private val WEB_SEARCH_ENGINES = listOf("duckduckgo", "brave")
 
 /**
- * Web access configuration screen for web fetch, web search, HTTP request, and vision tools.
+ * Web access configuration screen for web fetch, web search, HTTP request,
+ * vision, and transcription tools.
  *
  * Maps to upstream `[tools.web_fetch]`, `[tools.web_search]`, `[tools.http_request]`,
- * and `[multimodal]` TOML sections.
+ * `[multimodal]`, and `[transcription]` TOML sections.
  *
  * @param edgeMargin Horizontal padding based on window width size class.
  * @param settingsViewModel The shared [SettingsViewModel].
@@ -75,6 +76,7 @@ fun WebAccessScreen(
         WebSearchSection(settings = settings, viewModel = settingsViewModel)
         HttpRequestSection(settings = settings, viewModel = settingsViewModel)
         VisionSection(settings = settings, viewModel = settingsViewModel)
+        TranscriptionSection(settings = settings, viewModel = settingsViewModel)
 
         Spacer(modifier = Modifier.height(16.dp))
     }
@@ -336,5 +338,73 @@ private fun VisionSection(
         checked = settings.multimodalAllowRemoteFetch,
         onCheckedChange = { viewModel.updateMultimodalAllowRemoteFetch(it) },
         contentDescription = "Allow remote image fetch for vision",
+    )
+}
+
+/**
+ * Transcription / voice input configuration section.
+ *
+ * Controls audio transcription via an external Whisper-compatible API.
+ * Maps to upstream `[transcription]` TOML section.
+ *
+ * @param settings Current application settings.
+ * @param viewModel The [SettingsViewModel] for persisting changes.
+ */
+@Composable
+private fun TranscriptionSection(
+    settings: AppSettings,
+    viewModel: SettingsViewModel,
+) {
+    SectionHeader(title = "Transcription")
+
+    SettingsToggleRow(
+        title = "Enable transcription",
+        subtitle = "Allow the agent to transcribe audio via a Whisper-compatible API",
+        checked = settings.transcriptionEnabled,
+        onCheckedChange = { viewModel.updateTranscriptionEnabled(it) },
+        contentDescription = "Enable audio transcription",
+    )
+
+    OutlinedTextField(
+        value = settings.transcriptionApiUrl,
+        onValueChange = { viewModel.updateTranscriptionApiUrl(it) },
+        label = { Text("API URL") },
+        supportingText = { Text("Whisper-compatible transcription endpoint") },
+        singleLine = true,
+        enabled = settings.transcriptionEnabled,
+        modifier = Modifier.fillMaxWidth(),
+    )
+
+    OutlinedTextField(
+        value = settings.transcriptionModel,
+        onValueChange = { viewModel.updateTranscriptionModel(it) },
+        label = { Text("Model") },
+        supportingText = { Text("Transcription model name") },
+        singleLine = true,
+        enabled = settings.transcriptionEnabled,
+        modifier = Modifier.fillMaxWidth(),
+    )
+
+    OutlinedTextField(
+        value = settings.transcriptionLanguage,
+        onValueChange = { viewModel.updateTranscriptionLanguage(it) },
+        label = { Text("Language hint") },
+        supportingText = { Text("ISO 639-1 code (e.g. \"en\", \"es\") or blank for auto-detect") },
+        singleLine = true,
+        enabled = settings.transcriptionEnabled,
+        modifier = Modifier.fillMaxWidth(),
+    )
+
+    OutlinedTextField(
+        value = settings.transcriptionMaxDurationSecs.toString(),
+        onValueChange = { v ->
+            v.toIntOrNull()?.let { viewModel.updateTranscriptionMaxDurationSecs(it) }
+        },
+        label = { Text("Max duration (seconds)") },
+        supportingText = { Text("Maximum audio clip length to transcribe") },
+        singleLine = true,
+        enabled = settings.transcriptionEnabled,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        modifier = Modifier.fillMaxWidth(),
     )
 }

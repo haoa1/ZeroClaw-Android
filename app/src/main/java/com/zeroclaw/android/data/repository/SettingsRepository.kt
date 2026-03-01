@@ -526,6 +526,41 @@ interface SettingsRepository {
     suspend fun setWebSearchTimeoutSecs(secs: Int)
 
     /**
+     * Toggles audio transcription.
+     *
+     * @param enabled Whether transcription is active.
+     */
+    suspend fun setTranscriptionEnabled(enabled: Boolean)
+
+    /**
+     * Updates the transcription API endpoint URL.
+     *
+     * @param url API endpoint URL string.
+     */
+    suspend fun setTranscriptionApiUrl(url: String)
+
+    /**
+     * Updates the transcription model name.
+     *
+     * @param model Model identifier (e.g. "whisper-large-v3-turbo").
+     */
+    suspend fun setTranscriptionModel(model: String)
+
+    /**
+     * Updates the ISO language code hint for transcription.
+     *
+     * @param language ISO 639-1 language code (e.g. "en", "es").
+     */
+    suspend fun setTranscriptionLanguage(language: String)
+
+    /**
+     * Updates the maximum audio duration for transcription.
+     *
+     * @param secs Maximum duration in seconds.
+     */
+    suspend fun setTranscriptionMaxDurationSecs(secs: Int)
+
+    /**
      * Updates the maximum number of images per multimodal request.
      *
      * @param max Maximum images (1-16).

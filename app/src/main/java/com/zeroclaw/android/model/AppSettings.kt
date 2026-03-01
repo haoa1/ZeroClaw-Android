@@ -81,6 +81,11 @@ package com.zeroclaw.android.model
  * @property webSearchBraveApiKey Brave Search API key (required when provider is "brave").
  * @property webSearchMaxResults Maximum number of search results (1-10).
  * @property webSearchTimeoutSecs Request timeout in seconds for web search.
+ * @property transcriptionEnabled Whether audio transcription is active.
+ * @property transcriptionApiUrl Transcription API endpoint URL.
+ * @property transcriptionModel Transcription model name.
+ * @property transcriptionLanguage ISO language code hint for transcription.
+ * @property transcriptionMaxDurationSecs Maximum audio duration in seconds.
  * @property multimodalMaxImages Maximum images allowed per multimodal request (1-16).
  * @property multimodalMaxImageSizeMb Maximum image size in MB for multimodal input (1-20).
  * @property multimodalAllowRemoteFetch Whether the agent can fetch remote image URLs for vision.
@@ -199,6 +204,11 @@ data class AppSettings(
     val webSearchBraveApiKey: String = "",
     val webSearchMaxResults: Int = DEFAULT_WEB_SEARCH_MAX_RESULTS,
     val webSearchTimeoutSecs: Int = DEFAULT_WEB_SEARCH_TIMEOUT_SECS,
+    val transcriptionEnabled: Boolean = false,
+    val transcriptionApiUrl: String = DEFAULT_TRANSCRIPTION_API_URL,
+    val transcriptionModel: String = DEFAULT_TRANSCRIPTION_MODEL,
+    val transcriptionLanguage: String = "",
+    val transcriptionMaxDurationSecs: Int = DEFAULT_TRANSCRIPTION_MAX_DURATION_SECS,
     val multimodalMaxImages: Int = DEFAULT_MULTIMODAL_MAX_IMAGES,
     val multimodalMaxImageSizeMb: Int = DEFAULT_MULTIMODAL_MAX_IMAGE_SIZE_MB,
     val multimodalAllowRemoteFetch: Boolean = false,
@@ -348,6 +358,16 @@ data class AppSettings(
 
         /** Default web search timeout in seconds. */
         const val DEFAULT_WEB_SEARCH_TIMEOUT_SECS = 15
+
+        /** Default transcription API URL (Groq Whisper). */
+        const val DEFAULT_TRANSCRIPTION_API_URL =
+            "https://api.groq.com/openai/v1/audio/transcriptions"
+
+        /** Default transcription model. */
+        const val DEFAULT_TRANSCRIPTION_MODEL = "whisper-large-v3-turbo"
+
+        /** Default max transcription duration in seconds. */
+        const val DEFAULT_TRANSCRIPTION_MAX_DURATION_SECS = 120
 
         /** Default max images per multimodal request. */
         const val DEFAULT_MULTIMODAL_MAX_IMAGES = 4

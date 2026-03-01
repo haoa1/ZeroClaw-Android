@@ -211,6 +211,17 @@ class DataStoreSettingsRepository(
             webSearchTimeoutSecs =
                 prefs[KEY_WEB_SEARCH_TIMEOUT_SECS]
                     ?: AppSettings.DEFAULT_WEB_SEARCH_TIMEOUT_SECS,
+            transcriptionEnabled = prefs[KEY_TRANSCRIPTION_ENABLED] ?: false,
+            transcriptionApiUrl =
+                prefs[KEY_TRANSCRIPTION_API_URL]
+                    ?: AppSettings.DEFAULT_TRANSCRIPTION_API_URL,
+            transcriptionModel =
+                prefs[KEY_TRANSCRIPTION_MODEL]
+                    ?: AppSettings.DEFAULT_TRANSCRIPTION_MODEL,
+            transcriptionLanguage = prefs[KEY_TRANSCRIPTION_LANGUAGE] ?: "",
+            transcriptionMaxDurationSecs =
+                prefs[KEY_TRANSCRIPTION_MAX_DURATION_SECS]
+                    ?: AppSettings.DEFAULT_TRANSCRIPTION_MAX_DURATION_SECS,
             multimodalMaxImages =
                 prefs[KEY_MULTIMODAL_MAX_IMAGES]
                     ?: AppSettings.DEFAULT_MULTIMODAL_MAX_IMAGES,
@@ -418,6 +429,16 @@ class DataStoreSettingsRepository(
 
     override suspend fun setWebSearchTimeoutSecs(secs: Int) = edit { it[KEY_WEB_SEARCH_TIMEOUT_SECS] = secs }
 
+    override suspend fun setTranscriptionEnabled(enabled: Boolean) = edit { it[KEY_TRANSCRIPTION_ENABLED] = enabled }
+
+    override suspend fun setTranscriptionApiUrl(url: String) = edit { it[KEY_TRANSCRIPTION_API_URL] = url }
+
+    override suspend fun setTranscriptionModel(model: String) = edit { it[KEY_TRANSCRIPTION_MODEL] = model }
+
+    override suspend fun setTranscriptionLanguage(language: String) = edit { it[KEY_TRANSCRIPTION_LANGUAGE] = language }
+
+    override suspend fun setTranscriptionMaxDurationSecs(secs: Int) = edit { it[KEY_TRANSCRIPTION_MAX_DURATION_SECS] = secs }
+
     override suspend fun setMultimodalMaxImages(max: Int) = edit { it[KEY_MULTIMODAL_MAX_IMAGES] = max }
 
     override suspend fun setMultimodalMaxImageSizeMb(mb: Int) = edit { it[KEY_MULTIMODAL_MAX_IMAGE_SIZE_MB] = mb }
@@ -616,6 +637,11 @@ class DataStoreSettingsRepository(
         val KEY_WEB_SEARCH_BRAVE_API_KEY = stringPreferencesKey("web_search_brave_api_key")
         val KEY_WEB_SEARCH_MAX_RESULTS = intPreferencesKey("web_search_max_results")
         val KEY_WEB_SEARCH_TIMEOUT_SECS = intPreferencesKey("web_search_timeout_secs")
+        val KEY_TRANSCRIPTION_ENABLED = booleanPreferencesKey("transcription_enabled")
+        val KEY_TRANSCRIPTION_API_URL = stringPreferencesKey("transcription_api_url")
+        val KEY_TRANSCRIPTION_MODEL = stringPreferencesKey("transcription_model")
+        val KEY_TRANSCRIPTION_LANGUAGE = stringPreferencesKey("transcription_language")
+        val KEY_TRANSCRIPTION_MAX_DURATION_SECS = intPreferencesKey("transcription_max_duration_secs")
         val KEY_MULTIMODAL_MAX_IMAGES = intPreferencesKey("multimodal_max_images")
         val KEY_MULTIMODAL_MAX_IMAGE_SIZE_MB = intPreferencesKey("multimodal_max_image_size_mb")
         val KEY_MULTIMODAL_ALLOW_REMOTE_FETCH = booleanPreferencesKey("multimodal_allow_remote_fetch")
