@@ -10,6 +10,7 @@ import android.util.Log
 import com.zeroclaw.android.data.local.dao.PluginDao
 import com.zeroclaw.android.data.local.entity.PluginEntity
 import com.zeroclaw.android.data.local.entity.toModel
+import com.zeroclaw.android.model.OfficialPlugins
 import com.zeroclaw.android.model.Plugin
 import com.zeroclaw.android.model.RemotePlugin
 import kotlinx.coroutines.flow.Flow
@@ -44,6 +45,9 @@ class RoomPluginRepository(
     }
 
     override suspend fun uninstall(id: String) {
+        require(!OfficialPlugins.isOfficial(id)) {
+            "Official plugins cannot be uninstalled: $id"
+        }
         dao.uninstall(id)
     }
 
