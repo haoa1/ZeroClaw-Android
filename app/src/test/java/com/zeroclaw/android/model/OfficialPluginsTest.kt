@@ -32,4 +32,29 @@ class OfficialPluginsTest {
         assertFalse(OfficialPlugins.isOfficial(""))
         assertFalse(OfficialPlugins.isOfficial("   "))
     }
+
+    @Test
+    fun `each plugin ID constant is present in ALL`() {
+        val expectedIds =
+            listOf(
+                OfficialPlugins.WEB_SEARCH,
+                OfficialPlugins.WEB_FETCH,
+                OfficialPlugins.HTTP_REQUEST,
+                OfficialPlugins.BROWSER,
+                OfficialPlugins.COMPOSIO,
+                OfficialPlugins.VISION,
+                OfficialPlugins.TRANSCRIPTION,
+                OfficialPlugins.QUERY_CLASSIFICATION,
+            )
+        for (id in expectedIds) {
+            assertTrue(id in OfficialPlugins.ALL, "Expected $id in ALL set")
+        }
+        assertEquals(expectedIds.size, OfficialPlugins.ALL.size)
+    }
+
+    @Test
+    fun `ALL set size matches sync mapping count`() {
+        val syncMappingCount = 8
+        assertEquals(syncMappingCount, OfficialPlugins.ALL.size)
+    }
 }

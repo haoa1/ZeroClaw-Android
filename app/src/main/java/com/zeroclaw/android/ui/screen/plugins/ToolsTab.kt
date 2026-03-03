@@ -32,7 +32,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -105,6 +107,10 @@ fun ToolsTab(
                             } else {
                                 "No tools match your filters"
                             },
+                        modifier =
+                            Modifier.semantics {
+                                liveRegion = LiveRegionMode.Polite
+                            },
                     )
                 } else {
                     ToolsList(tools = state.data)
@@ -168,6 +174,9 @@ private fun ToolsList(tools: List<ToolSpec>) {
 /**
  * Card displaying a single tool with its name, description, and source.
  *
+ * The card merges its descendants for accessibility and builds a content
+ * description that gracefully omits the description when it is blank.
+ *
  * @param tool The tool specification to display.
  * @param modifier Modifier applied to the card.
  */
@@ -176,6 +185,10 @@ private fun ToolCard(
     tool: ToolSpec,
     modifier: Modifier = Modifier,
 ) {
+    val descriptionPart =
+        if (tool.description.isNotBlank()) ": ${tool.description}" else ""
+    val statusLabel =
+        if (tool.isActive) "active" else "inactive, ${tool.inactiveReason}"
     Card(
         modifier =
             modifier
@@ -183,11 +196,16 @@ private fun ToolCard(
                 .defaultMinSize(minHeight = 48.dp)
                 .semantics(mergeDescendants = true) {
                     contentDescription =
-                        "${tool.name}: ${tool.description}, source: ${tool.source}"
+                        "${tool.name}$descriptionPart, source: ${tool.source}, $statusLabel"
                 },
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                containerColor =
+                    if (tool.isActive) {
+                        MaterialTheme.colorScheme.surfaceContainerLow
+                    } else {
+                        MaterialTheme.colorScheme.surfaceContainerLowest
+                    },
             ),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -199,6 +217,12 @@ private fun ToolCard(
                 Text(
                     text = tool.name,
                     style = MaterialTheme.typography.titleSmall,
+                    color =
+                        if (tool.isActive) {
+                            MaterialTheme.colorScheme.onSurface
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
                     modifier = Modifier.weight(1f),
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -214,6 +238,17 @@ private fun ToolCard(
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
             )
+
+            if (!tool.isActive && tool.inactiveReason.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = tool.inactiveReason,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.outline,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
     }
 }

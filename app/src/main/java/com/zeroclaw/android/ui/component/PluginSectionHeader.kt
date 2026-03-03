@@ -15,11 +15,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 
 /**
  * Section header within the Installed tab separating official from
  * community plugins.
+ *
+ * The row merges its descendants for accessibility so TalkBack
+ * announces the title and count as a single node (e.g. "Official, 3").
  *
  * @param title Section title text.
  * @param count Number of plugins in this section.
@@ -35,7 +40,10 @@ fun PluginSectionHeader(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .semantics(mergeDescendants = true) {
+                    contentDescription = "$title, $count"
+                },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {

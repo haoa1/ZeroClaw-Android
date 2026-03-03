@@ -10,6 +10,8 @@ import app.cash.turbine.test
 import com.zeroclaw.android.data.local.dao.PluginDao
 import com.zeroclaw.android.data.local.entity.PluginEntity
 import com.zeroclaw.android.data.repository.RoomPluginRepository
+import com.zeroclaw.android.model.AppSettings
+import com.zeroclaw.android.model.OfficialPlugins
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -120,6 +122,62 @@ class RoomPluginRepositoryTest {
             repo.updateConfig("missing", "key", "value")
 
             coVerify(exactly = 0) { dao.updateConfigJson(any(), any()) }
+        }
+
+    @Test
+    fun `syncOfficialPluginStates enables plugins matching AppSettings`() =
+        runTest {
+            val settings = AppSettings(
+                webSearchEnabled = true,
+                webFetchEnabled = true,
+            )
+
+            repo.syncOfficialPluginStates(settings)
+
+            coVerify { dao.setEnabled(OfficialPlugins.WEB_SEARCH, true) }
+            coVerify { dao.setEnabled(OfficialPlugins.WEB_FETCH, true) }
+        }
+
+    @Test
+    fun `syncOfficialPluginStates disables plugins not matching AppSettings`() =
+        runTest {
+            val settings = AppSettings(
+                webSearchEnabled = false,
+                webFetchEnabled = false,
+                httpRequestEnabled = false,
+                browserEnabled = false,
+                composioEnabled = false,
+                transcriptionEnabled = false,
+                queryClassificationEnabled = false,
+            )
+
+            repo.syncOfficialPluginStates(settings)
+
+            coVerify { dao.setEnabled(OfficialPlugins.WEB_SEARCH, false) }
+            coVerify { dao.setEnabled(OfficialPlugins.WEB_FETCH, false) }
+            coVerify { dao.setEnabled(OfficialPlugins.HTTP_REQUEST, false) }
+            coVerify { dao.setEnabled(OfficialPlugins.BROWSER, false) }
+            coVerify { dao.setEnabled(OfficialPlugins.COMPOSIO, false) }
+            coVerify { dao.setEnabled(OfficialPlugins.TRANSCRIPTION, false) }
+            coVerify { dao.setEnabled(OfficialPlugins.QUERY_CLASSIFICATION, false) }
+        }
+
+    @Test
+    fun `Vision plugin is always enabled in sync mapping`() =
+        runTest {
+            val settings = AppSettings(
+                webSearchEnabled = false,
+                webFetchEnabled = false,
+                httpRequestEnabled = false,
+                browserEnabled = false,
+                composioEnabled = false,
+                transcriptionEnabled = false,
+                queryClassificationEnabled = false,
+            )
+
+            repo.syncOfficialPluginStates(settings)
+
+            coVerify { dao.setEnabled(OfficialPlugins.VISION, true) }
         }
 
     private fun makeEntity(

@@ -19,7 +19,8 @@ import androidx.compose.ui.semantics.semantics
  * Badge indicating a plugin is an official ZeroClaw built-in.
  *
  * Uses [MaterialTheme.colorScheme.tertiaryContainer] to distinguish from
- * the category badge.
+ * the category badge. The chip is non-interactive (disabled with custom
+ * colours) so TalkBack does not announce it as a button.
  *
  * @param modifier Modifier applied to the chip.
  */
@@ -27,6 +28,7 @@ import androidx.compose.ui.semantics.semantics
 fun OfficialPluginBadge(modifier: Modifier = Modifier) {
     SuggestionChip(
         onClick = {},
+        enabled = false,
         label = {
             Text(
                 text = "Official",
@@ -40,6 +42,8 @@ fun OfficialPluginBadge(modifier: Modifier = Modifier) {
             SuggestionChipDefaults.suggestionChipColors(
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                 labelColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                disabledLabelColor = MaterialTheme.colorScheme.onTertiaryContainer,
             ),
         border = null,
     )

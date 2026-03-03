@@ -519,6 +519,124 @@ class ConfigTomlBuilderTest {
                 )
             assertFalse(toml.contains("[proxy]"))
         }
+
+        @Test
+        @DisplayName("web fetch section emits enabled, domains, max size, and timeout")
+        fun `web fetch section emits enabled, domains, max size, and timeout`() {
+            val toml =
+                ConfigTomlBuilder.build(
+                    GlobalTomlConfig(
+                        provider = "",
+                        model = "",
+                        apiKey = "",
+                        baseUrl = "",
+                        webFetchEnabled = true,
+                        webFetchAllowedDomains = listOf("example.com", "api.test.io"),
+                        webFetchMaxResponseSize = 250_000,
+                        webFetchTimeoutSecs = 15,
+                    ),
+                )
+            assertTrue(toml.contains("[web_fetch]"))
+            assertTrue(toml.contains("enabled = true"))
+            assertTrue(toml.contains("allowed_domains"))
+            assertTrue(toml.contains(""""example.com""""))
+            assertTrue(toml.contains(""""api.test.io""""))
+            assertTrue(toml.contains("max_response_size = 250000"))
+            assertTrue(toml.contains("timeout_secs = 15"))
+        }
+
+        @Test
+        @DisplayName("web fetch disabled omits web_fetch section")
+        fun `web fetch disabled omits web_fetch section`() {
+            val toml =
+                ConfigTomlBuilder.build(
+                    GlobalTomlConfig(
+                        provider = "",
+                        model = "",
+                        apiKey = "",
+                        baseUrl = "",
+                        webFetchEnabled = false,
+                    ),
+                )
+            assertFalse(toml.contains("[web_fetch]"))
+        }
+
+        @Test
+        @DisplayName("http request section emits enabled, domains, max size, and timeout")
+        fun `http request section emits enabled, domains, max size, and timeout`() {
+            val toml =
+                ConfigTomlBuilder.build(
+                    GlobalTomlConfig(
+                        provider = "",
+                        model = "",
+                        apiKey = "",
+                        baseUrl = "",
+                        httpRequestEnabled = true,
+                        httpRequestAllowedDomains = listOf("api.example.com"),
+                        httpRequestMaxResponseSize = 2_000_000,
+                        httpRequestTimeoutSecs = 60,
+                    ),
+                )
+            assertTrue(toml.contains("[http_request]"))
+            assertTrue(toml.contains("enabled = true"))
+            assertTrue(toml.contains("allowed_domains"))
+            assertTrue(toml.contains(""""api.example.com""""))
+            assertTrue(toml.contains("max_response_size = 2000000"))
+            assertTrue(toml.contains("timeout_secs = 60"))
+        }
+
+        @Test
+        @DisplayName("http request disabled omits http_request section")
+        fun `http request disabled omits http_request section`() {
+            val toml =
+                ConfigTomlBuilder.build(
+                    GlobalTomlConfig(
+                        provider = "",
+                        model = "",
+                        apiKey = "",
+                        baseUrl = "",
+                        httpRequestEnabled = false,
+                    ),
+                )
+            assertFalse(toml.contains("[http_request]"))
+        }
+
+        @Test
+        @DisplayName("skills section emits open_skills_enabled and prompt_injection_mode")
+        fun `skills section emits open_skills_enabled and prompt_injection_mode`() {
+            val toml =
+                ConfigTomlBuilder.build(
+                    GlobalTomlConfig(
+                        provider = "",
+                        model = "",
+                        apiKey = "",
+                        baseUrl = "",
+                        skillsOpenSkillsEnabled = true,
+                        skillsPromptInjectionMode = "compact",
+                    ),
+                )
+            assertTrue(toml.contains("[skills]"))
+            assertTrue(toml.contains("open_skills_enabled = true"))
+            assertTrue(toml.contains("""prompt_injection_mode = "compact""""))
+        }
+
+        @Test
+        @DisplayName("skills section omitted when all defaults")
+        fun `skills section omitted when all defaults`() {
+            val toml =
+                ConfigTomlBuilder.build(
+                    GlobalTomlConfig(
+                        provider = "",
+                        model = "",
+                        apiKey = "",
+                        baseUrl = "",
+                        skillsOpenSkillsEnabled = false,
+                        skillsOpenSkillsDir = "",
+                        skillsPromptInjectionMode = "full",
+                    ),
+                )
+            assertFalse(toml.contains("[skills]"))
+        }
     }
 
     @Nested
