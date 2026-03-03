@@ -125,6 +125,14 @@ private fun WebSearchConfig(
             enabled = settings.webSearchEnabled,
             modifier = Modifier.fillMaxWidth(),
         )
+        if (settings.webSearchEnabled && settings.webSearchBraveApiKey.isBlank()) {
+            Text(
+                text = "Brave Search requires an API key",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(top = 4.dp),
+            )
+        }
     }
 
     OutlinedTextField(
@@ -263,6 +271,15 @@ private fun HttpRequestConfig(
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = Modifier.padding(top = 4.dp),
     )
+
+    if (settings.httpRequestEnabled && settings.httpRequestAllowedDomains.isBlank()) {
+        Text(
+            text = "No allowed domains configured \u2014 HTTP requests will be rejected",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier.padding(top = 4.dp),
+        )
+    }
 }
 
 /**
@@ -316,6 +333,15 @@ private fun ComposioConfig(
         enabled = settings.composioEnabled,
         modifier = Modifier.fillMaxWidth(),
     )
+
+    if (settings.composioEnabled && settings.composioApiKey.isBlank()) {
+        Text(
+            text = "Composio requires an API key",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier.padding(top = 4.dp),
+        )
+    }
 }
 
 /**

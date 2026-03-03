@@ -33,12 +33,14 @@ fun OfficialPluginBadge(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.labelSmall,
             )
         },
-        modifier = modifier
-            .semantics { contentDescription = "Official ZeroClaw plugin" },
-        colors = SuggestionChipDefaults.suggestionChipColors(
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-            labelColor = MaterialTheme.colorScheme.onTertiaryContainer,
-        ),
+        modifier =
+            modifier
+                .semantics { contentDescription = "Official ZeroClaw plugin" },
+        colors =
+            SuggestionChipDefaults.suggestionChipColors(
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                labelColor = MaterialTheme.colorScheme.onTertiaryContainer,
+            ),
         border = null,
     )
 }
