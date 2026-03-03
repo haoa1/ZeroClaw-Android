@@ -268,6 +268,14 @@ pub(crate) fn start_daemon_inner(
     config.workspace_dir = data_path.join("workspace");
     config.config_path = data_path.join("config.toml");
 
+    // SECURITY: Force-disable open-skills auto-sync. Upstream clones a
+    // third-party GitHub repo (`besoeasy/open-skills`) and injects every
+    // markdown file into the LLM system prompt with no integrity checks.
+    // This is a supply-chain risk — a compromised repo poisons all users.
+    // Android builds must never opt in. See upstream issue for details.
+    config.skills.open_skills_enabled = false;
+    config.skills.open_skills_dir = None;
+
     crate::estop::load_state(&data_path);
 
     std::fs::create_dir_all(&config.workspace_dir).map_err(|e| FfiError::ConfigError {
