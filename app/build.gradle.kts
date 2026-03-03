@@ -40,8 +40,8 @@ android {
         applicationId = "com.zeroclaw.android"
         minSdk = 26
         targetSdk = 35
-        versionCode = 37
-        versionName = "0.0.35"
+        versionCode = 38
+        versionName = "0.0.36"
 
         ndk {
             abiFilters += listOf("arm64-v8a", "x86_64")
