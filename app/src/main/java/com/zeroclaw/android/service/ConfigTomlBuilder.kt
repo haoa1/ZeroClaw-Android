@@ -717,6 +717,9 @@ object ConfigTomlBuilder {
         appendLine("max_cost_per_day_cents = ${config.maxCostPerDayCents.coerceAtLeast(0)}")
         appendLine("require_approval_for_medium_risk = ${config.requireApprovalMediumRisk}")
         appendLine("block_high_risk_commands = ${config.blockHighRiskCommands}")
+        val excludedTools = listOf("browser", "screenshot")
+        val toolsList = excludedTools.joinToString(", ") { tomlString(it) }
+        appendLine("non_cli_excluded_tools = [$toolsList]")
     }
 
     /**

@@ -229,6 +229,64 @@ pub(crate) fn validate_target_url(
     Ok(url.to_string())
 }
 
+/// Validates a URL with async DNS resolution for SSRF rebinding protection.
+///
+/// Calls [`validate_target_url`] for static checks, then performs async
+/// DNS resolution via [`tokio::net::lookup_host`] to verify that the host
+/// resolves only to globally-routable IP addresses. This avoids blocking
+/// the tokio executor, unlike `std::net::ToSocketAddrs`.
+pub(crate) async fn validate_target_url_with_dns(
+    raw_url: &str,
+    allowed_domains: &[String],
+    blocked_domains: &[String],
+    tool_name: &str,
+) -> Result<String, String> {
+    let url = validate_target_url(raw_url, allowed_domains, blocked_domains, tool_name)?;
+    let host = extract_host(&url)?;
+    validate_resolved_host_is_public(&host).await?;
+    Ok(url)
+}
+
+/// Validates that a hostname resolves to only public (globally routable) IPs.
+///
+/// Uses [`tokio::net::lookup_host`] for non-blocking DNS resolution, safe
+/// to call from async worker threads without starving the executor.
+///
+/// In test builds this is a no-op to avoid DNS-dependent test flakiness.
+#[cfg(not(test))]
+async fn validate_resolved_host_is_public(host: &str) -> Result<(), String> {
+    let ips: Vec<IpAddr> = tokio::net::lookup_host((host, 0_u16))
+        .await
+        .map_err(|e| format!("Failed to resolve host '{host}': {e}"))?
+        .map(|addr| addr.ip())
+        .collect();
+
+    if ips.is_empty() {
+        return Err(format!("Failed to resolve host '{host}'"));
+    }
+
+    for ip in &ips {
+        let non_global = match ip {
+            IpAddr::V4(v4) => is_non_global_v4(*v4),
+            IpAddr::V6(v6) => is_non_global_v6(*v6),
+        };
+        if non_global {
+            return Err(format!(
+                "Blocked host '{host}' resolved to non-global address {ip}"
+            ));
+        }
+    }
+
+    Ok(())
+}
+
+/// Test stub: skips DNS resolution to avoid flaky network-dependent tests.
+#[cfg(test)]
+#[allow(clippy::unused_async)]
+async fn validate_resolved_host_is_public(_host: &str) -> Result<(), String> {
+    Ok(())
+}
+
 /// Returns `true` for IPv4 addresses that are not globally routable.
 fn is_non_global_v4(v4: Ipv4Addr) -> bool {
     let [a, b, c, _] = v4.octets();

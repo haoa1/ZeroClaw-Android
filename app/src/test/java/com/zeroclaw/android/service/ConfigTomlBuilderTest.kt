@@ -637,6 +637,21 @@ class ConfigTomlBuilderTest {
                 )
             assertFalse(toml.contains("[skills]"))
         }
+
+        @Test
+        @DisplayName("autonomy section emits non_cli_excluded_tools")
+        fun `autonomy section emits non cli excluded tools`() {
+            val toml =
+                ConfigTomlBuilder.build(
+                    GlobalTomlConfig(
+                        provider = "",
+                        model = "",
+                        apiKey = "",
+                        baseUrl = "",
+                    ),
+                )
+            assertTrue(toml.contains("""non_cli_excluded_tools = ["browser", "screenshot"]"""))
+        }
     }
 
     @Nested

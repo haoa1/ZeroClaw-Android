@@ -149,6 +149,11 @@ const SECURITY_POLICY_TOOLS: &[&str] = &[
     "image_info",
 ];
 
+/// Tool names that are incompatible with Android and should be hidden
+/// from the tools browser UI. These tools require desktop CLI binaries
+/// or capabilities not available on Android.
+const ANDROID_EXCLUDED_TOOLS: &[&str] = &["browser", "screenshot"];
+
 /// Inactive reason for tools that require daemon channel routing.
 const REASON_DAEMON_ONLY: &str = "Available via daemon channels only";
 
@@ -195,15 +200,24 @@ pub(crate) fn list_tools_inner() -> Result<Vec<FfiToolSpec>, FfiError> {
             )
         })?;
 
-    let mut specs: Vec<FfiToolSpec> = CORE_TOOLS.iter().map(builtin_to_spec).collect();
+    let mut specs: Vec<FfiToolSpec> = CORE_TOOLS
+        .iter()
+        .filter(|t| !ANDROID_EXCLUDED_TOOLS.contains(&t.name))
+        .map(builtin_to_spec)
+        .collect();
 
     if browser_enabled {
-        specs.extend(BROWSER_TOOLS.iter().map(|t| {
-            let mut s = builtin_to_spec(t);
-            s.is_active = true;
-            s.inactive_reason = String::new();
-            s
-        }));
+        specs.extend(
+            BROWSER_TOOLS
+                .iter()
+                .filter(|t| !ANDROID_EXCLUDED_TOOLS.contains(&t.name))
+                .map(|t| {
+                    let mut s = builtin_to_spec(t);
+                    s.is_active = true;
+                    s.inactive_reason = String::new();
+                    s
+                }),
+        );
     }
 
     if http_enabled {
@@ -322,6 +336,26 @@ mod tests {
                 tool.name
             );
         }
+    }
+
+    #[test]
+    fn test_excluded_tools_not_in_core_filtered() {
+        let filtered: Vec<&BuiltInTool> = CORE_TOOLS
+            .iter()
+            .filter(|t| !ANDROID_EXCLUDED_TOOLS.contains(&t.name))
+            .collect();
+        assert!(!filtered.iter().any(|t| t.name == "screenshot"));
+        assert!(filtered.iter().any(|t| t.name == "shell"));
+    }
+
+    #[test]
+    fn test_excluded_tools_not_in_browser_filtered() {
+        let filtered: Vec<&BuiltInTool> = BROWSER_TOOLS
+            .iter()
+            .filter(|t| !ANDROID_EXCLUDED_TOOLS.contains(&t.name))
+            .collect();
+        assert!(!filtered.iter().any(|t| t.name == "browser"));
+        assert!(filtered.iter().any(|t| t.name == "browser_open"));
     }
 
     #[test]

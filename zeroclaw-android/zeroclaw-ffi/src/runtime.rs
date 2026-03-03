@@ -276,6 +276,27 @@ pub(crate) fn start_daemon_inner(
     config.skills.open_skills_enabled = false;
     config.skills.open_skills_dir = None;
 
+    // Android does not ship the agent-browser CLI or desktop screenshot
+    // tool. Exclude them from non-CLI channels (Telegram, Discord, etc.)
+    // as a safety net in case ConfigTomlBuilder omits the field.
+    for tool_name in ["browser", "screenshot"] {
+        if !config
+            .autonomy
+            .non_cli_excluded_tools
+            .iter()
+            .any(|t| t == tool_name)
+        {
+            config
+                .autonomy
+                .non_cli_excluded_tools
+                .push(tool_name.to_string());
+        }
+    }
+    tracing::info!(
+        excluded = ?config.autonomy.non_cli_excluded_tools,
+        "Android tool exclusions applied for non-CLI channels"
+    );
+
     crate::estop::load_state(&data_path);
 
     std::fs::create_dir_all(&config.workspace_dir).map_err(|e| FfiError::ConfigError {

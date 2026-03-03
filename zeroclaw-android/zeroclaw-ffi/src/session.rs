@@ -412,12 +412,14 @@ impl Tool for FfiWebFetchTool {
             .and_then(|v| v.as_str())
             .ok_or_else(|| anyhow::anyhow!("Missing 'url' parameter"))?;
 
-        let url = match url_helpers::validate_target_url(
+        let url = match url_helpers::validate_target_url_with_dns(
             raw_url,
             &self.allowed_domains,
             &self.blocked_domains,
             "web_fetch",
-        ) {
+        )
+        .await
+        {
             Ok(v) => v,
             Err(e) => return Ok(fail_result(e)),
         };
@@ -666,12 +668,14 @@ impl Tool for FfiHttpRequestTool {
             .unwrap_or_else(|| serde_json::json!({}));
         let body = args.get("body").and_then(|v| v.as_str());
 
-        let url = match url_helpers::validate_target_url(
+        let url = match url_helpers::validate_target_url_with_dns(
             raw_url,
             &self.allowed_domains,
             &[],
             "http_request",
-        ) {
+        )
+        .await
+        {
             Ok(v) => v,
             Err(e) => return Ok(fail_result(e)),
         };
@@ -1186,14 +1190,19 @@ pub(crate) fn session_send_inner(
     let history_len_before = history.len();
     let handle = crate::runtime::get_or_create_runtime()?;
 
+    // Clone the memory backend *before* entering block_on to avoid holding
+    // the DAEMON mutex inside the async block, which could deadlock with a
+    // concurrent stop_daemon call.
+    let daemon_memory = clone_daemon_memory().ok();
+
     let result: Result<String, AgentLoopOutcome> = handle.block_on(async {
         // Build memory context (best-effort; skip if memory unavailable).
-        let mem_context = match clone_daemon_memory() {
-            Ok(mem) => {
+        let mem_context = match daemon_memory {
+            Some(ref mem) => {
                 listener.on_progress("Searching memory...".into());
                 build_memory_context(mem.as_ref(), &message).await
             }
-            Err(_) => String::new(),
+            None => String::new(),
         };
 
         // Enrich the user message with memory context and timestamp.
