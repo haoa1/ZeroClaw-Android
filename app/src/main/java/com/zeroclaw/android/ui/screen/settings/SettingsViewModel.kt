@@ -292,6 +292,16 @@ class SettingsViewModel(
         updateDaemonSetting { setObservabilityOtelServiceName(name) }
     }
 
+    /** @see com.zeroclaw.android.data.repository.SettingsRepository.setObservabilityLogLevel */
+    fun updateObservabilityLogLevel(level: String) {
+        updateDaemonSetting { setObservabilityLogLevel(level) }
+    }
+
+    /** @see com.zeroclaw.android.data.repository.SettingsRepository.setObservabilityRuntimeTraceMode */
+    fun updateObservabilityRuntimeTraceMode(mode: String) {
+        updateDaemonSetting { setObservabilityRuntimeTraceMode(mode) }
+    }
+
     /** @see com.zeroclaw.android.data.repository.SettingsRepository.setModelRoutesJson */
     fun updateModelRoutesJson(json: String) {
         updateDaemonSetting { setModelRoutesJson(json) }

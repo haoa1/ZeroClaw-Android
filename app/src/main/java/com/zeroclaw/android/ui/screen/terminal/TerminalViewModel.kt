@@ -614,6 +614,7 @@ class TerminalViewModel(
      */
     private inner class KotlinSessionListener : FfiSessionListener {
         override fun onThinking(text: String) {
+            Log.e(TAG, "=== LLM onThinking ===\n$text")
             _streamingState.update { current ->
                 current.copy(
                     phase = StreamingPhase.THINKING,
@@ -635,6 +636,8 @@ class TerminalViewModel(
             name: String,
             argumentsHint: String,
         ) {
+
+            Log.e(TAG, "=== LLM onToolStart ===\n$name($argumentsHint)")
             _streamingState.update { current ->
                 current.copy(
                     phase = StreamingPhase.TOOL_EXECUTING,
@@ -648,6 +651,7 @@ class TerminalViewModel(
             success: Boolean,
             durationSecs: ULong,
         ) {
+            Log.e(TAG, "=== LLM onToolResult ===\n$name")
             _streamingState.update { current ->
                 current.copy(
                     activeTools = current.activeTools.filter { it.name != name },
@@ -666,6 +670,7 @@ class TerminalViewModel(
             name: String,
             output: String,
         ) {
+            Log.e(TAG, "=== LLM onToolOutput ===\n$name output:$output")
             _streamingState.update { current ->
                 val updated =
                     current.toolResults.map { entry ->
@@ -677,6 +682,29 @@ class TerminalViewModel(
                     }
                 current.copy(toolResults = updated)
             }
+        }
+
+        override fun onLlmInput(input: String) {
+            Log.e(TAG, "=== LLM INPUT ===\n$input")
+            logRepository.append(LogSeverity.DEBUG, TAG, "=== LLM INPUT ===\n$input")
+        }
+
+        override fun onLlmOutput(output: String) {
+            Log.e(TAG, "=== LLM OUTPUT ===\n$output")
+            logRepository.append(LogSeverity.DEBUG, TAG, "=== LLM OUTPUT ===\n$output")
+        }
+
+        override fun onToolInvoked(
+            name: String,
+            arguments: String,
+        ) {
+
+            Log.e(TAG, "=== TOOL INVOKED: $name ===\n$arguments")
+            logRepository.append(
+                LogSeverity.DEBUG,
+                TAG,
+                "=== TOOL INVOKED: $name ===\n$arguments",
+            )
         }
 
         override fun onProgress(message: String) {
@@ -713,6 +741,7 @@ class TerminalViewModel(
         override fun onError(error: String) {
             val sanitized = ErrorSanitizer.sanitizeMessage(error)
 
+            Log.e(TAG, "== onError == \n" + error);
             viewModelScope.launch {
                 repository.append(content = sanitized, entryType = ENTRY_TYPE_ERROR)
                 logRepository.append(LogSeverity.ERROR, TAG, "Agent session error: $sanitized")
@@ -735,6 +764,53 @@ class TerminalViewModel(
                 StreamingState(phase = StreamingPhase.CANCELLED)
             }
         }
+    }
+
+    /**
+     * Checks gateway health status and displays it in the terminal.
+     *
+     * This calls the gateway's health endpoint via the REPL engine,
+     * demonstrating direct gateway communication through the FFI layer.
+     */
+    fun checkGatewayHealth() {
+        executeRhai("[Gateway Health Check]", "health()")
+    }
+
+    /**
+     * Lists all cron jobs from the gateway and displays them in the terminal.
+     *
+     * This calls the gateway's cron list endpoint, showing all scheduled jobs
+     * and their status.
+     */
+    fun listCronJobs() {
+        executeRhai("[Cron Jobs]", "cron_list()")
+    }
+
+    /**
+     * Gets the cost summary from the gateway and displays it in the terminal.
+     *
+     * Shows current cost, daily, and monthly breakdowns.
+     */
+    fun getCostSummary() {
+        executeRhai("[Cost Summary]", "cost()")
+    }
+
+    /**
+     * Lists all memories stored in the gateway and displays them in the terminal.
+     *
+     * Shows session memories and their metadata.
+     */
+    fun listMemories() {
+        executeRhai("[Memory Recall]", "memories()")
+    }
+
+    /**
+     * Lists all available skills from the gateway and displays them in the terminal.
+     *
+     * Shows installed skills and their tools.
+     */
+    fun listSkills() {
+        executeRhai("[Available Skills]", "skills()")
     }
 
     /** Constants for [TerminalViewModel]. */

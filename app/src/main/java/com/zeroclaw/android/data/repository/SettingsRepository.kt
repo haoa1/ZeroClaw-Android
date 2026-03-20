@@ -366,6 +366,20 @@ interface SettingsRepository {
     suspend fun setObservabilityOtelServiceName(name: String)
 
     /**
+     * Updates the log level for Android logcat.
+     *
+     * @param level One of "off", "error", "warn", "info", "debug", "trace".
+     */
+    suspend fun setObservabilityLogLevel(level: String)
+
+    /**
+     * Updates the runtime trace mode.
+     *
+     * @param mode One of "none", "rolling", "full".
+     */
+    suspend fun setObservabilityRuntimeTraceMode(mode: String)
+
+    /**
      * Updates the model routes JSON.
      *
      * @param json JSON array of route objects.

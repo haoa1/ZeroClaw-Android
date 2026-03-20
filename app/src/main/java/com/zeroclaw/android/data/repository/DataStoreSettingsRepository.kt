@@ -192,6 +192,12 @@ class DataStoreSettingsRepository(
             observabilityOtelServiceName =
                 prefs[KEY_OBS_OTEL_SERVICE]
                     ?: AppSettings.DEFAULT_OTEL_SERVICE_NAME,
+            observabilityLogLevel =
+                prefs[KEY_OBS_LOG_LEVEL]
+                    ?: AppSettings.DEFAULT_LOG_LEVEL,
+            observabilityRuntimeTraceMode =
+                prefs[KEY_OBS_RUNTIME_TRACE_MODE]
+                    ?: AppSettings.DEFAULT_RUNTIME_TRACE_MODE,
             modelRoutesJson = prefs[KEY_MODEL_ROUTES_JSON] ?: "[]",
             memoryHygieneEnabled = prefs[KEY_MEMORY_HYGIENE] ?: true,
             memoryArchiveAfterDays =
@@ -432,6 +438,10 @@ class DataStoreSettingsRepository(
 
     override suspend fun setObservabilityOtelServiceName(name: String) = edit { it[KEY_OBS_OTEL_SERVICE] = name }
 
+    override suspend fun setObservabilityLogLevel(level: String) = edit { it[KEY_OBS_LOG_LEVEL] = level }
+
+    override suspend fun setObservabilityRuntimeTraceMode(mode: String) = edit { it[KEY_OBS_RUNTIME_TRACE_MODE] = mode }
+
     override suspend fun setModelRoutesJson(json: String) = edit { it[KEY_MODEL_ROUTES_JSON] = json }
 
     override suspend fun setMemoryHygieneEnabled(enabled: Boolean) = edit { it[KEY_MEMORY_HYGIENE] = enabled }
@@ -666,6 +676,8 @@ class DataStoreSettingsRepository(
         val KEY_OBS_BACKEND = stringPreferencesKey("observability_backend")
         val KEY_OBS_OTEL_ENDPOINT = stringPreferencesKey("obs_otel_endpoint")
         val KEY_OBS_OTEL_SERVICE = stringPreferencesKey("obs_otel_service")
+        val KEY_OBS_LOG_LEVEL = stringPreferencesKey("obs_log_level")
+        val KEY_OBS_RUNTIME_TRACE_MODE = stringPreferencesKey("obs_runtime_trace_mode")
         val KEY_MODEL_ROUTES_JSON = stringPreferencesKey("model_routes_json")
         val KEY_MEMORY_HYGIENE = booleanPreferencesKey("memory_hygiene_enabled")
         val KEY_MEMORY_ARCHIVE_DAYS = intPreferencesKey("memory_archive_days")

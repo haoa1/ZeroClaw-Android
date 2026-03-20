@@ -230,6 +230,8 @@ data class GlobalTomlConfig(
     val observabilityBackend: String = "none",
     val observabilityOtelEndpoint: String = "",
     val observabilityOtelServiceName: String = "zeroclaw",
+    val observabilityLogLevel: String = DEFAULT_LOG_LEVEL,
+    val observabilityRuntimeTraceMode: String = DEFAULT_RUNTIME_TRACE_MODE,
     val modelRoutesJson: String = "[]",
     val memoryHygieneEnabled: Boolean = true,
     val memoryArchiveAfterDays: Int = DEFAULT_ARCHIVE_DAYS,
@@ -346,6 +348,12 @@ data class GlobalTomlConfig(
 
         /** Default heartbeat interval in minutes. */
         const val DEFAULT_HEARTBEAT_INTERVAL = 30
+
+        /** Default log level for Android logcat. */
+        const val DEFAULT_LOG_LEVEL = "debug"
+
+        /** Default runtime trace mode. */
+        const val DEFAULT_RUNTIME_TRACE_MODE = "rolling"
 
         /** Default memory archive threshold. */
         const val DEFAULT_ARCHIVE_DAYS = 7
@@ -812,6 +820,12 @@ object ConfigTomlBuilder {
         appendLine()
         appendLine("[observability]")
         appendLine("backend = ${tomlString(config.observabilityBackend)}")
+        if (config.observabilityLogLevel.isNotBlank() && config.observabilityLogLevel != GlobalTomlConfig.DEFAULT_LOG_LEVEL) {
+            appendLine("log_level = ${tomlString(config.observabilityLogLevel)}")
+        }
+        if (config.observabilityRuntimeTraceMode.isNotBlank() && config.observabilityRuntimeTraceMode != GlobalTomlConfig.DEFAULT_RUNTIME_TRACE_MODE) {
+            appendLine("runtime_trace_mode = ${tomlString(config.observabilityRuntimeTraceMode)}")
+        }
         if (config.observabilityBackend == "otel") {
             if (config.observabilityOtelEndpoint.isNotBlank()) {
                 appendLine("otel_endpoint = ${tomlString(config.observabilityOtelEndpoint)}")

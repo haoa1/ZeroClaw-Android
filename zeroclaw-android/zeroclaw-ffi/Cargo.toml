@@ -32,5 +32,9 @@ anyhow = "1.0"
 async-trait = "0.1"
 toml = "0.8"
 tracing = "0.1"
+tracing-log = { version = "0.2", features = ["log-tracer"] }
+log = "0.4"
+android_logger = { version = "0.13", default-features = false }
+android_system_properties = "0.1"
 chrono = "0.4"
 rhai = { version = "1.21", features = ["sync"] }

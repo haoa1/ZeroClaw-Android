@@ -56,6 +56,7 @@ class EventBridge(
      * @param eventJson Raw JSON event string from the Rust daemon.
      */
     override fun onEvent(eventJson: String) {
+        Log.w("ZeroEvent", eventJson)
         val event = parseEvent(eventJson) ?: return
         scope.launch {
             _events.emit(event)

@@ -58,6 +58,8 @@ package com.zeroclaw.android.model
  * @property observabilityBackend Observability backend: "none", "log", "otel".
  * @property observabilityOtelEndpoint OpenTelemetry collector endpoint.
  * @property observabilityOtelServiceName Service name for OTel traces.
+ * @property observabilityLogLevel Log level for Android logcat: "off", "error", "warn", "info", "debug", "trace".
+ * @property observabilityRuntimeTraceMode Runtime trace mode: "none", "rolling", "full". Records LLM input/output and tool calls.
  * @property modelRoutesJson JSON array of model route objects.
  * @property memoryHygieneEnabled Whether memory hygiene (archival/purge) is active.
  * @property memoryArchiveAfterDays Days before memory entries are archived.
@@ -186,6 +188,8 @@ data class AppSettings(
     val observabilityBackend: String = "none",
     val observabilityOtelEndpoint: String = DEFAULT_OTEL_ENDPOINT,
     val observabilityOtelServiceName: String = DEFAULT_OTEL_SERVICE_NAME,
+    val observabilityLogLevel: String = DEFAULT_LOG_LEVEL,
+    val observabilityRuntimeTraceMode: String = DEFAULT_RUNTIME_TRACE_MODE,
     val modelRoutesJson: String = "[]",
     val memoryHygieneEnabled: Boolean = true,
     val memoryArchiveAfterDays: Int = DEFAULT_ARCHIVE_DAYS,
@@ -341,6 +345,12 @@ data class AppSettings(
 
         /** Default OTel service name. */
         const val DEFAULT_OTEL_SERVICE_NAME = "zeroclaw"
+
+        /** Default log level for Android logcat. */
+        const val DEFAULT_LOG_LEVEL = "debug"
+
+        /** Default runtime trace mode. */
+        const val DEFAULT_RUNTIME_TRACE_MODE = "rolling"
 
         /** Default memory archive threshold in days. */
         const val DEFAULT_ARCHIVE_DAYS = 7

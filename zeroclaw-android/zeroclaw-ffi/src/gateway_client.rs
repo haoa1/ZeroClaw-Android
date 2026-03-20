@@ -16,6 +16,7 @@
 //! All calls go to `http://127.0.0.1:{gateway_port}{path}`.
 
 use crate::error::FfiError;
+use tracing::debug;
 use tokio::time::Duration;
 
 /// Timeout for gateway API calls (30 seconds).
@@ -26,6 +27,8 @@ pub(crate) fn gateway_get(path: &str) -> Result<serde_json::Value, FfiError> {
     let port = crate::runtime::get_gateway_port()?;
     let handle = crate::runtime::get_or_create_runtime()?;
     let url = format!("http://127.0.0.1:{port}{path}");
+
+    debug!(%url, %path, "gateway GET");
 
     handle.block_on(async {
         let client = build_client()?;
@@ -49,6 +52,8 @@ pub(crate) fn gateway_post(
     let handle = crate::runtime::get_or_create_runtime()?;
     let url = format!("http://127.0.0.1:{port}{path}");
 
+    debug!(%url, %path, body = ?body, "gateway POST");
+
     handle.block_on(async {
         let client = build_client()?;
         let response =
@@ -69,6 +74,8 @@ pub(crate) fn gateway_delete(path: &str) -> Result<serde_json::Value, FfiError> 
     let port = crate::runtime::get_gateway_port()?;
     let handle = crate::runtime::get_or_create_runtime()?;
     let url = format!("http://127.0.0.1:{port}{path}");
+
+    debug!(%url, %path, "gateway DELETE");
 
     handle.block_on(async {
         let client = build_client()?;

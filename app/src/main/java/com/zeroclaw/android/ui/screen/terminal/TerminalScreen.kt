@@ -17,6 +17,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -151,6 +153,11 @@ fun TerminalScreen(
         onAttachImages = terminalViewModel::attachImages,
         onRemoveImage = terminalViewModel::removeImage,
         onCancelAgent = terminalViewModel::cancelAgentTurn,
+        onCheckHealth = terminalViewModel::checkGatewayHealth,
+        onListCron = terminalViewModel::listCronJobs,
+        onGetCost = terminalViewModel::getCostSummary,
+        onListMemories = terminalViewModel::listMemories,
+        onListSkills = terminalViewModel::listSkills,
         edgeMargin = edgeMargin,
         modifier = modifier,
     )
@@ -162,7 +169,8 @@ fun TerminalScreen(
  * Renders the terminal scrollback buffer, input bar, pending image
  * strip, autocomplete overlay, and live agent streaming card. All
  * state is passed in as parameters for deterministic previews and
- * unit tests.
+ * unit tests. Includes a gateway operations panel for quick access
+ * to gateway functions (health, cron, cost, memory, skills).
  *
  * @param state Aggregated terminal state snapshot.
  * @param streamingState Live agent session streaming state.
@@ -171,6 +179,11 @@ fun TerminalScreen(
  * @param onAttachImages Callback to attach images from URIs.
  * @param onRemoveImage Callback to remove a pending image by index.
  * @param onCancelAgent Callback to cancel the active agent turn.
+ * @param onCheckHealth Callback to invoke gateway health check.
+ * @param onListCron Callback to list cron jobs from gateway.
+ * @param onGetCost Callback to get cost summary from gateway.
+ * @param onListMemories Callback to list memories from gateway.
+ * @param onListSkills Callback to list skills from gateway.
  * @param edgeMargin Horizontal padding based on window width size class.
  * @param modifier Modifier applied to the root layout.
  */
@@ -183,6 +196,11 @@ internal fun TerminalContent(
     onAttachImages: (List<Uri>) -> Unit,
     onRemoveImage: (Int) -> Unit,
     onCancelAgent: () -> Unit,
+    onCheckHealth: () -> Unit,
+    onListCron: () -> Unit,
+    onGetCost: () -> Unit,
+    onListMemories: () -> Unit,
+    onListSkills: () -> Unit,
     edgeMargin: Dp,
     modifier: Modifier = Modifier,
 ) {
@@ -252,6 +270,18 @@ internal fun TerminalContent(
             TerminalHeader(
                 serviceState = serviceState,
                 modifier = Modifier.padding(horizontal = edgeMargin),
+            )
+
+            GatewayOperationsPanel(
+                onCheckHealth = onCheckHealth,
+                onListCron = onListCron,
+                onGetCost = onGetCost,
+                onListMemories = onListMemories,
+                onListSkills = onListSkills,
+                isEnabled = !isInputDisabled,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = edgeMargin, vertical = 8.dp),
             )
 
             LazyColumn(
@@ -431,6 +461,135 @@ private fun TerminalHeader(
                     .size(STATUS_DOT_SIZE_DP.dp)
                     .background(dotColor, CircleShape),
         )
+    }
+}
+
+/**
+ * Gateway operations panel showing quick-action buttons for common gateway functions.
+ *
+ * Displays five buttons that trigger gateway API calls through the REPL engine:
+ * - Health: Check gateway and daemon health
+ * - Cron: List all scheduled cron jobs
+ * - Cost: Show cost summary and budget
+ * - Memory: List all session memories
+ * - Skills: List all available skills
+ *
+ * The buttons are disabled while a request is in progress to prevent concurrent calls.
+ *
+ * @param onCheckHealth Callback to check gateway health.
+ * @param onListCron Callback to list cron jobs.
+ * @param onGetCost Callback to get cost summary.
+ * @param onListMemories Callback to list memories.
+ * @param onListSkills Callback to list skills.
+ * @param isEnabled Whether the buttons should be enabled.
+ * @param modifier Modifier applied to the container.
+ */
+@Composable
+private fun GatewayOperationsPanel(
+    onCheckHealth: () -> Unit,
+    onListCron: () -> Unit,
+    onGetCost: () -> Unit,
+    onListMemories: () -> Unit,
+    onListSkills: () -> Unit,
+    isEnabled: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        shape = RoundedCornerShape(8.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        tonalElevation = 2.dp,
+        modifier = modifier,
+    ) {
+        Column(
+            modifier = Modifier.padding(8.dp),
+        ) {
+            Text(
+                text = "Gateway Operations",
+                style = TerminalTypography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(bottom = 4.dp),
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                GatewayActionButton(
+                    label = "Health",
+                    onClick = onCheckHealth,
+                    enabled = isEnabled,
+                )
+                GatewayActionButton(
+                    label = "Cron",
+                    onClick = onListCron,
+                    enabled = isEnabled,
+                )
+                GatewayActionButton(
+                    label = "Cost",
+                    onClick = onGetCost,
+                    enabled = isEnabled,
+                )
+                GatewayActionButton(
+                    label = "Memory",
+                    onClick = onListMemories,
+                    enabled = isEnabled,
+                )
+                GatewayActionButton(
+                    label = "Skills",
+                    onClick = onListSkills,
+                    enabled = isEnabled,
+                )
+            }
+        }
+    }
+}
+
+/**
+ * A compact action button for gateway operations.
+ *
+ * Styled as a small, clickable button with minimal vertical padding to fit
+ * the gateway operations panel layout.
+ *
+ * @param label The button label text.
+ * @param onClick Callback when the button is tapped.
+ * @param enabled Whether the button is enabled.
+ * @param modifier Modifier applied to the button container.
+ */
+@Composable
+private fun GatewayActionButton(
+    label: String,
+    onClick: () -> Unit,
+    enabled: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        shape = RoundedCornerShape(4.dp),
+        color =
+            if (enabled) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.outline
+            },
+        modifier = modifier,
+    ) {
+        Box(
+            modifier = Modifier
+                .clickable(enabled = enabled, onClick = onClick)
+                .padding(horizontal = 8.dp, vertical = 4.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = label,
+                style = TerminalTypography.labelSmall,
+                color =
+                    if (enabled) {
+                        MaterialTheme.colorScheme.onPrimary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+            )
+        }
     }
 }
 

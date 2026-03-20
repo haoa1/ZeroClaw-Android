@@ -21,8 +21,7 @@ use rhai::{Array, Dynamic, Engine, EvalAltResult};
 
 use crate::error::FfiError;
 use crate::{
-    auth_profiles, cost, cron, events, health, memory_browse, models, runtime, skills,
-    tools_browse, vision,
+    auth_profiles, events, gateway_client, models, runtime, vision,
 };
 
 /// Lazily initialised Rhai engine with all gateway functions registered.
@@ -149,15 +148,18 @@ fn build_engine() -> Engine {
     // ── Health ────────────────────────────────────────────────────
 
     engine.register_fn("health", || -> Result<String, Box<EvalAltResult>> {
-        let detail = health::get_health_detail_inner().map_err(ffi_err)?;
-        to_json(&detail)
+        let response = gateway_client::gateway_get("/api/health").map_err(ffi_err)?;
+        serde_json::to_string(&response)
+            .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
     });
 
     engine.register_fn(
         "health_component",
         |name: String| -> Result<String, Box<EvalAltResult>> {
-            let component = health::get_component_health_inner(name);
-            to_json(&component)
+            let response = gateway_client::gateway_get(&format!("/api/health/{name}"))
+                .map_err(ffi_err)?;
+            serde_json::to_string(&response)
+                .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
         },
     );
 
@@ -175,47 +177,56 @@ fn build_engine() -> Engine {
     // ── Cost ─────────────────────────────────────────────────────
 
     engine.register_fn("cost", || -> Result<String, Box<EvalAltResult>> {
-        let summary = cost::get_cost_summary_inner().map_err(ffi_err)?;
-        to_json(&summary)
+        let response = gateway_client::gateway_get("/api/cost/summary").map_err(ffi_err)?;
+        serde_json::to_string(&response)
+            .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
     });
 
     engine.register_fn("cost_daily", || -> Result<Dynamic, Box<EvalAltResult>> {
         let today = chrono::Utc::now().date_naive();
-        let value = cost::get_daily_cost_inner(
-            chrono::Datelike::year(&today),
-            chrono::Datelike::month(&today),
-            chrono::Datelike::day(&today),
-        )
-        .map_err(ffi_err)?;
+        let year = chrono::Datelike::year(&today);
+        let month = chrono::Datelike::month(&today);
+        let day = chrono::Datelike::day(&today);
+        let response = gateway_client::gateway_get(&format!("/api/cost/daily/{year}/{month}/{day}"))
+            .map_err(ffi_err)?;
+        let value = response
+            .as_f64()
+            .ok_or_else(|| -> Box<EvalAltResult> { "invalid cost value".into() })?;
         Ok(Dynamic::from_float(value))
     });
 
     engine.register_fn(
         "cost_daily",
         |year: i64, month: i64, day: i64| -> Result<Dynamic, Box<EvalAltResult>> {
-            #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
-            let value = cost::get_daily_cost_inner(year as i32, month as u32, day as u32)
+            let response = gateway_client::gateway_get(&format!("/api/cost/daily/{year}/{month}/{day}"))
                 .map_err(ffi_err)?;
+            let value = response
+                .as_f64()
+                .ok_or_else(|| -> Box<EvalAltResult> { "invalid cost value".into() })?;
             Ok(Dynamic::from_float(value))
         },
     );
 
     engine.register_fn("cost_monthly", || -> Result<Dynamic, Box<EvalAltResult>> {
         let now = chrono::Utc::now();
-        #[allow(clippy::cast_possible_wrap)]
-        let value = cost::get_monthly_cost_inner(
-            chrono::Datelike::year(&now),
-            chrono::Datelike::month(&now),
-        )
-        .map_err(ffi_err)?;
+        let year = chrono::Datelike::year(&now);
+        let month = chrono::Datelike::month(&now);
+        let response = gateway_client::gateway_get(&format!("/api/cost/monthly/{year}/{month}"))
+            .map_err(ffi_err)?;
+        let value = response
+            .as_f64()
+            .ok_or_else(|| -> Box<EvalAltResult> { "invalid cost value".into() })?;
         Ok(Dynamic::from_float(value))
     });
 
     engine.register_fn(
         "cost_monthly",
         |year: i64, month: i64| -> Result<Dynamic, Box<EvalAltResult>> {
-            #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
-            let value = cost::get_monthly_cost_inner(year as i32, month as u32).map_err(ffi_err)?;
+            let response = gateway_client::gateway_get(&format!("/api/cost/monthly/{year}/{month}"))
+                .map_err(ffi_err)?;
+            let value = response
+                .as_f64()
+                .ok_or_else(|| -> Box<EvalAltResult> { "invalid cost value".into() })?;
             Ok(Dynamic::from_float(value))
         },
     );
@@ -223,8 +234,10 @@ fn build_engine() -> Engine {
     engine.register_fn(
         "budget",
         |estimated: f64| -> Result<String, Box<EvalAltResult>> {
-            let status = cost::check_budget_inner(estimated).map_err(ffi_err)?;
-            to_json(&status)
+            let body = serde_json::json!({ "estimated_cost_usd": estimated });
+            let response = gateway_client::gateway_post("/api/budget/check", &body).map_err(ffi_err)?;
+            serde_json::to_string(&response)
+                .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
         },
     );
 
@@ -242,55 +255,76 @@ fn build_engine() -> Engine {
     // ── Cron ─────────────────────────────────────────────────────
 
     engine.register_fn("cron_list", || -> Result<String, Box<EvalAltResult>> {
-        let jobs = cron::list_cron_jobs_inner().map_err(ffi_err)?;
-        to_json(&jobs)
+        let response = gateway_client::gateway_get("/api/cron").map_err(ffi_err)?;
+        serde_json::to_string(&response)
+            .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
     });
 
     engine.register_fn(
         "cron_get",
         |id: String| -> Result<String, Box<EvalAltResult>> {
-            let job = cron::get_cron_job_inner(id).map_err(ffi_err)?;
-            to_json(&job)
+            let response = gateway_client::gateway_get(&format!("/api/cron/{id}")).map_err(ffi_err)?;
+            serde_json::to_string(&response)
+                .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
         },
     );
 
     engine.register_fn(
         "cron_add",
         |expression: String, command: String| -> Result<String, Box<EvalAltResult>> {
-            let job = cron::add_cron_job_inner(expression, command).map_err(ffi_err)?;
-            to_json(&job)
+            let body = serde_json::json!({
+                "expression": expression,
+                "command": command,
+            });
+            let response = gateway_client::gateway_post("/api/cron", &body).map_err(ffi_err)?;
+            serde_json::to_string(&response)
+                .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
         },
     );
 
     engine.register_fn(
         "cron_oneshot",
         |delay: String, command: String| -> Result<String, Box<EvalAltResult>> {
-            let job = cron::add_one_shot_job_inner(delay, command).map_err(ffi_err)?;
-            to_json(&job)
+            let body = serde_json::json!({
+                "delay": delay,
+                "command": command,
+            });
+            let response = gateway_client::gateway_post("/api/cron/oneshot", &body).map_err(ffi_err)?;
+            serde_json::to_string(&response)
+                .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
         },
     );
 
     engine.register_fn(
         "cron_add_at",
         |timestamp: String, command: String| -> Result<String, Box<EvalAltResult>> {
-            let job = cron::add_cron_job_at_inner(timestamp, command).map_err(ffi_err)?;
-            to_json(&job)
+            let body = serde_json::json!({
+                "timestamp": timestamp,
+                "command": command,
+            });
+            let response = gateway_client::gateway_post("/api/cron/at", &body).map_err(ffi_err)?;
+            serde_json::to_string(&response)
+                .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
         },
     );
 
     engine.register_fn(
         "cron_add_every",
         |ms: i64, command: String| -> Result<String, Box<EvalAltResult>> {
-            #[allow(clippy::cast_sign_loss)]
-            let job = cron::add_cron_job_every_inner(ms as u64, command).map_err(ffi_err)?;
-            to_json(&job)
+            let body = serde_json::json!({
+                "interval_ms": ms,
+                "command": command,
+            });
+            let response = gateway_client::gateway_post("/api/cron/every", &body).map_err(ffi_err)?;
+            serde_json::to_string(&response)
+                .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
         },
     );
 
     engine.register_fn(
         "cron_remove",
         |id: String| -> Result<String, Box<EvalAltResult>> {
-            cron::remove_cron_job_inner(id).map_err(ffi_err)?;
+            gateway_client::gateway_delete(&format!("/api/cron/{id}")).map_err(ffi_err)?;
             Ok("ok".into())
         },
     );
@@ -298,7 +332,8 @@ fn build_engine() -> Engine {
     engine.register_fn(
         "cron_pause",
         |id: String| -> Result<String, Box<EvalAltResult>> {
-            cron::pause_cron_job_inner(id).map_err(ffi_err)?;
+            let body = serde_json::json!({});
+            gateway_client::gateway_post(&format!("/api/cron/{id}/pause"), &body).map_err(ffi_err)?;
             Ok("ok".into())
         },
     );
@@ -306,7 +341,8 @@ fn build_engine() -> Engine {
     engine.register_fn(
         "cron_resume",
         |id: String| -> Result<String, Box<EvalAltResult>> {
-            cron::resume_cron_job_inner(id).map_err(ffi_err)?;
+            let body = serde_json::json!({});
+            gateway_client::gateway_post(&format!("/api/cron/{id}/resume"), &body).map_err(ffi_err)?;
             Ok("ok".into())
         },
     );
@@ -314,22 +350,26 @@ fn build_engine() -> Engine {
     // ── Skills ───────────────────────────────────────────────────
 
     engine.register_fn("skills", || -> Result<String, Box<EvalAltResult>> {
-        let list = skills::list_skills_inner().map_err(ffi_err)?;
-        to_json(&list)
+        let response = gateway_client::gateway_get("/api/skills").map_err(ffi_err)?;
+        serde_json::to_string(&response)
+            .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
     });
 
     engine.register_fn(
         "skill_tools",
         |name: String| -> Result<String, Box<EvalAltResult>> {
-            let tools = skills::get_skill_tools_inner(name).map_err(ffi_err)?;
-            to_json(&tools)
+            let response = gateway_client::gateway_get(&format!("/api/skills/{name}/tools"))
+                .map_err(ffi_err)?;
+            serde_json::to_string(&response)
+                .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
         },
     );
 
     engine.register_fn(
         "skill_install",
         |source: String| -> Result<String, Box<EvalAltResult>> {
-            skills::install_skill_inner(source).map_err(ffi_err)?;
+            let body = serde_json::json!({ "source": source });
+            gateway_client::gateway_post("/api/skills/install", &body).map_err(ffi_err)?;
             Ok("ok".into())
         },
     );
@@ -337,7 +377,7 @@ fn build_engine() -> Engine {
     engine.register_fn(
         "skill_remove",
         |name: String| -> Result<String, Box<EvalAltResult>> {
-            skills::remove_skill_inner(name).map_err(ffi_err)?;
+            gateway_client::gateway_delete(&format!("/api/skills/{name}")).map_err(ffi_err)?;
             Ok("ok".into())
         },
     );
@@ -345,8 +385,9 @@ fn build_engine() -> Engine {
     // ── Tools ────────────────────────────────────────────────────
 
     engine.register_fn("tools", || -> Result<String, Box<EvalAltResult>> {
-        let list = tools_browse::list_tools_inner().map_err(ffi_err)?;
-        to_json(&list)
+        let response = gateway_client::gateway_get("/api/tools").map_err(ffi_err)?;
+        serde_json::to_string(&response)
+            .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
     });
 
     // ── Memory ───────────────────────────────────────────────────
@@ -355,9 +396,10 @@ fn build_engine() -> Engine {
         "memories",
         |limit: i64| -> Result<String, Box<EvalAltResult>> {
             #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
-            let entries =
-                memory_browse::list_memories_inner(None, limit as u32, None).map_err(ffi_err)?;
-            to_json(&entries)
+            let response = gateway_client::gateway_get(&format!("/api/memories?limit={}", limit as u32))
+                .map_err(ffi_err)?;
+            serde_json::to_string(&response)
+                .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
         },
     );
 
@@ -365,9 +407,14 @@ fn build_engine() -> Engine {
         "memories_by_category",
         |category: String, limit: i64| -> Result<String, Box<EvalAltResult>> {
             #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
-            let entries = memory_browse::list_memories_inner(Some(category), limit as u32, None)
+            let body = serde_json::json!({
+                "category": category,
+                "limit": limit as u32,
+            });
+            let response = gateway_client::gateway_post("/api/memories/by-category", &body)
                 .map_err(ffi_err)?;
-            to_json(&entries)
+            serde_json::to_string(&response)
+                .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
         },
     );
 
@@ -375,22 +422,34 @@ fn build_engine() -> Engine {
         "memory_recall",
         |query: String, limit: i64| -> Result<String, Box<EvalAltResult>> {
             #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
-            let entries =
-                memory_browse::recall_memory_inner(query, limit as u32, None).map_err(ffi_err)?;
-            to_json(&entries)
+            let body = serde_json::json!({
+                "query": query,
+                "limit": limit as u32,
+            });
+            let response = gateway_client::gateway_post("/api/memories/recall", &body)
+                .map_err(ffi_err)?;
+            serde_json::to_string(&response)
+                .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
         },
     );
 
     engine.register_fn(
         "memory_forget",
         |key: String| -> Result<bool, Box<EvalAltResult>> {
-            memory_browse::forget_memory_inner(key).map_err(ffi_err)
+            let body = serde_json::json!({ "key": key });
+            let response = gateway_client::gateway_post("/api/memories/forget", &body)
+                .map_err(ffi_err)?;
+            Ok(response.as_bool().unwrap_or(false))
         },
     );
 
     engine.register_fn("memory_count", || -> Result<i64, Box<EvalAltResult>> {
-        let count = memory_browse::memory_count_inner().map_err(ffi_err)?;
-        Ok(i64::from(count))
+        let response = gateway_client::gateway_get("/api/memories/count").map_err(ffi_err)?;
+        let count = response
+            .as_u64()
+            .ok_or_else(|| -> Box<EvalAltResult> { "invalid count value".into() })?;
+        #[allow(clippy::cast_possible_wrap)]
+        Ok(count as i64)
     });
 
     // ── Emergency Stop ──────────────────────────────────────────

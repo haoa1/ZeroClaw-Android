@@ -38,6 +38,12 @@ import com.zeroclaw.android.ui.component.SectionHeader
 /** Available observability backends matching upstream options. */
 private val OBS_BACKENDS = listOf("none", "log", "otel")
 
+/** Available runtime trace modes. */
+private val RUNTIME_TRACE_MODES = listOf("none", "rolling", "full")
+
+/** Available log levels. */
+private val LOG_LEVELS = listOf("off", "error", "warn", "info", "debug", "trace")
+
 /**
  * Observability backend configuration screen.
  *
@@ -57,6 +63,8 @@ fun ObservabilityScreen(
 ) {
     val settings by settingsViewModel.settings.collectAsStateWithLifecycle()
     var backendExpanded by remember { mutableStateOf(false) }
+    var traceModeExpanded by remember { mutableStateOf(false) }
+    var logLevelExpanded by remember { mutableStateOf(false) }
     val isOtel = settings.observabilityBackend == "otel"
 
     Column(
@@ -112,6 +120,83 @@ fun ObservabilityScreen(
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+
+        SectionHeader(title = "Runtime Trace")
+
+        ExposedDropdownMenuBox(
+            expanded = traceModeExpanded,
+            onExpandedChange = { traceModeExpanded = it },
+        ) {
+            OutlinedTextField(
+                value = settings.observabilityRuntimeTraceMode,
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("Trace mode") },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(traceModeExpanded) },
+                modifier =
+                    Modifier
+                        .menuAnchor(MenuAnchorType.PrimaryNotEditable)
+                        .fillMaxWidth(),
+            )
+            ExposedDropdownMenu(
+                expanded = traceModeExpanded,
+                onDismissRequest = { traceModeExpanded = false },
+            ) {
+                for (mode in RUNTIME_TRACE_MODES) {
+                    DropdownMenuItem(
+                        text = { Text(mode) },
+                        onClick = {
+                            settingsViewModel.updateObservabilityRuntimeTraceMode(mode)
+                            traceModeExpanded = false
+                        },
+                    )
+                }
+            }
+        }
+
+        Text(
+            text = when (settings.observabilityRuntimeTraceMode) {
+                "none" -> "LLM input/output and tool calls are not logged."
+                "rolling" -> "Logs are kept with a rolling window of 200 entries."
+                "full" -> "Logs are kept with no limit."
+                else -> "Records LLM input/output and tool calls to file."
+            },
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
+        SectionHeader(title = "Log Level")
+
+        ExposedDropdownMenuBox(
+            expanded = logLevelExpanded,
+            onExpandedChange = { logLevelExpanded = it },
+        ) {
+            OutlinedTextField(
+                value = settings.observabilityLogLevel,
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("Log level") },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(logLevelExpanded) },
+                modifier =
+                    Modifier
+                        .menuAnchor(MenuAnchorType.PrimaryNotEditable)
+                        .fillMaxWidth(),
+            )
+            ExposedDropdownMenu(
+                expanded = logLevelExpanded,
+                onDismissRequest = { logLevelExpanded = false },
+            ) {
+                for (level in LOG_LEVELS) {
+                    DropdownMenuItem(
+                        text = { Text(level) },
+                        onClick = {
+                            settingsViewModel.updateObservabilityLogLevel(level)
+                            logLevelExpanded = false
+                        },
+                    )
+                }
+            }
+        }
 
         if (isOtel) {
             SectionHeader(title = "OpenTelemetry")

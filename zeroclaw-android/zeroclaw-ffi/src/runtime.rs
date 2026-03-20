@@ -5,6 +5,7 @@
  */
 
 use crate::error::FfiError;
+use crate::gateway_client;
 use chrono::Utc;
 use std::future::Future;
 use std::path::PathBuf;
@@ -13,6 +14,14 @@ use tokio::runtime::{Handle, Runtime};
 use tokio::task::JoinHandle;
 use tokio::time::Duration;
 use zeroclaw::Config;
+
+// Android-specific logging imports
+#[cfg(target_os = "android")]
+use android_logger::Config as AndroidLoggerConfig;
+#[cfg(target_os = "android")]
+use log::LevelFilter;
+#[cfg(target_os = "android")]
+use tracing_log::LogTracer;
 
 /// Tokio runtime, recreated on each daemon lifecycle.
 ///
@@ -264,6 +273,36 @@ pub(crate) fn start_daemon_inner(
         detail: format!("failed to parse config TOML: {e}"),
     })?;
 
+    // Initialize Android logger with configurable log level
+    // Priority: 1. system property zeroclaw.log_level, 2. config observability.log_level
+    #[cfg(target_os = "android")]
+    {
+        let log_level: String = android_system_properties::AndroidSystemProperties::new()
+            .get("zeroclaw.log_level")
+            .filter(|s| !s.is_empty())
+            .map(String::from)
+            .unwrap_or_else(|| config.observability.log_level.clone());
+        let filter = match log_level.to_lowercase().as_str() {
+            "off" => LevelFilter::Off,
+            "error" => LevelFilter::Error,
+            "warn" | "warning" => LevelFilter::Warn,
+            "info" => LevelFilter::Info,
+            "debug" => LevelFilter::Debug,
+            "trace" => LevelFilter::Trace,
+            _ => LevelFilter::Debug,
+        };
+        android_logger::init_once(
+            AndroidLoggerConfig::default()
+                .with_max_level(filter)
+                .with_tag("ZeroClaw"),
+        );
+        // Bridge tracing events to log crate for Android logcat capture
+        if let Err(e) = LogTracer::init() {
+            tracing::warn!("Failed to initialize LogTracer: {}", e);
+        }
+        tracing::debug!("Android logger initialized with log_level={}", log_level);
+    }
+
     let data_path = PathBuf::from(&data_dir);
     config.workspace_dir = data_path.join("workspace");
     config.config_path = data_path.join("config.toml");
@@ -493,17 +532,30 @@ pub(crate) fn send_message_inner(message: String) -> Result<String, FfiError> {
         });
     }
 
-    let handle = get_or_create_runtime()?;
-    let config = with_daemon_config(Config::clone)?;
+    // Send via the gateway HTTP webhook endpoint so that all UI-driven message
+    // sends go through the same API surface as other gateway operations.
+    // This keeps the Android-side call path consistent with `gateway_client`.
+    let body = serde_json::json!({ "message": message });
+    let response = gateway_client::gateway_post("/webhook", &body)?;
 
-    handle.block_on(async {
-        zeroclaw::agent::process_message(config, &message)
-            .await
-            .map_err(|e| FfiError::SpawnError {
-                detail: format!("agent processing failed: {e}"),
-            })
-    })
+    // The gateway returns JSON like {"response": "...", "model": "..."}
+    // Extract the response string.
+    match response.get("response") {
+        Some(serde_json::Value::String(s)) => Ok(s.clone()),
+        Some(other) => Err(FfiError::SpawnError {
+            detail: format!(
+                "gateway /webhook returned non-string response: {other:?}"
+            ),
+        }),
+        None => Err(FfiError::SpawnError {
+            detail: format!(
+                "gateway /webhook missing response field: {response:?}"
+            ),
+        }),
+    }
 }
+
+
 
 /// Writes an FFI health snapshot JSON to disk every 5 seconds.
 fn spawn_state_writer(config: Config) -> JoinHandle<()> {

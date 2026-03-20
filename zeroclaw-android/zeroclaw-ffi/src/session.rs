@@ -39,8 +39,10 @@ use zeroclaw::providers::{ChatMessage, ChatRequest, Provider};
 use zeroclaw::tools::{Tool, ToolResult, ToolSpec};
 
 use crate::error::FfiError;
+use crate::gateway_client;
 use crate::runtime::{clone_daemon_config, clone_daemon_memory};
 use crate::url_helpers;
+use tracing::info;
 
 /// Maximum user message size in bytes (1 MiB).
 const MAX_MESSAGE_BYTES: usize = 1_048_576;
@@ -933,6 +935,24 @@ pub trait FfiSessionListener: Send + Sync {
     /// with the full stdout/stderr captured from the tool execution.
     fn on_tool_output(&self, name: String, output: String);
 
+    /// The LLM is about to be called with the enriched input.
+    ///
+    /// `input` contains the full message that will be sent to the LLM,
+    /// including memory context and any system-level enrichments.
+    fn on_llm_input(&self, input: String);
+
+    /// The LLM returned a complete response (before tool execution).
+    ///
+    /// `output` contains the full text from the LLM, including any
+    /// tool_call blocks in XML format.
+    fn on_llm_output(&self, output: String);
+
+    /// A tool was invoked with its arguments.
+    ///
+    /// `name` is the tool identifier (e.g. `"read_file"`).
+    /// `arguments` is the full JSON arguments passed to the tool.
+    fn on_tool_invoked(&self, name: String, arguments: String);
+
     /// A progress status line from the agent loop.
     ///
     /// Used for miscellaneous status updates that do not fit the other
@@ -1158,6 +1178,17 @@ pub(crate) fn session_send_inner(
             ),
         });
     }
+
+    // Log a gateway call so it's easy to confirm from log output that the
+    // terminal path is invoking the gateway REST API.
+    //
+    // Note: this is a best-effort, fire-and-forget call. The session send
+    // flow remains unchanged and continues to use the internal agent loop.
+    info!("session_send_inner: firing gateway POST /webhook for visibility");
+    let _ = gateway_client::gateway_post(
+        "/webhook",
+        &serde_json::json!({ "message": message.clone() }),
+    );
 
     let cancel_token = CancellationToken::new();
     {
@@ -1517,6 +1548,15 @@ async fn run_agent_loop(
         };
         listener.on_thinking(phase);
 
+        // Log LLM input for debugging.
+        let llm_input = serde_json::json!({
+            "messages": history,
+            "tools": request_tools,
+            "model": model,
+            "temperature": temperature,
+        });
+        listener.on_llm_input(serde_json::to_string_pretty(&llm_input).unwrap_or_default());
+
         // Call the provider.
         let chat_future = provider.chat(
             ChatRequest {
@@ -1534,6 +1574,14 @@ async fn run_agent_loop(
 
         let response = chat_result
             .map_err(|e| AgentLoopOutcome::Error(format!("provider chat failed: {e}")))?;
+
+        // Log LLM output for debugging.
+        let llm_output = serde_json::json!({
+            "text": response.text_or_empty(),
+            "tool_calls": response.tool_calls,
+            "reasoning_content": response.reasoning_content,
+        });
+        listener.on_llm_output(serde_json::to_string_pretty(&llm_output).unwrap_or_default());
 
         // No tool calls -- this is the final response.
         if response.tool_calls.is_empty() {
@@ -1570,6 +1618,17 @@ async fn run_agent_loop(
             if cancel_token.is_cancelled() {
                 return Err(AgentLoopOutcome::Cancelled);
             }
+
+            // Log tool invocation for debugging.
+            let tool_invoke = serde_json::json!({
+                "name": call.name,
+                "arguments": serde_json::from_str::<serde_json::Value>(&call.arguments).unwrap_or(serde_json::json!({})),
+                "id": call.id,
+            });
+            listener.on_tool_invoked(
+                call.name.clone(),
+                serde_json::to_string_pretty(&tool_invoke).unwrap_or_default(),
+            );
 
             let args_hint = truncate_tool_args_hint(&call.name, &call.arguments);
             listener.on_tool_start(call.name.clone(), args_hint);
@@ -1977,7 +2036,8 @@ fn build_native_assistant_history(
 ) -> String {
     let calls_json: Vec<serde_json::Value> = tool_calls
         .iter()
-        .map(|tc| {
+        .enumerate()
+        .map(|(idx, tc)| {
             serde_json::json!({
                 "id": tc.id,
                 "type": "function",
@@ -1985,6 +2045,7 @@ fn build_native_assistant_history(
                     "name": tc.name,
                     "arguments": tc.arguments,
                 },
+                "index": idx,
             })
         })
         .collect();
@@ -2291,6 +2352,27 @@ mod tests {
                 .push(format!("tool_output:{name}:{output}"));
         }
 
+        fn on_llm_input(&self, input: String) {
+            self.events
+                .lock()
+                .unwrap()
+                .push(format!("llm_input:{input}"));
+        }
+
+        fn on_llm_output(&self, output: String) {
+            self.events
+                .lock()
+                .unwrap()
+                .push(format!("llm_output:{output}"));
+        }
+
+        fn on_tool_invoked(&self, name: String, arguments: String) {
+            self.events
+                .lock()
+                .unwrap()
+                .push(format!("tool_invoked:{name}:{arguments}"));
+        }
+
         fn on_progress(&self, message: String) {
             self.events
                 .lock()
@@ -2545,7 +2627,10 @@ mod tests {
 
         assert_eq!(parsed["content"], "Let me check");
         assert_eq!(parsed["tool_calls"][0]["id"], "call_123");
+        assert_eq!(parsed["tool_calls"][0]["type"], "function");
         assert_eq!(parsed["tool_calls"][0]["function"]["name"], "shell");
+        assert_eq!(parsed["tool_calls"][0]["function"]["arguments"], r#"{"command":"ls"}"#);
+        assert_eq!(parsed["tool_calls"][0]["index"], 0);
         assert!(parsed.get("reasoning_content").is_none());
     }
 
@@ -2561,6 +2646,7 @@ mod tests {
             build_native_assistant_history("Reading file", &calls, Some("thinking about it"));
         let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
 
+        assert_eq!(parsed["tool_calls"][0]["index"], 0);
         assert_eq!(parsed["reasoning_content"], "thinking about it");
     }
 

@@ -393,6 +393,8 @@ class ZeroClawDaemonService : Service() {
             observabilityBackend = settings.observabilityBackend,
             observabilityOtelEndpoint = settings.observabilityOtelEndpoint,
             observabilityOtelServiceName = settings.observabilityOtelServiceName,
+            observabilityLogLevel = settings.observabilityLogLevel,
+            observabilityRuntimeTraceMode = settings.observabilityRuntimeTraceMode,
             modelRoutesJson = settings.modelRoutesJson,
             memoryHygieneEnabled = settings.memoryHygieneEnabled,
             memoryArchiveAfterDays = settings.memoryArchiveAfterDays,
