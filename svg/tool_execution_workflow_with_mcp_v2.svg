@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="1600" height="1200" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <style type="text/css">
+    <![CDATA[
+      .title {
+        font-family: Arial, sans-serif;
+        font-size: 28px;
+        font-weight: bold;
+        fill: #2c3e50;
+      }
+      .subtitle {
+        font-family: Arial, sans-serif;
+        font-size: 18px;
+        fill: #7f8c8d;
+      }
+      .step {
+        fill: #3498db;
+        stroke: #2980b9;
+        stroke-width: 2;
+        rx: 10;
+        ry: 10;
+      }
+      .step-text {
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        fill: white;
+        font-weight: bold;
+        text-anchor: middle;
+      }
+      .step-desc {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        fill: #2c3e50;
+        text-anchor: middle;
+      }
+      .arrow {
+        fill: none;
+        stroke: #7f8c8d;
+        stroke-width: 2;
+        marker-end: url(#arrowhead);
+      }
+      .arrow-text {
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        fill: #7f8c8d;
+        font-weight: bold;
+      }
+      .user {
+        fill: #2ecc71;
+        stroke: #27ae60;
+      }
+      .system {
+        fill: #e74c3c;
+        stroke: #c0392b;
+      }
+      .ai {
+        fill: #9b59b6;
+        stroke: #8e44ad;
+      }
+      .tool {
+        fill: #e67e22;
+        stroke: #d35400;
+      }
+      .decision {
+        fill: #1abc9c;
+        stroke: #16a085;
+      }
+      .mcp {
+        fill: #008080;
+        stroke: #006666;
+      }
+      .region {
+        fill: rgba(236, 240, 241, 0.3);
+        stroke: #bdc3c7;
+        stroke-width: 2;
+        stroke-dasharray: 5,5;
+        rx: 15;
+        ry: 15;
+      }
+      .region-title {
+        font-family: Arial, sans-serif;
+        font-size: 18px;
+        fill: #2c3e50;
+        font-weight: bold;
+      }
+      .legend-box {
+        fill: #ecf0f1;
+        stroke: #bdc3c7;
+        stroke-width: 1;
+        rx: 8;
+        ry: 8;
+      }
+      .legend-text {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        fill: #2c3e50;
+      }
+      .yes {
+        fill: #2ecc71;
+      }
+      .no {
+        fill: #e74c3c;
+      }
+    ]]>
+  </style>
+  
+  <defs>
+    <marker id="arrowhead" markerWidth="12" markerHeight="8" refX="11" refY="4" orient="auto">
+      <polygon points="0 0, 12 4, 0 8" fill="#7f8c8d"/>
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="800" y="50" text-anchor="middle" class="title">ZeroClaw Tool Execution Workflow with MCP</text>
+  <text x="800" y="80" text-anchor="middle" class="subtitle">AI agent tool invocation with Model Context Protocol integration</text>
+  
+  <!-- Legend -->
+  <rect x="50" y="100" width="300" height="220" class="legend-box"/>
+  <text x="200" y="125" text-anchor="middle" class="legend-text" font-weight="bold">Component Types</text>
+  
+  <rect x="80" y="140" width="25" height="25" class="user"/>
+  <text x="120" y="160" class="legend-text">User/Client</text>
+  
+  <rect x="80" y="170" width="25" height="25" class="system"/>
+  <text x="120" y="190" class="legend-text">System Component</text>
+  
+  <rect x="80" y="200" width="25" height="25" class="ai"/>
+  <text x="120" y="220" class="legend-text">AI Component</text>
+  
+  <rect x="80" y="230" width="25" height="25" class="tool"/>
+  <text x="120" y="250" class="legend-text">Tool/Skill</text>
+  
+  <rect x="80" y="260" width="25" height="25" class="decision"/>
+  <text x="120" y="280" class="legend-text">Decision Point</text>
+  
+  <rect x="200" y="140" width="25" height="25" class="mcp"/>
+  <text x="240" y="160" class="legend-text">MCP Protocol</text>
+  
+  <!-- Region 1: Input & Analysis -->
+  <rect x="150" y="140" width="400" height="250" class="region"/>
+  <text x="350" y="160" text-anchor="middle" class="region-title">Input &amp; Analysis Phase</text>
+  
+  <!-- Step 1: User Request -->
+  <g id="step1">
+    <rect x="200" y="180" width="300" height="70" class="user"/>
+    <text x="350" y="210" class="step-text">User Request</text>
+    <text x="350" y="235" class="step-desc">User asks question requiring tool execution</text>
+  </g>
+  
+  <!-- Step 2: Agent Processing -->
+  <g id="step2">
+    <rect x="200" y="280" width="300" height="70" class="ai"/>
+    <text x="350" y="310" class="step-text">Agent Processing</text>
+    <text x="350" y="335" class="step-desc">AI analyzes request and identifies tool need</text>
+  </g>
+  
+  <!-- Step 3: Tool Decision -->
+  <g id="step3">
+    <rect x="200" y="380" width="300" height="90" class="decision"/>
+    <text x="350" y="410" class="step-text">Tool Required?</text>
+    <text x="350" y="440" class="step-desc">Does the task require external tool/skill?</text>
+  </g>
+  
+  <!-- Region 2: Tool Discovery &amp; Selection -->
+  <rect x="600" y="140" width="400" height="400" class="region"/>
+  <text x="800" y="160" text-anchor="middle" class="region-title">Tool Discovery &amp; Selection</text>
+  
+  <!-- Step 4: Tool Registry -->
+  <g id="step4">
+    <rect x="650" y="180" width="300" height="70" class="system"/>
+    <text x="800" y="210" class="step-text">Tool Registry</text>
+    <text x="800" y="235" class="step-desc">Check available local tools and permissions</text>
+  </g>
+  
+  <!-- Step 5: MCP Tool Discovery -->
+  <g id="mcp-discovery">
+    <rect x="650" y="280" width="300" height="70" class="mcp"/>
+    <text x="800" y="310" class="step-text">MCP Tool Discovery</text>
+    <text x="800" y="335" class="step-desc">Discover tools via Model Context Protocol</text>
+  </g>
+  
+  <!-- Step 6: Tool Selection -->
+  <g id="step6">
+    <rect x="650" y="380" width="300" height="70" class="ai"/>
+    <text x="800" y="410" class="step-text">Tool Selection</text>
+    <text x="800" y="435" class="step-desc">Choose appropriate tool based on task &amp; MCP</text>
+  </g>
+  
+  <!-- Step 7: Approval Check -->
+  <g id="step7">
+    <rect x="650" y="480" width="300" height="90" class="decision"/>
+    <text x="800" y="510" class="step-text">Approval Required?</text>
+    <text x="800" y="540" class="step-desc">Does tool execution need human approval?</text>
+  </g>
+  
+  <!-- Region 3: MCP Servers -->
+  <rect x="1050" y="140" width="400" height="180" class="region"/>
+  <text x="1250" y="160" text-anchor="middle" class="region-title">MCP Infrastructure</text>
+  
+  <!-- MCP Server Component -->
+  <g id="mcp-server">
+    <rect x="1100" y="180" width="300" height="100" class="mcp"/>
+    <text x="1250" y="215" class="step-text">MCP Server</text>
+    <text x="1250" y="245" class="step-desc">Model Context Protocol tool &amp; context server</text>
+    <text x="1250" y="265" class="step-desc">(Osaurus, custom MCP, etc.)</text>
+  </g>
+  
+  <!-- Region 4: Execution &amp; Results -->
+  <rect x="150" y="560" width="900" height="450" class="region"/>
+  <text x="600" y="580" text-anchor="middle" class="region-title">Execution &amp; Results</text>
+  
+  <!-- Step 8: Approval Workflow -->
+  <g id="step8">
+    <rect x="200" y="620" width="300" height="70" class="system"/>
+    <text x="350" y="650" class="step-text">Approval Workflow</text>
+    <text x="350" y="675" class="step-desc">Wait for human approval before execution</text>
+  </g>
+  
+  <!-- Step 9: Tool Execution -->
+  <g id="step9">
+    <rect x="200" y="720" width="300" height="70" class="tool"/>
+    <text x="350" y="750" class="step-text">Tool Execution</text>
+    <text x="350" y="775" class="step-desc">Execute tool with provided parameters</text>
+  </g>
+  
+  <!-- Step 10: Result Processing -->
+  <g id="step10">
+    <rect x="550" y="720" width="300" height="70" class="ai"/>
+    <text x="700" y="750" class="step-text">Result Processing</text>
+    <text x="700" y="775" class="step-desc">Process tool output and integrate into response</text>
+  </g>
+  
+  <!-- Step 11: Response Generation -->
+  <g id="step11">
+    <rect x="550" y="620" width="300" height="70" class="ai"/>
+    <text x="700" y="650" class="step-text">Response Generation</text>
+    <text x="700" y="675" class="step-desc">Generate final response with tool results</text>
+  </g>
+  
+  <!-- Step 12: User Response -->
+  <g id="step12">
+    <rect x="900" y="720" width="300" height="70" class="user"/>
+    <text x="1050" y="750" class="step-text">User Response</text>
+    <text x="1050" y="775" class="step-desc">Receive final answer with tool execution results</text>
+  </g>
+  
+  <!-- Step 13: Direct Response (No tool path) -->
+  <g id="step13">
+    <rect x="200" y="850" width="300" height="70" class="ai"/>
+    <text x="350" y="880" class="step-text">Direct Response</text>
+    <text x="350" y="905" class="step-desc">Generate response without tool execution</text>
+  </g>
+  
+  <!-- Arrows -->
+  
+  <!-- Step 1 to 2 -->
+  <path d="M 350 250 L 350 280" class="arrow"/>
+  <text x="350" y="270" text-anchor="middle" class="arrow-text">User request</text>
+  
+  <!-- Step 2 to 3 -->
+  <path d="M 350 350 L 350 380" class="arrow"/>
+  <text x="350" y="370" text-anchor="middle" class="arrow-text">Analysis result</text>
+  
+  <!-- Decision: Yes path to Tool Registry -->
+  <path d="M 500 425 L 650 425 L 650 250" class="arrow"/>
+  <text x="575" y="420" text-anchor="middle" class="arrow-text">Yes</text>
+  
+  <!-- Decision: No path to Direct Response -->
+  <path d="M 350 470 L 350 520 L 200 520 L 200 850" class="arrow"/>
+  <text x="275" y="495" text-anchor="middle" class="arrow-text">No</text>
+  
+  <!-- Tool Registry to MCP Discovery -->
+  <path d="M 800 250 L 800 280" class="arrow"/>
+  <text x="800" y="270" text-anchor="middle" class="arrow-text">Local tools</text>
+  
+  <!-- MCP Server to MCP Discovery -->
+  <path d="M 1250 280 L 1250 315 L 800 315" class="arrow"/>
+  <text x="1025" y="310" text-anchor="middle" class="arrow-text">MCP protocol</text>
+  
+  <!-- MCP Discovery to Tool Selection -->
+  <path d="M 800 350 L 800 380" class="arrow"/>
+  <text x="800" y="370" text-anchor="middle" class="arrow-text">MCP tools</text>
+  
+  <!-- Tool Selection to Approval Check -->
+  <path d="M 800 450 L 800 480" class="arrow"/>
+  <text x="800" y="470" text-anchor="middle" class="arrow-text">Selected tool</text>
+  
+  <!-- Decision: No approval needed to Tool Execution -->
+  <path d="M 950 525 L 1050 525 L 1050 690 L 500 690 L 500 720" class="arrow"/>
+  <text x="775" y="610" text-anchor="middle" class="arrow-text">No approval needed</text>
+  
+  <!-- Decision: Approval required to Approval Workflow -->
+  <path d="M 800 570 L 800 620 L 350 620" class="arrow"/>
+  <text x="575" y="595" text-anchor="middle" class="arrow-text">Yes, approval required</text>
+  
+  <!-- Approval Workflow to Tool Execution -->
+  <path d="M 350 690 L 350 720" class="arrow"/>
+  <text x="350" y="710" text-anchor="middle" class="arrow-text">Approved</text>
+  
+  <!-- Tool Execution to Result Processing -->
+  <path d="M 500 755 L 550 755" class="arrow"/>
+  <text x="525" y="750" text-anchor="middle" class="arrow-text">Tool result</text>
+  
+  <!-- Result Processing to Response Generation -->
+  <path d="M 700 790 L 700 760 L 700 690" class="arrow"/>
+  <text x="700" y="725" text-anchor="middle" class="arrow-text">Processed result</text>
+  
+  <!-- Response Generation to User Response -->
+  <path d="M 850 655 L 900 655 L 900 755" class="arrow"/>
+  <text x="875" y="710" text-anchor="middle" class="arrow-text">Final response</text>
+  
+  <!-- Direct Response to User Response -->
+  <path d="M 500 885 L 1050 885 L 1050 790" class="arrow"/>
+  <text x="775" y="880" text-anchor="middle" class="arrow-text">Direct response</text>
+  
+  <!-- MCP Server to Tool Execution (for direct MCP tool calls) -->
+  <path d="M 1250 280 L 1250 755 L 500 755" class="arrow" stroke-dasharray="5,5"/>
+  <text x="875" y="520" text-anchor="middle" class="arrow-text">MCP tool execution</text>
+  
+  <!-- Notes Section -->
+  <rect x="150" y="1050" width="1300" height="100" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1" rx="10" ry="10"/>
+  
+  <!-- Tool Registry note -->
+  <g>
+    <rect x="180" y="1070" width="300" height="30" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1" rx="5" ry="5"/>
+    <text x="330" y="1090" text-anchor="middle" class="step-desc">Local tools: Web search, Calculator, File ops, APIs</text>
+  </g>
+  
+  <!-- MCP Tool Discovery note -->
+  <g>
+    <rect x="500" y="1070" width="300" height="30" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1" rx="5" ry="5"/>
+    <text x="650" y="1090" text-anchor="middle" class="step-desc">MCP tools: Discovered from Osaurus, custom MCP servers</text>
+  </g>
+  
+  <!-- Tool Execution note -->
+  <g>
+    <rect x="820" y="1070" width="300" height="30" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1" rx="5" ry="5"/>
+    <text x="970" y="1090" text-anchor="middle" class="step-desc">Execution: Sandboxed with timeout &amp; resource limits</text>
+  </g>
+  
+  <!-- MCP Server note -->
+  <g>
+    <rect x="1140" y="1070" width="300" height="30" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1" rx="5" ry="5"/>
+    <text x="1290" y="1090" text-anchor="middle" class="step-desc">MCP support: Protocol-based tool discovery &amp; execution</text>
+  </g>
+  
+  <!-- MCP Integration Highlights -->
+  <g>
+    <rect x="180" y="1110" width="1260" height="30" fill="#e8f6f3" stroke="#1abc9c" stroke-width="1" rx="5" ry="5"/>
+    <text x="810" y="1130" text-anchor="middle" class="step-desc" font-weight="bold">MCP Integration: Standardized tool discovery via protocol, external server support, enhanced tool ecosystem</text>
+  </g>
+  
+  <!-- Footer -->
+  <text x="800" y="1180" text-anchor="middle" class="subtitle">Figure 2: Tool Execution Workflow with MCP Integration - ZeroClaw Rust Core (Optimized Layout)</text>
+</svg>

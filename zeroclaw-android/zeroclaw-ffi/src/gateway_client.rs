@@ -16,8 +16,8 @@
 //! All calls go to `http://127.0.0.1:{gateway_port}{path}`.
 
 use crate::error::FfiError;
-use tracing::debug;
 use tokio::time::Duration;
+use tracing::debug;
 
 /// Timeout for gateway API calls (30 seconds).
 const API_TIMEOUT_SECS: u64 = 30;

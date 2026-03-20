@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="1400" height="900" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <style type="text/css">
+    <![CDATA[
+      .title {
+        font-family: Arial, sans-serif;
+        font-size: 24px;
+        font-weight: bold;
+        fill: #2c3e50;
+      }
+      .subtitle {
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        fill: #7f8c8d;
+      }
+      .step {
+        fill: #3498db;
+        stroke: #2980b9;
+        stroke-width: 2;
+        rx: 10;
+        ry: 10;
+      }
+      .step-text {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        fill: white;
+        font-weight: bold;
+        text-anchor: middle;
+      }
+      .step-desc {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        fill: #2c3e50;
+        text-anchor: middle;
+      }
+      .arrow {
+        fill: none;
+        stroke: #7f8c8d;
+        stroke-width: 2;
+        marker-end: url(#arrowhead);
+      }
+      .arrow-text {
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        fill: #7f8c8d;
+      }
+      .user {
+        fill: #2ecc71;
+        stroke: #27ae60;
+      }
+      .system {
+        fill: #e74c3c;
+        stroke: #c0392b;
+      }
+      .ai {
+        fill: #9b59b6;
+        stroke: #8e44ad;
+      }
+      .tool {
+        fill: #e67e22;
+        stroke: #d35400;
+      }
+      .decision {
+        fill: #1abc9c;
+        stroke: #16a085;
+      }
+      .legend-box {
+        fill: #ecf0f1;
+        stroke: #bdc3c7;
+        stroke-width: 1;
+        rx: 5;
+        ry: 5;
+      }
+      .legend-text {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        fill: #2c3e50;
+      }
+      .yes {
+        fill: #2ecc71;
+      }
+      .no {
+        fill: #e74c3c;
+      }
+    ]]>
+  </style>
+  
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7f8c8d"/>
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="700" y="40" text-anchor="middle" class="title">ZeroClaw Tool Execution Workflow</text>
+  <text x="700" y="65" text-anchor="middle" class="subtitle">AI agent tool/skill invocation and execution flow</text>
+  
+  <!-- Legend -->
+  <rect x="50" y="80" width="250" height="140" class="legend-box"/>
+  <text x="175" y="100" text-anchor="middle" class="legend-text" font-weight="bold">Component Types</text>
+  
+  <rect x="70" y="115" width="20" height="20" class="user"/>
+  <text x="100" y="130" class="legend-text">User/Client</text>
+  
+  <rect x="70" y="140" width="20" height="20" class="system"/>
+  <text x="100" y="155" class="legend-text">System Component</text>
+  
+  <rect x="70" y="165" width="20" height="20" class="ai"/>
+  <text x="100" y="180" class="legend-text">AI Component</text>
+  
+  <rect x="70" y="190" width="20" height="20" class="tool"/>
+  <text x="100" y="205" class="legend-text">Tool/Skill</text>
+  
+  <rect x="70" y="215" width="20" height="20" class="decision"/>
+  <text x="100" y="230" class="legend-text">Decision Point</text>
+  
+  <!-- Workflow Steps -->
+  
+  <!-- Step 1: User Request -->
+  <g id="step1">
+    <rect x="100" y="250" width="200" height="60" class="user"/>
+    <text x="200" y="275" class="step-text">User Request</text>
+    <text x="200" y="295" class="step-desc">User asks question requiring</text>
+    <text x="200" y="310" class="step-desc">tool execution</text>
+  </g>
+  
+  <!-- Step 2: Agent Processing -->
+  <g id="step2">
+    <rect x="100" y="350" width="200" height="60" class="ai"/>
+    <text x="200" y="375" class="step-text">Agent Processing</text>
+    <text x="200" y="395" class="step-desc">AI analyzes request and</text>
+    <text x="200" y="410" class="step-desc">identifies need for tool</text>
+  </g>
+  
+  <!-- Step 3: Tool Decision -->
+  <g id="step3">
+    <rect x="100" y="450" width="200" height="80" class="decision"/>
+    <text x="200" y="475" class="step-text">Tool Required?</text>
+    <text x="200" y="500" class="step-desc">Does the task require</text>
+    <text x="200" y="515" class="step-desc">external tool/skill?</text>
+  </g>
+  
+  <!-- Yes path -->
+  <g id="step4">
+    <rect x="350" y="450" width="200" height="60" class="system"/>
+    <text x="450" y="475" class="step-text">Tool Registry</text>
+    <text x="450" y="495" class="step-desc">Check available tools</text>
+    <text x="450" y="510" class="step-desc">and permissions</text>
+  </g>
+  
+  <!-- Step 5: Tool Selection -->
+  <g id="step5">
+    <rect x="350" y="550" width="200" height="60" class="ai"/>
+    <text x="450" y="575" class="step-text">Tool Selection</text>
+    <text x="450" y="595" class="step-desc">Choose appropriate tool</text>
+    <text x="450" y="610" class="step-desc">based on task</text>
+  </g>
+  
+  <!-- Step 6: Approval Check -->
+  <g id="step6">
+    <rect x="350" y="650" width="200" height="80" class="decision"/>
+    <text x="450" y="675" class="step-text">Approval Required?</text>
+    <text x="450" y="700" class="step-desc">Does tool execution need</text>
+    <text x="450" y="715" class="step-desc">human approval?</text>
+  </g>
+  
+  <!-- Step 7: Tool Execution -->
+  <g id="step7">
+    <rect x="600" y="650" width="200" height="60" class="tool"/>
+    <text x="700" y="675" class="step-text">Tool Execution</text>
+    <text x="700" y="695" class="step-desc">Execute tool with</text>
+    <text x="700" y="710" class="step-desc">provided parameters</text>
+  </g>
+  
+  <!-- Step 8: Result Processing -->
+  <g id="step8">
+    <rect x="600" y="550" width="200" height="60" class="ai"/>
+    <text x="700" y="575" class="step-text">Result Processing</text>
+    <text x="700" y="595" class="step-desc">Process tool output and</text>
+    <text x="700" y="610" class="step-desc">integrate into response</text>
+  </g>
+  
+  <!-- Step 9: Response Generation -->
+  <g id="step9">
+    <rect x="850" y="550" width="200" height="60" class="ai"/>
+    <text x="950" y="575" class="step-text">Response Generation</text>
+    <text x="950" y="595" class="step-desc">Generate final response</text>
+    <text x="950" y="610" class="step-desc">with tool results</text>
+  </g>
+  
+  <!-- Step 10: User Response -->
+  <g id="step10">
+    <rect x="850" y="450" width="200" height="60" class="user"/>
+    <text x="950" y="475" class="step-text">User Response</text>
+    <text x="950" y="495" class="step-desc">Receive final answer</text>
+    <text x="950" y="510" class="step-desc">with tool execution results</text>
+  </g>
+  
+  <!-- No tool path -->
+  <g id="step11">
+    <rect x="100" y="600" width="200" height="60" class="ai"/>
+    <text x="200" y="625" class="step-text">Direct Response</text>
+    <text x="200" y="645" class="step-desc">Generate response without</text>
+    <text x="200" y="660" class="step-desc">tool execution</text>
+  </g>
+  
+  <!-- Approval required path -->
+  <g id="step12">
+    <rect x="600" y="450" width="200" height="60" class="system"/>
+    <text x="700" y="475" class="step-text">Approval Workflow</text>
+    <text x="700" y="495" class="step-desc">Wait for human approval</text>
+    <text x="700" y="510" class="step-desc">before execution</text>
+  </g>
+  
+  <!-- Arrows -->
+  
+  <!-- Step 1 to 2 -->
+  <path d="M 200 310 L 200 350" class="arrow"/>
+  <text x="200" y="335" text-anchor="middle" class="arrow-text">User request</text>
+  
+  <!-- Step 2 to 3 -->
+  <path d="M 200 410 L 200 450" class="arrow"/>
+  <text x="200" y="435" text-anchor="middle" class="arrow-text">Analysis result</text>
+  
+  <!-- Decision: Yes to Tool Registry -->
+  <path d="M 300 490 L 350 490" class="arrow"/>
+  <text x="325" y="485" text-anchor="middle" class="arrow-text">Yes</text>
+  
+  <!-- Tool Registry to Tool Selection -->
+  <path d="M 450 510 L 450 550" class="arrow"/>
+  <text x="450" y="535" text-anchor="middle" class="arrow-text">Available tools</text>
+  
+  <!-- Tool Selection to Approval Check -->
+  <path d="M 450 610 L 450 650" class="arrow"/>
+  <text x="450" y="635" text-anchor="middle" class="arrow-text">Selected tool</text>
+  
+  <!-- Decision: No approval needed -->
+  <path d="M 550 690 L 600 690" class="arrow"/>
+  <text x="575" y="685" text-anchor="middle" class="arrow-text">No</text>
+  
+  <!-- Tool Execution to Result Processing -->
+  <path d="M 700 710 L 700 550" class="arrow"/>
+  <text x="700" y="630" text-anchor="middle" class="arrow-text">Tool result</text>
+  
+  <!-- Result Processing to Response Generation -->
+  <path d="M 800 580 L 850 580" class="arrow"/>
+  <text x="825" y="575" text-anchor="middle" class="arrow-text">Processed result</text>
+  
+  <!-- Response Generation to User Response -->
+  <path d="M 950 610 L 950 450" class="arrow"/>
+  <text x="950" y="530" text-anchor="middle" class="arrow-text">Final response</text>
+  
+  <!-- Decision: Approval required -->
+  <path d="M 450 730 L 450 780 L 700 780 L 700 510" class="arrow"/>
+  <text x="575" y="765" text-anchor="middle" class="arrow-text">Yes</text>
+  
+  <!-- Approval Workflow to Tool Execution -->
+  <path d="M 700 510 L 700 650" class="arrow"/>
+  <text x="700" y="580" text-anchor="middle" class="arrow-text">Approved</text>
+  
+  <!-- Decision: No tool needed -->
+  <path d="M 200 530 L 200 600" class="arrow"/>
+  <text x="200" y="565" text-anchor="middle" class="arrow-text">No</text>
+  
+  <!-- Direct Response to User Response -->
+  <path d="M 200 660 L 200 700 L 950 700 L 950 510" class="arrow"/>
+  <text x="575" y="695" text-anchor="middle" class="arrow-text">Direct response</text>
+  
+  <!-- Tool Registry note -->
+  <g>
+    <rect x="320" y="380" width="260" height="50" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1" rx="5" ry="5"/>
+    <text x="450" y="400" text-anchor="middle" class="step-desc">Tools: Web search, Calculator,</text>
+    <text x="450" y="415" text-anchor="middle" class="step-desc">File operations, APIs, etc.</text>
+  </g>
+  
+  <!-- Tool Execution note -->
+  <g>
+    <rect x="570" y="580" width="260" height="50" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1" rx="5" ry="5"/>
+    <text x="700" y="600" text-anchor="middle" class="step-desc">Sandboxed execution with</text>
+    <text x="700" y="615" text-anchor="middle" class="step-desc">timeout &amp; resource limits</text>
+  </g>
+  
+  <!-- Footer -->
+  <text x="700" y="850" text-anchor="middle" class="subtitle">Figure 2: Tool Execution Workflow - ZeroClaw Rust Core</text>
+</svg>

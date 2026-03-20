@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="1400" height="1000" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <style type="text/css">
+    <![CDATA[
+      .title {
+        font-family: Arial, sans-serif;
+        font-size: 24px;
+        font-weight: bold;
+        fill: #2c3e50;
+      }
+      .subtitle {
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        fill: #7f8c8d;
+      }
+      .step {
+        fill: #3498db;
+        stroke: #2980b9;
+        stroke-width: 2;
+        rx: 10;
+        ry: 10;
+      }
+      .step-text {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        fill: white;
+        font-weight: bold;
+        text-anchor: middle;
+      }
+      .step-desc {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        fill: #2c3e50;
+        text-anchor: middle;
+      }
+      .arrow {
+        fill: none;
+        stroke: #7f8c8d;
+        stroke-width: 2;
+        marker-end: url(#arrowhead);
+      }
+      .arrow-text {
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        fill: #7f8c8d;
+      }
+      .user {
+        fill: #2ecc71;
+        stroke: #27ae60;
+      }
+      .system {
+        fill: #e74c3c;
+        stroke: #c0392b;
+      }
+      .ai {
+        fill: #9b59b6;
+        stroke: #8e44ad;
+      }
+      .hardware {
+        fill: #d35400;
+        stroke: #a93226;
+      }
+      .safety {
+        fill: #c0392b;
+        stroke: #922b21;
+      }
+      .monitoring {
+        fill: #16a085;
+        stroke: #138d75;
+      }
+      .legend-box {
+        fill: #ecf0f1;
+        stroke: #bdc3c7;
+        stroke-width: 1;
+        rx: 5;
+        ry: 5;
+      }
+      .legend-text {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        fill: #2c3e50;
+      }
+    ]]>
+  </style>
+  
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7f8c8d"/>
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="700" y="40" text-anchor="middle" class="title">ZeroClaw Robot Control Workflow</text>
+<｜DSML｜parameter name="content" string="true">  <text x="700" y="65" text-anchor="middle" class="subtitle">Hardware control and robotics execution flow</text>
+  
+  <!-- Legend -->
+  <rect x="50" y="80" width="280" height="160" class="legend-box"/>
+  <text x="190" y="100" text-anchor="middle" class="legend-text" font-weight="bold">Component Types</text>
+  
+  <rect x="70" y="115" width="20" height="20" class="user"/>
+  <text x="100" y="130" class="legend-text">User/Client</text>
+  
+  <rect x="70" y="140" width="20" height="20" class="system"/>
+  <text x="100" y="155" class="legend-text">System Component</text>
+  
+  <rect x="70" y="165" width="20" height="20" class="ai"/>
+  <text x="100" y="180" class="legend-text">AI Component</text>
+  
+  <rect x="70" y="190" width="20" height="20" class="hardware"/>
+  <text x="100" y="205" class="legend-text">Hardware Control</text>
+  
+  <rect x="70" y="215" width="20" height="20" class="safety"/>
+  <text x="100" y="230" class="legend-text">Safety System</text>
+  
+  <rect x="70" y="240" width="20" height="20" class="monitoring"/>
+  <text x="100" y="255" class="legend-text">Monitoring</text>
+  
+  <!-- Workflow Steps -->
+  
+  <!-- Left column: Command Processing -->
+  <g id="command-header">
+    <rect x="100" y="270" width="350" height="40" fill="#2c3e50" rx="5" ry="5"/>
+    <text x="275" y="295" text-anchor="middle" class="step-text">Command Processing &amp; Safety</text>
+  </g>
+  
+  <!-- Step 1: User Command -->
+  <g id="step1">
+    <rect x="100" y="330" width="350" height="60" class="user"/>
+    <text x="275" y="355" class="step-text">User Command</text>
+    <text x="275" y="375" class="step-desc">"Move forward", "Pick up object",</text>
+    <text x="275" y="390" class="step-desc">"Take photo", etc.</text>
+  </g>
+  
+  <!-- Step 2: Command Parsing -->
+  <g id="step2">
+    <rect x="100" y="410" width="350" height="60" class="ai"/>
+    <text x="275" y="435" class="step-text">Command Parsing</text>
+    <text x="275" y="455" class="step-desc">Natural language to</text>
+    <text x="275" y="470" class="step-desc">action sequence</text>
+  </g>
+  
+  <!-- Step 3: Safety Check -->
+  <g id="step3">
+    <rect x="100" y="490" width="350" height="60" class="safety"/>
+    <text x="275" y="515" class="step-text">Safety Validation</text>
+    <text x="275" y="535" class="step-desc">Check for dangerous</text>
+    <text x="275" y="550" class="step-desc">or impossible actions</text>
+  </g>
+  
+  <!-- Step 4: Hardware Check -->
+  <g id="step4">
+    <rect x="100" y="570" width="350" height="60" class="system"/>
+    <text x="275" y="595" class="step-text">Hardware Status Check</text>
+    <text x="275" y="615" class="step-desc">Verify hardware</text>
+    <text x="275" y="630" class="step-desc">connectivity &amp; status</text>
+  </g>
+  
+  <!-- Step 5: Approval Check -->
+  <g id="step5">
+    <rect x="100" y="650" width="350" height="80" class="system"/>
+    <text x="275" y="675" class="step-text">Approval &amp; Confirmation</text>
+    <text x="275" y="705" class="step-desc">Require confirmation for</text>
+    <text x="275" y="720" class="step-desc">high-risk operations</text>
+  </g>
+  
+  <!-- Middle column: Execution -->
+  <g id="execution-header">
+    <rect x="500" y="270" width="350" height="40" fill="#2c3e50" rx="5" ry="5"/>
+    <text x="675" y="295" text-anchor="middle" class="step-text">Execution &amp; Control</text>
+  </g>
+  
+  <!-- Step 6: Motion Planning -->
+  <g id="step6">
+    <rect x="500" y="330" width="350" height="60" class="ai"/>
+    <text x="675" y="355" class="step-text">Motion Planning</text>
+    <text x="675" y="375" class="step-desc">Generate trajectory</text>
+    <text x="675" y="390" class="step-desc">and movement sequence</text>
+  </g>
+  
+  <!-- Step 7: Control Generation -->
+  <g id="step7">
+    <rect x="500" y="410" width="350" height="60" class="hardware"/>
+    <text x="675" y="435" class="step-text">Control Generation</text>
+    <text x="675" y="455" class="step-desc">Create hardware-specific</text>
+    <text x="675" y="470" class="step-desc">control commands</text>
+  </g>
+  
+  <!-- Step 8: Hardware Interface -->
+  <g id="step8">
+    <rect x="500" y="490" width="350" height="60" class="hardware"/>
+    <text x="675" y="515" class="step-text">Hardware Interface</text>
+    <text x="675" y="535" class="step-desc">Communicate with</text>
+    <text x="675" y="550" class="step-desc">robot hardware</text>
+  </g>
+  
+  <!-- Step 9: Execution Monitoring -->
+  <g id="step9">
+    <rect x="500" y="570" width="350" height="60" class="monitoring"/>
+    <text x="675" y="595" class="step-text">Execution Monitoring</text>
+    <text x="675" y="615" class="step-desc">Monitor execution</text>
+    <text x="675" y="630" class="step-desc">progress &amp; status</text>
+  </g>
+  
+  <!-- Step 10: Result Collection -->
+  <g id="step10">
+    <rect x="500" y="650" width="350" height="60" class="system"/>
+    <text x="675" y="675" class="step-text">Result Collection</text>
+    <text x="675" y="695" class="step-desc">Collect execution</text>
+    <text x="675" y="710" class="step-desc">results and sensor data</text>
+  </g>
+  
+  <!-- Right column: Response &amp; Feedback -->
+  <g id="response-header">
+    <rect x="900" y="270" width="350" height="40" fill="#2c3e50" rx="5" ry="5"/>
+    <text x="1075" y="295" text-anchor="middle" class="step-text">Response &amp; Feedback</text>
+  </g>
+  
+  <!-- Step 11: Result Processing -->
+  <g id="step11">
+    <rect x="900" y="330" width="350" height="60" class="ai"/>
+    <text x="1075" y="355" class="step-text">Result Processing</text>
+    <text x="1075" y="375" class="step-desc">Analyze execution</text>
+    <text x="1075" y="390" class="step-desc">results and sensor data</text>
+  </g>
+  
+  <!-- Step 12: Status Update -->
+  <g id="step12">
+    <rect x="900" y="410" width="350" height="60" class="system"/>
+    <text x="1075" y="435" class="step-text">Status Update</text>
+    <text x="1075" y="455" class="step-desc">Update hardware</text>
+    <text x="1075" y="470" class="step-desc">status and state</text>
+  </g>
+  
+  <!-- Step 13: User Feedback -->
+  <g id="step13">
+    <rect x="900" y="490" width="350" height="60" class="user"/>
+    <text x="1075" y="515" class="step-text">User Feedback</text>
+    <text x="1075" y="535" class="step-desc">Provide execution</text>
+    <text x="1075" y="550" class="step-desc">results to user</text>
+  </g>
+  
+  <!-- Step 14: Learning &amp; Improvement -->
+  <g id="step14">
+    <rect x="900" y="570" width="350" height="60" class="ai"/>
+    <text x="1075" y="595" class="step-text">Learning &amp; Improvement</text>
+    <text x="1075" y="615" class="step-desc">Learn from execution</text>
+    <text x="1075" y="630" class="step-desc">for future optimizations</text>
+  </g>
+  
+  <!-- Hardware Components -->
+  
+  <!-- Robot Hardware -->
+  <g id="robot-hardware">
+    <rect x="550" y="740" width="250" height="80" class="hardware"/>
+    <text x="675" y="765" class="step-text">Robot Hardware</text>
+    <text x="675" y="785" class="step-desc">Motors, sensors, cameras,</text>
+    <text x="675" y="800" class="step-desc">actuators, controllers</text>
+  </g>
+  
+  <!-- Emergency Stop -->
+  <g id="emergency-stop">
+    <rect x="300" y="740" width="150" height="60" class="safety"/>
+    <text x="375" y="765" class="step-text">Emergency Stop</text>
+    <text x="375" y="785" class="step-desc">Hardware safety</text>
+  </g>
+  
+  <!-- Sensor Data -->
+  <g id="sensor-data">
+    <rect x="900" y="740" width="250" height="60" class="monitoring"/>
+    <text x="1025" y="765" class="step-text">Sensor Data</text>
+    <text x="1025" y="785" class="step-desc">Camera feeds, lidar,</text>
+    <text x="1025" y="800" class="step-desc">position sensors</text>
+  </g>
+  
+  <!-- Arrows -->
+  
+  <!-- User Command to Parsing -->
+  <path d="M 275 390 L 275 410" class="arrow"/>
+  <text x="275" y="405" text-anchor="middle" class="arrow-text">Natural language command</text>
+  
+  <!-- Parsing to Safety -->
+  <path d="M 275 470 L 275 490" class="arrow"/>
+  <text x="275" y="485" text-anchor="middle" class="arrow-text">Action sequence</text>
+  
+  <!-- Safety to Hardware Check -->
+  <path d="M 275 550 L 275 570" class="arrow"/>
+  <text x="275" y="565" text-anchor="middle" class="arrow-text">Validated actions</text>
+  
+  <!-- Hardware Check to Approval -->
+  <path d="M 275 630 L 275 650" class="arrow"/>
+  <text x="275" y="645" text-anchor="middle" class="arrow-text">Hardware status</text>
+  
+  <!-- Approval to Motion Planning -->
+  <path d="M 450 690 L 500 690 L 500 390" class="arrow"/>
+  <text x="475" y="685" text-anchor="middle" class="arrow-text">Approved actions</text>
+  
+  <!-- Motion Planning to Control Generation -->
+  <path d="M 675 390 L 675 410" class="arrow"/>
+  <text x="675" y="405" text-anchor="middle" class="arrow-text">Motion plan</text>
+  
+  <!-- Control Generation to Hardware Interface -->
+  <path d="M 675 470 L 675 490" class="arrow"/>
+  <text x="675" y="485" text-anchor="middle" class="arrow-text">Control commands</text>
+  
+  <!-- Hardware Interface to Robot -->
+  <path d="M 675 550 L 675 740" class="arrow"/>
+  <text x="675" y="645" text-anchor="middle" class="arrow-text">Hardware commands</text>
+  
+  <!-- Robot to Execution Monitoring -->
+  <path d="M 675 820 L 675 570" class="arrow"/>
+  <text x="675" y="695" text-anchor="middle" class="arrow-text">Execution status</text>
+  
+  <!-- Execution Monitoring to Result Collection -->
+  <path d="M 675 630 L 675 650" class="arrow"/>
+  <text x="675" y="645" text-anchor="middle" class="arrow-text">Monitoring data</text>
+  
+  <!-- Result Collection to Result Processing -->
+  <path d="M 850 680 L 900 680 L 900 390" class="arrow"/>
+  <text x="875" y="675" text-anchor="middle" class="arrow-text">Execution results</text>
+  
+  <!-- Result Processing to Status Update -->
+  <path d="M 1075 390 L 1075 410" class="arrow"/>
+  <text x="1075" y="405" text-anchor="middle" class="arrow-text">Processed results</text>
+  
+  <!-- Status Update to User Feedback -->
+  <path d="M 1075 470 L 1075 490" class="arrow"/>
+  <text x="1075" y="485" text-anchor="middle" class="arrow-text">Status update</text>
+  
+  <!-- User Feedback to Learning -->
+  <path d="M 1075 550 L 1075 570" class="arrow"/>
+  <text x="1075" y="565" text-anchor="middle" class="arrow-text">Feedback data</text>
+  
+  <!-- Emergency Stop to Hardware Interface -->
+  <path d="M 450 770 L 500 770 L 500 550" class="arrow"/>
+  <text x="475" y="765" text-anchor="middle" class="arrow-text">Emergency stop</text>
+  
+  <!-- Sensor Data to Result Collection -->
+  <path d="M 1025 800 L 1025 710 L 850 710" class="arrow"/>
+  <text x="940" y="755" text-anchor="middle" class="arrow-text">Sensor readings</text>
+  
+  <!-- Hardware Types -->
+  <g>
+    <rect x="100" y="180" width="400" height="50" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1" rx="5" ry="5"/>
+    <text x="300" y="200" text-anchor="middle" class="step-desc">Supported hardware: Arduino, Raspberry Pi, ESP32,</text>
+    <text x="300" y="215" text-anchor="middle" class="step-desc">Robot kits, 3D printers, IoT devices</text>
+  </g>
+  
+  <!-- Footer -->
+  <text x="700" y="920" text-anchor="middle" class="subtitle">Figure 4: Robot Control Workflow - ZeroClaw Rust Core</text>
+</svg>

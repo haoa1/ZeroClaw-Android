@@ -303,6 +303,11 @@ pub(crate) fn start_daemon_inner(
         tracing::debug!("Android logger initialized with log_level={}", log_level);
     }
 
+    log::info!(
+        "start_daemon: config_toml\n{}",
+        config_toml
+    );
+
     let data_path = PathBuf::from(&data_dir);
     config.workspace_dir = data_path.join("workspace");
     config.config_path = data_path.join("config.toml");
@@ -531,31 +536,25 @@ pub(crate) fn send_message_inner(message: String) -> Result<String, FfiError> {
             ),
         });
     }
-
+    log::info!("send_message_inner: {}", message);
     // Send via the gateway HTTP webhook endpoint so that all UI-driven message
     // sends go through the same API surface as other gateway operations.
     // This keeps the Android-side call path consistent with `gateway_client`.
     let body = serde_json::json!({ "message": message });
     let response = gateway_client::gateway_post("/webhook", &body)?;
-
+    log::info!("send_message_inner: response: {:?}", response);
     // The gateway returns JSON like {"response": "...", "model": "..."}
     // Extract the response string.
     match response.get("response") {
         Some(serde_json::Value::String(s)) => Ok(s.clone()),
         Some(other) => Err(FfiError::SpawnError {
-            detail: format!(
-                "gateway /webhook returned non-string response: {other:?}"
-            ),
+            detail: format!("gateway /webhook returned non-string response: {other:?}"),
         }),
         None => Err(FfiError::SpawnError {
-            detail: format!(
-                "gateway /webhook missing response field: {response:?}"
-            ),
+            detail: format!("gateway /webhook missing response field: {response:?}"),
         }),
     }
 }
-
-
 
 /// Writes an FFI health snapshot JSON to disk every 5 seconds.
 fn spawn_state_writer(config: Config) -> JoinHandle<()> {

@@ -20,9 +20,7 @@ use rhai::packages::{CorePackage, Package};
 use rhai::{Array, Dynamic, Engine, EvalAltResult};
 
 use crate::error::FfiError;
-use crate::{
-    auth_profiles, events, gateway_client, models, runtime, vision,
-};
+use crate::{auth_profiles, events, gateway_client, models, runtime, vision};
 
 /// Lazily initialised Rhai engine with all gateway functions registered.
 static ENGINE: OnceLock<Mutex<Engine>> = OnceLock::new();
@@ -156,8 +154,8 @@ fn build_engine() -> Engine {
     engine.register_fn(
         "health_component",
         |name: String| -> Result<String, Box<EvalAltResult>> {
-            let response = gateway_client::gateway_get(&format!("/api/health/{name}"))
-                .map_err(ffi_err)?;
+            let response =
+                gateway_client::gateway_get(&format!("/api/health/{name}")).map_err(ffi_err)?;
             serde_json::to_string(&response)
                 .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
         },
@@ -187,8 +185,9 @@ fn build_engine() -> Engine {
         let year = chrono::Datelike::year(&today);
         let month = chrono::Datelike::month(&today);
         let day = chrono::Datelike::day(&today);
-        let response = gateway_client::gateway_get(&format!("/api/cost/daily/{year}/{month}/{day}"))
-            .map_err(ffi_err)?;
+        let response =
+            gateway_client::gateway_get(&format!("/api/cost/daily/{year}/{month}/{day}"))
+                .map_err(ffi_err)?;
         let value = response
             .as_f64()
             .ok_or_else(|| -> Box<EvalAltResult> { "invalid cost value".into() })?;
@@ -198,8 +197,9 @@ fn build_engine() -> Engine {
     engine.register_fn(
         "cost_daily",
         |year: i64, month: i64, day: i64| -> Result<Dynamic, Box<EvalAltResult>> {
-            let response = gateway_client::gateway_get(&format!("/api/cost/daily/{year}/{month}/{day}"))
-                .map_err(ffi_err)?;
+            let response =
+                gateway_client::gateway_get(&format!("/api/cost/daily/{year}/{month}/{day}"))
+                    .map_err(ffi_err)?;
             let value = response
                 .as_f64()
                 .ok_or_else(|| -> Box<EvalAltResult> { "invalid cost value".into() })?;
@@ -222,8 +222,9 @@ fn build_engine() -> Engine {
     engine.register_fn(
         "cost_monthly",
         |year: i64, month: i64| -> Result<Dynamic, Box<EvalAltResult>> {
-            let response = gateway_client::gateway_get(&format!("/api/cost/monthly/{year}/{month}"))
-                .map_err(ffi_err)?;
+            let response =
+                gateway_client::gateway_get(&format!("/api/cost/monthly/{year}/{month}"))
+                    .map_err(ffi_err)?;
             let value = response
                 .as_f64()
                 .ok_or_else(|| -> Box<EvalAltResult> { "invalid cost value".into() })?;
@@ -235,7 +236,8 @@ fn build_engine() -> Engine {
         "budget",
         |estimated: f64| -> Result<String, Box<EvalAltResult>> {
             let body = serde_json::json!({ "estimated_cost_usd": estimated });
-            let response = gateway_client::gateway_post("/api/budget/check", &body).map_err(ffi_err)?;
+            let response =
+                gateway_client::gateway_post("/api/budget/check", &body).map_err(ffi_err)?;
             serde_json::to_string(&response)
                 .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
         },
@@ -263,7 +265,8 @@ fn build_engine() -> Engine {
     engine.register_fn(
         "cron_get",
         |id: String| -> Result<String, Box<EvalAltResult>> {
-            let response = gateway_client::gateway_get(&format!("/api/cron/{id}")).map_err(ffi_err)?;
+            let response =
+                gateway_client::gateway_get(&format!("/api/cron/{id}")).map_err(ffi_err)?;
             serde_json::to_string(&response)
                 .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
         },
@@ -289,7 +292,8 @@ fn build_engine() -> Engine {
                 "delay": delay,
                 "command": command,
             });
-            let response = gateway_client::gateway_post("/api/cron/oneshot", &body).map_err(ffi_err)?;
+            let response =
+                gateway_client::gateway_post("/api/cron/oneshot", &body).map_err(ffi_err)?;
             serde_json::to_string(&response)
                 .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
         },
@@ -315,7 +319,8 @@ fn build_engine() -> Engine {
                 "interval_ms": ms,
                 "command": command,
             });
-            let response = gateway_client::gateway_post("/api/cron/every", &body).map_err(ffi_err)?;
+            let response =
+                gateway_client::gateway_post("/api/cron/every", &body).map_err(ffi_err)?;
             serde_json::to_string(&response)
                 .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
         },
@@ -333,7 +338,8 @@ fn build_engine() -> Engine {
         "cron_pause",
         |id: String| -> Result<String, Box<EvalAltResult>> {
             let body = serde_json::json!({});
-            gateway_client::gateway_post(&format!("/api/cron/{id}/pause"), &body).map_err(ffi_err)?;
+            gateway_client::gateway_post(&format!("/api/cron/{id}/pause"), &body)
+                .map_err(ffi_err)?;
             Ok("ok".into())
         },
     );
@@ -342,7 +348,8 @@ fn build_engine() -> Engine {
         "cron_resume",
         |id: String| -> Result<String, Box<EvalAltResult>> {
             let body = serde_json::json!({});
-            gateway_client::gateway_post(&format!("/api/cron/{id}/resume"), &body).map_err(ffi_err)?;
+            gateway_client::gateway_post(&format!("/api/cron/{id}/resume"), &body)
+                .map_err(ffi_err)?;
             Ok("ok".into())
         },
     );
@@ -396,8 +403,9 @@ fn build_engine() -> Engine {
         "memories",
         |limit: i64| -> Result<String, Box<EvalAltResult>> {
             #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
-            let response = gateway_client::gateway_get(&format!("/api/memories?limit={}", limit as u32))
-                .map_err(ffi_err)?;
+            let response =
+                gateway_client::gateway_get(&format!("/api/memories?limit={}", limit as u32))
+                    .map_err(ffi_err)?;
             serde_json::to_string(&response)
                 .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
         },
@@ -426,8 +434,8 @@ fn build_engine() -> Engine {
                 "query": query,
                 "limit": limit as u32,
             });
-            let response = gateway_client::gateway_post("/api/memories/recall", &body)
-                .map_err(ffi_err)?;
+            let response =
+                gateway_client::gateway_post("/api/memories/recall", &body).map_err(ffi_err)?;
             serde_json::to_string(&response)
                 .map_err(|e| -> Box<EvalAltResult> { format!("serialisation failed: {e}").into() })
         },
@@ -437,8 +445,8 @@ fn build_engine() -> Engine {
         "memory_forget",
         |key: String| -> Result<bool, Box<EvalAltResult>> {
             let body = serde_json::json!({ "key": key });
-            let response = gateway_client::gateway_post("/api/memories/forget", &body)
-                .map_err(ffi_err)?;
+            let response =
+                gateway_client::gateway_post("/api/memories/forget", &body).map_err(ffi_err)?;
             Ok(response.as_bool().unwrap_or(false))
         },
     );

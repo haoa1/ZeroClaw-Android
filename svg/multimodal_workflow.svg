@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="1400" height="1000" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <style type="text/css">
+    <![CDATA[
+      .title {
+        font-family: Arial, sans-serif;
+        font-size: 24px;
+        font-weight: bold;
+        fill: #2c3e50;
+      }
+      .subtitle {
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        fill: #7f8c8d;
+      }
+      .step {
+        fill: #3498db;
+        stroke: #2980b9;
+        stroke-width: 2;
+        rx: 10;
+        ry: 10;
+      }
+      .step-text {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        fill: white;
+        font-weight: bold;
+        text-anchor: middle;
+      }
+      .step-desc {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        fill: #2c3e50;
+        text-anchor: middle;
+      }
+      .arrow {
+        fill: none;
+        stroke: #7f8c8d;
+        stroke-width: 2;
+        marker-end: url(#arrowhead);
+      }
+      .arrow-text {
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        fill: #7f8c8d;
+      }
+      .user {
+        fill: #2ecc71;
+        stroke: #27ae60;
+      }
+      .system {
+        fill: #e74c3c;
+        stroke: #c0392b;
+      }
+      .ai {
+        fill: #9b59b6;
+        stroke: #8e44ad;
+      }
+      .multimodal {
+        fill: #d35400;
+        stroke: #a93226;
+      }
+      .storage {
+        fill: #f39c12;
+        stroke: #d35400;
+      }
+      .legend-box {
+        fill: #ecf0f1;
+        stroke: #bdc3c7;
+        stroke-width: 1;
+        rx: 5;
+        ry: 5;
+      }
+      .legend-text {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        fill: #2c3e50;
+      }
+    ]]>
+  </style>
+  
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7f8c8d"/>
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="700" y="40" text-anchor="middle" class="title">ZeroClaw Multimodal Processing Workflow</text>
+  <text x="700" y="65" text-anchor="middle" class="subtitle">Handling images, audio, files and other multimodal inputs</text>
+  
+  <!-- Legend -->
+  <rect x="50" y="80" width="250" height="140" class="legend-box"/>
+  <text x="175" y="100" text-anchor="middle" class="legend-text" font-weight="bold">Component Types</text>
+  
+  <rect x="70" y="115" width="20" height="20" class="user"/>
+  <text x="100" y="130" class="legend-text">User/Client</text>
+  
+  <rect x="70" y="140" width="20" height="20" class="system"/>
+  <text x="100" y="155" class="legend-text">System Component</text>
+  
+  <rect x="70" y="165" width="20" height="20" class="ai"/>
+  <text x="100" y="180" class="legend-text">AI Component</text>
+  
+  <rect x="70" y="190" width="20" height="20" class="multimodal"/>
+  <text x="100" y="205" class="legend-text">Multimodal Processor</text>
+  
+  <rect x="70" y="215" width="20" height="20" class="storage"/>
+  <text x="100" y="230" class="legend-text">Storage/Model</text>
+  
+  <!-- Workflow Steps -->
+  
+  <!-- Left column: Input processing -->
+  <g id="input-header">
+    <rect x="100" y="250" width="400" height="40" fill="#2c3e50" rx="5" ry="5"/>
+    <text x="300" y="275" text-anchor="middle" class="step-text">Multimodal Input Processing</text>
+  </g>
+  
+  <!-- Step 1: User Upload -->
+  <g id="step1">
+    <rect x="100" y="310" width="400" height="60" class="user"/>
+    <text x="300" y="335" class="step-text">User Upload</text>
+    <text x="300" y="355" class="step-desc">Uploads image, audio, video,</text>
+    <text x="300" y="370" class="step-desc">PDF, or other file types</text>
+  </g>
+  
+  <!-- Step 2: Content Detection -->
+  <g id="step2">
+    <rect x="100" y="390" width="400" height="60" class="system"/>
+    <text x="300" y="415" class="step-text">Content Detection</text>
+    <text x="300" y="435" class="step-desc">Detect MIME type,</text>
+    <text x="300" y="450" class="step-desc">validate size &amp; format</text>
+  </g>
+  
+  <!-- Step 3: Content Type Router -->
+  <g id="step3">
+    <rect x="100" y="470" width="400" height="80" class="system"/>
+    <text x="300" y="495" class="step-text">Content Type Router</text>
+    <text x="300" y="520" class="step-desc">Route to appropriate</text>
+    <text x="300" y="535" class="step-desc">processing pipeline</text>
+  </g>
+  
+  <!-- Image Processing Branch -->
+  <g id="image-branch">
+    <rect x="100" y="570" width="190" height="60" class="multimodal"/>
+    <text x="195" y="595" class="step-text">Image Analysis</text>
+    <text x="195" y="615" class="step-desc">Vision models, OCR</text>
+  </g>
+  
+  <!-- Audio Processing Branch -->
+  <g id="audio-branch">
+    <rect x="310" y="570" width="190" height="60" class="multimodal"/>
+    <text x="405" y="595" class="step-text">Audio Processing</text>
+    <text x="405" y="615" class="step-desc">Speech recognition</text>
+  </g>
+  
+  <!-- Document Processing Branch -->
+  <g id="doc-branch">
+    <rect x="100" y="650" width="190" height="60" class="multimodal"/>
+    <text x="195" y="675" class="step-text">Document Processing</text>
+    <text x="195" y="695" class="step-desc">PDF/text extraction</text>
+  </g>
+  
+  <!-- Video Processing Branch -->
+  <g id="video-branch">
+    <rect x="310" y="650" width="190" height="60" class="multimodal"/>
+    <text x="405" y="675" class="step-text">Video Processing</text>
+    <text x="405" y="695" class="step-desc">Frame extraction</text>
+  </g>
+  
+  <!-- Right column: AI Processing -->
+  <g id="ai-header">
+    <rect x="600" y="250" width="400" height="40" fill="#2c3e50" rx="5" ry="5"/>
+    <text x="800" y="275" text-anchor="middle" class="step-text">AI Processing &amp; Response</text>
+  </g>
+  
+  <!-- Step 4: Text Extraction -->
+  <g id="step4">
+    <rect x="600" y="310" width="400" height="60" class="multimodal"/>
+    <text x="800" y="335" class="step-text">Text Extraction</text>
+    <text x="800" y="355" class="step-desc">Convert all content to</text>
+    <text x="800" y="370" class="step-desc">text representation</text>
+  </g>
+  
+  <!-- Step 5: Context Assembly -->
+  <g id="step5">
+    <rect x="600" y="390" width="400" height="60" class="ai"/>
+    <text x="800" y="415" class="step-text">Context Assembly</text>
+    <text x="800" y="435" class="step-desc">Combine extracted text with</text>
+    <text x="800" y="450" class="step-desc">user query and history</text>
+  </g>
+  
+  <!-- Step 6: Multimodal AI -->
+  <g id="step6">
+    <rect x="600" y="470" width="400" height="60" class="ai"/>
+    <text x="800" y="495" class="step-text">Multimodal AI Processing</text>
+    <text x="800" y="515" class="step-desc">Process with vision/audio</text>
+    <text x="800" y="530" class="step-desc">capable AI models</text>
+  </g>
+  
+  <!-- Step 7: Response Generation -->
+  <g id="step7">
+    <rect x="600" y="550" width="400" height="80" class="ai"/>
+    <text x="800" y="575" class="step-text">Response Generation</text>
+    <text x="800" y="605" class="step-desc">Generate response that may</text>
+    <text x="800" y="620" class="step-desc">reference multimodal content</text>
+  </g>
+  
+  <!-- Step 8: Output Formatting -->
+  <g id="step8">
+    <rect x="600" y="650" width="400" height="60" class="system"/>
+    <text x="800" y="675" class="step-text">Output Formatting</text>
+    <text x="800" y="695" class="step-desc">Format response for</text>
+    <text x="800" y="710" class="step-desc">original channel</text>
+  </g>
+  
+  <!-- Step 9: User Response -->
+  <g id="step9">
+    <rect x="600" y="740" width="400" height="60" class="user"/>
+    <text x="800" y="765" class="step-text">User Response</text>
+    <text x="800" y="785" class="step-desc">Receive multimodal-aware</text>
+    <text x="800" y="800" class="step-desc">response</text>
+  </g>
+  
+  <!-- Support Components -->
+  
+  <!-- Vision Models -->
+  <g id="vision-models">
+    <rect x="50" y="570" width="40" height="140" class="storage"/>
+    <text x="70" y="640" text-anchor="middle" class="step-desc" transform="rotate(90, 70, 640)">Vision Models</text>
+  </g>
+  
+  <!-- Audio Models -->
+  <g id="audio-models">
+    <rect x="510" y="570" width="40" height="140" class="storage"/>
+    <text x="530" y="640" text-anchor="middle" class="step-desc" transform="rotate(90, 530, 640)">Audio Models</text>
+  </g>
+  
+  <!-- Multimodal Providers -->
+  <g id="multimodal-providers">
+    <rect x="1100" y="310" width="200" height="60" class="storage"/>
+    <text x="1200" y="335" class="step-text">Multimodal Providers</text>
+    <text x="1200" y="355" class="step-desc">GPT-4V, Claude 3,</text>
+    <text x="1200" y="370" class="step-desc">Gemini Vision</text>
+  </g>
+  
+  <!-- Local Models -->
+  <g id="local-models">
+    <rect x="1100" y="390" width="200" height="60" class="storage"/>
+    <text x="1200" y="415" class="step-text">Local Models</text>
+    <text x="1200" y="435" class="step-desc">Ollama, LocalAI,</text>
+    <text x="1200" y="450" class="step-desc">Whisper, Tesseract</text>
+  </g>
+  
+  <!-- Arrows -->
+  
+  <!-- User Upload to Content Detection -->
+  <path d="M 300 370 L 300 390" class="arrow"/>
+  <text x="300" y="385" text-anchor="middle" class="arrow-text">Multimodal content</text>
+  
+  <!-- Content Detection to Router -->
+  <path d="M 300 450 L 300 470" class="arrow"/>
+  <text x="300" y="465" text-anchor="middle" class="arrow-text">Content metadata</text>
+  
+  <!-- Router to Processing Branches -->
+  <path d="M 195 550 L 195 570" class="arrow"/>
+  <text x="195" y="565" text-anchor="middle" class="arrow-text">Images</text>
+  
+  <path d="M 405 550 L 405 570" class="arrow"/>
+  <text x="405" y="565" text-anchor="middle" class="arrow-text">Audio</text>
+  
+  <!-- Processing branches to Text Extraction -->
+  <path d="M 195 630 L 195 680 L 600 680 L 600 370" class="arrow"/>
+  <text x="400" y="675" text-anchor="middle" class="arrow-text">Extracted text</text>
+  
+  <!-- Vision Models to Image Analysis -->
+  <path d="M 90 610 L 100 610" class="arrow"/>
+  <text x="95" y="605" text-anchor="middle" class="arrow-text">Models</text>
+  
+  <!-- Audio Models to Text Extraction -->
+  <path d="M 550 610 L 600 610 L 600 370" class="arrow"/>
+  <text x="575" y="605" text-anchor="middle" class="arrow-text">Transcription</text>
+  
+  <!-- Text Extraction to Context Assembly -->
+  <path d="M 800 370 L 800 390" class="arrow"/>
+  <text x="800" y="385" text-anchor="middle" class="arrow-text">Extracted text</text>
+  
+  <!-- Context Assembly to Multimodal AI -->
+  <path d="M 800 450 L 800 470" class="arrow"/>
+  <text x="800" y="465" text-anchor="middle" class="arrow-text">Full context</text>
+  
+  <!-- Multimodal Providers to AI Processing -->
+  <path d="M 1200 370 L 1200 470 L 1000 470" class="arrow"/>
+  <text x="1100" y="470" text-anchor="middle" class="arrow-text">Vision/audio models</text>
+  
+  <!-- Local Models to Text Extraction -->
+  <path d="M 1200 450 L 1200 370 L 1000 370" class="arrow"/>
+  <text x="1100" y="410" text-anchor="middle" class="arrow-text">Local processing</text>
+  
+  <!-- AI Processing to Response Generation -->
+  <path d="M 800 530 L 800 550" class="arrow"/>
+  <text x="800" y="545" text-anchor="middle" class="arrow-text">AI analysis</text>
+  
+  <!-- Response Generation to Output Formatting -->
+  <path d="M 800 630 L 800 650" class="arrow"/>
+  <text x="800" y="645" text-anchor="middle" class="arrow-text">Generated response</text>
+  
+  <!-- Output Formatting to User Response -->
+  <path d="M 800 710 L 800 740" class="arrow"/>
+  <text x="800" y="735" text-anchor="middle" class="arrow-text">Formatted response</text>
+  
+  <!-- Example Inputs -->
+  <g>
+    <rect x="100" y="180" width="400" height="50" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1" rx="5" ry="5"/>
+    <text x="300" y="200" text-anchor="middle" class="step-desc">Example inputs: Screenshot, photo, voice message,</text>
+    <text x="300" y="215" text-anchor="middle" class="step-desc">PDF document, video clip, scanned document</text>
+  </g>
+  
+  <!-- Footer -->
+  <text x="700" y="920" text-anchor="middle" class="subtitle">Figure 3: Multimodal Processing Workflow - ZeroClaw Rust Core</text>
+</svg>

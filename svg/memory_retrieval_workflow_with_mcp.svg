@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="1600" height="1100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <style type="text/css">
+    <![CDATA[
+      .title {
+        font-family: Arial, sans-serif;
+        font-size: 24px;
+        font-weight: bold;
+        fill: #2c3e50;
+      }
+      .subtitle {
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        fill: #7f8c8d;
+      }
+      .step {
+        fill: #3498db;
+        stroke: #2980b9;
+        stroke-width: 2;
+        rx: 10;
+        ry: 10;
+      }
+      .step-text {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        fill: white;
+        font-weight: bold;
+        text-anchor: middle;
+      }
+      .step-desc {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        fill: #2c3e50;
+        text-anchor: middle;
+      }
+      .arrow {
+        fill: none;
+        stroke: #7f8c8d;
+        stroke-width: 2;
+        marker-end: url(#arrowhead);
+      }
+      .arrow-text {
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        fill: #7f8c8d;
+      }
+      .user {
+        fill: #2ecc71;
+        stroke: #27ae60;
+      }
+      .system {
+        fill: #e74c3c;
+        stroke: #c0392b;
+      }
+      .ai {
+        fill: #9b59b6;
+        stroke: #8e44ad;
+      }
+      .memory {
+        fill: #8e44ad;
+        stroke: #7d3c98;
+      }
+      .vector {
+        fill: #3498db;
+        stroke: #2980b9;
+      }
+      .database {
+        fill: #f39c12;
+        stroke: #d35400;
+      }
+      .mcp {
+        fill: #008080;
+        stroke: #006666;
+      }
+      .legend-box {
+        fill: #ecf0f1;
+        stroke: #bdc3c7;
+        stroke-width: 1;
+        rx: 5;
+        ry: 5;
+      }
+      .legend-text {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        fill: #2c3e50;
+      }
+    ]]>
+  </style>
+  
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7f8c8d"/>
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="800" y="40" text-anchor="middle" class="title">ZeroClaw Memory Retrieval Workflow with MCP</text>
+  <text x="800" y="65" text-anchor="middle" class="subtitle">Semantic search with Model Context Protocol integration</text>
+  
+  <!-- Legend -->
+  <rect x="50" y="80" width="300" height="180" class="legend-box"/>
+  <text x="200" y="100" text-anchor="middle" class="legend-text" font-weight="bold">Component Types</text>
+  
+  <rect x="70" y="115" width="20" height="20" class="user"/>
+  <text x="100" y="130" class="legend-text">User/Client</text>
+  
+  <rect x="70" y="140" width="20" height="20" class="system"/>
+  <text x="100" y="155" class="legend-text">System Component</text>
+  
+  <rect x="70" y="165" width="20" height="20" class="ai"/>
+  <text x="100" y="180" class="legend-text">AI Component</text>
+  
+  <rect x="70" y="190" width="20" height="20" class="memory"/>
+  <text x="100" y="205" class="legend-text">Memory System</text>
+  
+  <rect x="70" y="215" width="20" height="20" class="vector"/>
+  <text x="100" y="230" class="legend-text">Vector Processing</text>
+  
+  <rect x="70" y="240" width="20" height="20" class="database"/>
+  <text x="100" y="255" class="legend-text">Database</text>
+  
+  <rect x="170" y="115" width="20" height="20" class="mcp"/>
+  <text x="200" y="130" class="legend-text">MCP Protocol</text>
+  
+  <!-- Workflow Steps -->
+  
+  <!-- Left column: Input & Query -->
+  <g id="input-header">
+    <rect x="100" y="280" width="350" height="40" fill="#2c3e50" rx="5" ry="5"/>
+    <text x="275" y="305" text-anchor="middle" class="step-text">Input Processing &amp; Query Generation</text>
+  </g>
+  
+  <!-- Step 1: New Message -->
+  <g id="step1">
+    <rect x="100" y="340" width="350" height="60" class="user"/>
+    <text x="275" y="365" class="step-text">New Message</text>
+    <text x="275" y="385" class="step-desc">User sends new message</text>
+    <text x="275" y="400" class="step-desc">to AI agent</text>
+  </g>
+  
+  <!-- Step 2: Message Analysis -->
+  <g id="step2">
+    <rect x="100" y="420" width="350" height="60" class="ai"/>
+    <text x="275" y="445" class="step-text">Message Analysis</text>
+    <text x="275" y="465" class="step-desc">Extract key concepts,</text>
+    <text x="275" y="480" class="step-desc">entities, and intent</text>
+  </g>
+  
+  <!-- Step 3: Query Generation -->
+  <g id="step3">
+    <rect x="100" y="500" width="350" height="60" class="ai"/>
+    <text x="275" y="525" class="step-text">Query Generation</text>
+    <text x="275" y="545" class="step-desc">Generate semantic search</text>
+    <text x="275" y="560" class="step-desc">queries from message</text>
+  </g>
+  
+  <!-- Step 4: Vectorization -->
+  <g id="step4">
+    <rect x="100" y="580" width="350" height="60" class="vector"/>
+    <text x="275" y="605" class="step-text">Query Vectorization</text>
+    <text x="275" y="625" class="step-desc">Convert queries to</text>
+    <text x="275" y="640" class="step-desc">embedding vectors</text>
+  </g>
+  
+  <!-- Step 5: Search Parameters -->
+  <g id="step5">
+    <rect x="100" y="660" width="350" height="60" class="system"/>
+    <text x="275" y="685" class="step-text">Search Parameters</text>
+    <text x="275" y="705" class="step-desc">Set relevance thresholds,</text>
+    <text x="275" y="720" class="step-desc">time filters, limits</text>
+  </g>
+  
+  <!-- Middle column: Memory Search -->
+  <g id="search-header">
+    <rect x="500" y="280" width="350" height="40" fill="#2c3e50" rx="5" ry="5"/>
+    <text x="675" y="305" text-anchor="middle" class="step-text">Memory Search &amp; Retrieval</text>
+  </g>
+  
+  <!-- Step 6: Vector Search -->
+  <g id="step6">
+    <rect x="500" y="340" width="350" height="60" class="vector"/>
+    <text x="675" y="365" class="step-text">Vector Similarity Search</text>
+    <text x="675" y="385" class="step-desc">Search vector database</text>
+    <text x="675" y="400" class="step-desc">for similar embeddings</text>
+  </g>
+  
+  <!-- Step 7: Memory Retrieval -->
+  <g id="step7">
+    <rect x="500" y="420" width="350" height="60" class="memory"/>
+    <text x="675" y="445" class="step-text">Memory Retrieval</text>
+    <text x="675" y="465" class="step-desc">Retrieve full memory</text>
+    <text x="675" y="480" class="step-desc">records from storage</text>
+  </g>
+  
+  <!-- Step 8: MCP Context Retrieval -->
+  <g id="step8-mcp">
+    <rect x="500" y="500" width="350" height="60" class="mcp"/>
+    <text x="675" y="525" class="step-text">MCP Context Retrieval</text>
+    <text x="675" y="545" class="step-desc">Retrieve context from</text>
+    <text x="675" y="560" class="step-desc">external MCP servers</text>
+  </g>
+  
+  <!-- Step 9: Relevance Scoring -->
+  <g id="step9">
+    <rect x="500" y="580" width="350" height="60" class="ai"/>
+    <text x="675" y="605" class="step-text">Relevance Scoring</text>
+    <text x="675" y="625" class="step-desc">Score memories by</text>
+    <text x="675" y="640" class="step-desc">relevance and recency</text>
+  </g>
+  
+  <!-- Step 10: Result Filtering -->
+  <g id="step10">
+    <rect x="500" y="660" width="350" height="60" class="system"/>
+    <text x="675" y="685" class="step-text">Result Filtering</text>
+    <text x="675" y="705" class="step-desc">Filter by score, remove</text>
+    <text x="675" y="720" class="step-desc">duplicates, apply limits</text>
+  </g>
+  
+  <!-- Step 11: Context Assembly -->
+  <g id="step11">
+    <rect x="500" y="740" width="350" height="60" class="ai"/>
+    <text x="675" y="765" class="step-text">Context Assembly</text>
+    <text x="675" y="785" class="step-desc">Assemble retrieved memories</text>
+    <text x="675" y="800" class="step-desc">and MCP context</text>
+  </g>
+  
+  <!-- Right column: Integration & Output -->
+  <g id="output-header">
+    <rect x="900" y="280" width="350" height="40" fill="#2c3e50" rx="5" ry="5"/>
+    <text x="1075" y="305" text-anchor="middle" class="step-text">Context Integration &amp; Output</text>
+  </g>
+  
+  <!-- Step 12: Context Enrichment -->
+  <g id="step12">
+    <rect x="900" y="340" width="350" height="60" class="ai"/>
+    <text x="1075" y="365" class="step-text">Context Enrichment</text>
+    <text x="1075" y="385" class="step-desc">Add metadata, summaries,</text>
+    <text x="1075" y="400" class="step-desc">and relevance indicators</text>
+  </g>
+  
+  <!-- Step 13: AI Processing -->
+  <g id="step13">
+    <rect x="900" y="420" width="350" height="60" class="ai"/>
+    <text x="1075" y="445" class="step-text">AI Processing with Context</text>
+    <text x="1075" y="465" class="step-desc">AI generates response</text>
+    <text x="1075" y="480" class="step-desc">using enriched context</text>
+  </g>
+  
+  <!-- Step 14: Response Generation -->
+  <g id="step14">
+    <rect x="900" y="500" width="350" height="60" class="system"/>
+    <text x="1075" y="525" class="step-text">Response Generation</text>
+    <text x="1075" y="545" class="step-desc">Generate final response</text>
+    <text x="1075" y="560" class="step-desc">with memory references</text>
+  </g>
+  
+  <!-- Step 15: Memory Update -->
+  <g id="step15">
+    <rect x="900" y="580" width="350" height="60" class="memory"/>
+    <text x="1075" y="605" class="step-text">Memory Update</text>
+    <text x="1075" y="625" class="step-desc">Store new interaction</text>
+    <text x="1075" y="640" class="step-desc">in long-term memory</text>
+  </g>
+  
+  <!-- Step 16: User Response -->
+  <g id="step16">
+    <rect x="900" y="660" width="350" height="60" class="user"/>
+    <text x="1075" y="685" class="step-text">User Response</text>
+    <text x="1075" y="705" class="step-desc">Receive context-aware</text>
+    <text x="1075" y="720" class="step-desc">response from AI</text>
+  </g>
+  
+  <!-- Database Components -->
+  
+  <!-- Vector Database -->
+  <g id="vector-db">
+    <rect x="550" y="810" width="150" height="80" class="database"/>
+    <text x="625" y="835" class="step-text">Vector DB</text>
+    <text x="625" y="855" class="step-desc">FAISS, Qdrant,</text>
+    <text x="625" y="870" class="step-desc">Pinecone, etc.</text>
+  </g>
+  
+  <!-- Memory Storage -->
+  <g id="memory-storage">
+    <rect x="750" y="810" width="150" height="80" class="database"/>
+    <text x="825" y="835" class="step-text">Memory Storage</text>
+    <text x="825" y="855" class="step-desc">SQLite, PostgreSQL,</text>
+    <text x="825" y="870" class="step-desc">Redis, etc.</text>
+  </g>
+  
+  <!-- Embedding Models -->
+  <g id="embedding-models">
+    <rect x="350" y="810" width="150" height="60" class="vector"/>
+    <text x="425" y="835" class="step-text">Embedding Models</text>
+    <text x="425" y="855" class="step-desc">BERT, OpenAI,</text>
+    <text x="425" y="870" class="step-desc">Local models</text>
+  </g>
+  
+  <!-- MCP Servers -->
+  <g id="mcp-servers">
+    <rect x="1100" y="740" width="250" height="80" class="mcp"/>
+    <text x="1225" y="765" class="step-text">MCP Servers</text>
+    <text x="1225" y="785" class="step-desc">Osaurus, custom MCP,</text>
+    <text x="1225" y="800" class="step-desc">external context</text>
+  </g>
+  
+  <!-- Arrows -->
+  
+  <!-- New Message to Analysis -->
+  <path d="M 275 400 L 275 420" class="arrow"/>
+  <text x="275" y="415" text-anchor="middle" class="arrow-text">User message</text>
+  
+  <!-- Analysis to Query Generation -->
+  <path d="M 275 480 L 275 500" class="arrow"/>
+  <text x="275" y="495" text-anchor="middle" class="arrow-text">Extracted concepts</text>
+  
+  <!-- Query Generation to Vectorization -->
+  <path d="M 275 560 L 275 580" class="arrow"/>
+  <text x="275" y="575" text-anchor="middle" class="arrow-text">Search queries</text>
+  
+  <!-- Vectorization to Search Parameters -->
+  <path d="M 275 640 L 275 660" class="arrow"/>
+  <text x="275" y="655" text-anchor="middle" class="arrow-text">Query vectors</text>
+  
+  <!-- Search Parameters to Vector Search -->
+  <path d="M 450 690 L 500 690 L 500 400" class="arrow"/>
+  <text x="475" y="685" text-anchor="middle" class="arrow-text">Search request</text>
+  
+  <!-- Vector Search to Memory Retrieval -->
+  <path d="M 675 400 L 675 420" class="arrow"/>
+  <text x="675" y="415" text-anchor="middle" class="arrow-text">Similar vectors</text>
+  
+  <!-- Memory Retrieval to MCP Context Retrieval -->
+  <path d="M 675 480 L 675 500" class="arrow"/>
+  <text x="675" y="495" text-anchor="middle" class="arrow-text">Local memories</text>
+  
+  <!-- MCP Context Retrieval to Relevance Scoring -->
+  <path d="M 675 560 L 675 580" class="arrow"/>
+  <text x="675" y="575" text-anchor="middle" class="arrow-text">MCP context</text>
+  
+  <!-- Relevance Scoring to Filtering -->
+  <path d="M 675 640 L 675 660" class="arrow"/>
+  <text x="675" y="655" text-anchor="middle" class="arrow-text">Scored content</text>
+  
+  <!-- Filtering to Context Assembly -->
+  <path d="M 675 720 L 675 740" class="arrow"/>
+  <text x="675" y="735" text-anchor="middle" class="arrow-text">Filtered content</text>
+  
+  <!-- Context Assembly to Context Enrichment -->
+  <path d="M 850 770 L 900 770 L 900 400" class="arrow"/>
+  <text x="875" y="765" text-anchor="middle" class="arrow-text">Combined context</text>
+  
+  <!-- Context Enrichment to AI Processing -->
+  <path d="M 1075 400 L 1075 420" class="arrow"/>
+  <text x="1075" y="415" text-anchor="middle" class="arrow-text">Enriched context</text>
+  
+  <!-- AI Processing to Response Generation -->
+  <path d="M 1075 480 L 1075 500" class="arrow"/>
+  <text x="1075" y="495" text-anchor="middle" class="arrow-text">AI response</text>
+  
+  <!-- Response Generation to User Response -->
+  <path d="M 1075 560 L 1075 660" class="arrow"/>
+  <text x="1075" y="610" text-anchor="middle" class="arrow-text">Final response</text>
+  
+  <!-- Response Generation to Memory Update -->
+  <path d="M 1075 560 L 1075 580" class="arrow"/>
+  <text x="1075" y="575" text-anchor="middle" class="arrow-text">Interaction data</text>
+  
+  <!-- Embedding Models to Vectorization -->
+  <path d="M 425 810 L 425 640 L 275 640" class="arrow"/>
+  <text x="350" y="725" text-anchor="middle" class="arrow-text">Embedding models</text>
+  
+  <!-- Vector Database to Vector Search -->
+  <path d="M 625 810 L 625 400" class="arrow"/>
+  <text x="625" y="605" text-anchor="middle" class="arrow-text">Vector search</text>
+  
+  <!-- Memory Storage to Memory Retrieval -->
+  <path d="M 825 810 L 825 480" class="arrow"/>
+  <text x="825" y="645" text-anchor="middle" class="arrow-text">Memory retrieval</text>
+  
+  <!-- MCP Servers to MCP Context Retrieval -->
+  <path d="M 1225 740 L 1225 560 L 850 560" class="arrow"/>
+  <text x="1040" y="650" text-anchor="middle" class="arrow-text">MCP protocol</text>
+  
+  <!-- Memory Update to Memory Storage -->
+  <path d="M 1075 640 L 1075 810 L 900 810" class="arrow"/>
+  <text x="990" y="725" text-anchor="middle" class="arrow-text">Store memory</text>
+  
+  <!-- Memory Types note -->
+  <g>
+    <rect x="100" y="200" width="400" height="50" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1" rx="5" ry="5"/>
+    <text x="300" y="220" text-anchor="middle" class="step-desc">Memory capabilities: Long-term conversations, user preferences,</text>
+    <text x="300" y="235" text-anchor="middle" class="step-desc">factual knowledge, personalized context, event history</text>
+  </g>
+  
+  <!-- MCP Integration note -->
+  <g>
+    <rect x="1100" y="200" width="400" height="50" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1" rx="5" ry="5"/>
+    <text x="1300" y="220" text-anchor="middle" class="step-desc">MCP integration: External context servers,</text>
+    <text x="1300" y="235" text-anchor="middle" class="step-desc">Osaurus support, protocol-based tool discovery</text>
+  </g>
+  
+  <!-- Footer -->
+  <text x="800" y="970" text-anchor="middle" class="subtitle">Figure 5: Memory Retrieval Workflow with MCP Integration - ZeroClaw Rust Core</text>
+</svg>

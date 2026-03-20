@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="1600" height="1200" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <style type="text/css">
+    <![CDATA[
+      .layer {
+        fill: #f8f9fa;
+        stroke: #495057;
+        stroke-width: 2;
+        rx: 8;
+        ry: 8;
+      }
+      .module {
+        fill: #e9ecef;
+        stroke: #6c757d;
+        stroke-width: 1.5;
+        rx: 6;
+        ry: 6;
+      }
+      .core-module {
+        fill: #dbeafe;
+        stroke: #1d4ed8;
+        stroke-width: 1;
+        rx: 4;
+        ry: 4;
+      }
+      .ai-module {
+        fill: #dcfce7;
+        stroke: #15803d;
+        stroke-width: 1;
+        rx: 4;
+        ry: 4;
+      }
+      .integration-module {
+        fill: #fef3c7;
+        stroke: #d97706;
+        stroke-width: 1;
+        rx: 4;
+        ry: 4;
+      }
+      .support-module {
+        fill: #fce7f3;
+        stroke: #be185d;
+        stroke-width: 1;
+        rx: 4;
+        ry: 4;
+      }
+      .text {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 12px;
+        fill: #1f2937;
+      }
+      .title {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 18px;
+        font-weight: bold;
+        fill: #111827;
+      }
+      .subtitle {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        fill: #374151;
+      }
+      .arrow {
+        fill: none;
+        stroke: #4b5563;
+        stroke-width: 1.5;
+        marker-end: url(#arrowhead);
+      }
+      .dashed-arrow {
+        fill: none;
+        stroke: #6b7280;
+        stroke-width: 1.5;
+        stroke-dasharray: 5,5;
+        marker-end: url(#arrowhead);
+      }
+      .label {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 11px;
+        fill: #6b7280;
+      }
+    ]]>
+  </style>
+  
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4b5563"/>
+    </marker>
+    <linearGradient id="gradient-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0f9ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fefce8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#gradient-bg)"/>
+  
+  <!-- Title -->
+  <text x="800" y="40" text-anchor="middle" class="title" font-size="22">ZeroClaw Rust Core Architecture</text>
+  <text x="800" y="70" text-anchor="middle" class="subtitle">Modular AI Agent Runtime Engine</text>
+  
+  <!-- Layer 1: Core Runtime -->
+  <g id="core-runtime">
+    <rect x="50" y="100" width="1500" height="120" class="layer"/>
+    <text x="800" y="120" text-anchor="middle" class="title">Core Runtime Layer</text>
+    
+    <rect x="80" y="140" width="200" height="60" class="core-module"/>
+    <text x="180" y="170" text-anchor="middle" class="text">runtime</text>
+    <text x="180" y="185" text-anchor="middle" class="label">Tokio async runtime</text>
+    
+    <rect x="300" y="140" width="200" height="60" class="core-module"/>
+    <text x="400" y="170" text-anchor="middle" class="text">daemon</text>
+    <text x="400" y="185" text-anchor="middle" class="label">Daemon lifecycle management</text>
+    
+    <rect x="520" y="140" width="200" height="60" class="core-module"/>
+    <text x="620" y="170" text-anchor="middle" class="text">service</text>
+    <text x="620" y="185" text-anchor="middle" class="label">Service orchestration</text>
+    
+    <rect x="740" y="140" width="200" height="60" class="core-module"/>
+    <text x="840" y="170" text-anchor="middle" class="text">config</text>
+    <text x="840" y="185" text-anchor="middle" class="label">Configuration management</text>
+    
+    <rect x="960" y="140" width="200" height="60" class="core-module"/>
+    <text x="1060" y="170" text-anchor="middle" class="text">identity</text>
+    <text x="1060" y="185" text-anchor="middle" class="label">Identity &amp; authentication</text>
+    
+    <rect x="1180" y="140" width="200" height="60" class="core-module"/>
+    <text x="1280" y="170" text-anchor="middle" class="text">security</text>
+    <text x="1280" y="185" text-anchor="middle" class="label">Security utilities</text>
+  </g>
+  
+  <!-- Layer 2: AI Gateway &amp; Agent -->
+  <g id="ai-gateway">
+    <rect x="50" y="240" width="1500" height="120" class="layer"/>
+    <text x="800" y="260" text-anchor="middle" class="title">AI Gateway &amp; Agent Layer</text>
+    
+    <rect x="80" y="280" width="220" height="60" class="ai-module"/>
+    <text x="190" y="310" text-anchor="middle" class="text">gateway</text>
+    <text x="190" y="325" text-anchor="middle" class="label">Message processing &amp; routing</text>
+    
+    <rect x="320" y="280" width="220" height="60" class="ai-module"/>
+    <text x="430" y="310" text-anchor="middle" class="text">agent</text>
+    <text x="430" y="325" text-anchor="middle" class="label">Agent instance management</text>
+    
+    <rect x="560" y="280" width="220" height="60" class="ai-module"/>
+    <text x="670" y="310" text-anchor="middle" class="text">providers</text>
+    <text x="670" y="325" text-anchor="middle" class="label">32+ AI provider integrations</text>
+    
+    <rect x="800" y="280" width="220" height="60" class="ai-module"/>
+    <text x="910" y="310" text-anchor="middle" class="text">multimodal</text>
+    <text x="910" y="325" text-anchor="middle" class="label">Multimodal processing</text>
+    
+    <rect x="1040" y="280" width="220" height="60" class="ai-module"/>
+    <text x="1150" y="310" text-anchor="middle" class="text">rag</text>
+    <text x="1150" y="325" text-anchor="middle" class="label">Retrieval-augmented generation</text>
+    
+    <rect x="1280" y="280" width="220" height="60" class="ai-module"/>
+    <text x="1390" y="310" text-anchor="middle" class="text">memory</text>
+    <text x="1390" y="325" text-anchor="middle" class="label">Memory &amp; context management</text>
+  </g>
+  
+  <!-- Layer 3: Tools &amp; Skills -->
+  <g id="tools-skills">
+    <rect x="50" y="380" width="1500" height="120" class="layer"/>
+    <text x="800" y="400" text-anchor="middle" class="title">Tools &amp; Skills Layer</text>
+    
+    <rect x="80" y="420" width="220" height="60" class="integration-module"/>
+    <text x="190" y="450" text-anchor="middle" class="text">tools</text>
+    <text x="190" y="465" text-anchor="middle" class="label">Tool execution framework</text>
+    
+    <rect x="320" y="420" width="220" height="60" class="integration-module"/>
+    <text x="430" y="450" text-anchor="middle" class="text">skills</text>
+    <text x="430" y="465" text-anchor="middle" class="label">Skill management &amp; execution</text>
+    
+    <rect x="560" y="420" width="220" height="60" class="integration-module"/>
+    <text x="670" y="450" text-anchor="middle" class="text">skillforge</text>
+    <text x="670" y="465" text-anchor="middle" class="label">Skill discovery &amp; integration</text>
+    
+    <rect x="800" y="420" width="220" height="60" class="integration-module"/>
+    <text x="910" y="450" text-anchor="middle" class="text">hooks</text>
+    <text x="910" y="465" text-anchor="middle" class="label">Event hooks &amp; callbacks</text>
+    
+    <rect x="1040" y="420" width="220" height="60" class="integration-module"/>
+    <text x="1150" y="450" text-anchor="middle" class="text">approval</text>
+    <text x="1150" y="465" text-anchor="middle" class="label">Approval workflow system</text>
+    
+    <rect x="1280" y="420" width="220" height="60" class="integration-module"/>
+    <text x="1390" y="450" text-anchor="middle" class="text">sop</text>
+    <text x="1390" y="465" text-anchor="middle" class="label">Standard operating procedures</text>
+  </g>
+  
+  <!-- Layer 4: Integrations &amp; Channels -->
+  <g id="integrations">
+    <rect x="50" y="520" width="1500" height="120" class="layer"/>
+    <text x="800" y="540" text-anchor="middle" class="title">Integrations &amp; Channels Layer</text>
+    
+    <rect x="80" y="580" width="220" height="60" class="integration-module"/>
+    <text x="190" y="610" text-anchor="middle" class="text">channels</text>
+    <text x="190" y="625" text-anchor="middle" class="label">Communication channels (CLI, Discord, etc.)</text>
+    
+    <rect x="320" y="580" width="220" height="60" class="integration-module"/>
+    <text x="430" y="610" text-anchor="middle" class="text">integrations</text>
+    <text x="430" y="625" text-anchor="middle" class="label">Third-party integrations</text>
+    
+    <rect x="560" y="580" width="220" height="60" class="integration-module"/>
+    <text x="670" y="610" text-anchor="middle" class="text">hardware</text>
+    <text x="670" y="625" text-anchor="middle" class="label">Hardware discovery &amp; management</text>
+    
+    <rect x="800" y="580" width="220" height="60" class="integration-module"/>
+    <text x="910" y="610" text-anchor="middle" class="text">peripherals</text>
+    <text x="910" y="625" text-anchor="middle" class="label">Peripheral device control</text>
+    
+    <rect x="1040" y="580" width="220" height="60" class="integration-module"/>
+    <text x="1150" y="610" text-anchor="middle" class="text">tunnel</text>
+    <text x="1150" y="625" text-anchor="middle" class="label">Network tunneling</text>
+    
+    <rect x="1280" y="580" width="220" height="60" class="integration-module"/>
+    <text x="1390" y="610" text-anchor="middle" class="text">onboard</text>
+    <text x="1390" y="625" text-anchor="middle" class="label">Onboarding &amp; setup</text>
+  </g>
+  
+  <!-- Layer 5: Support Services -->
+  <g id="support-services">
+    <rect x="50" y="660" width="1500" height="120" class="layer"/>
+    <text x="800" y="680" text-anchor="middle" class="title">Support Services Layer</text>
+    
+    <rect x="80" y="720" width="200" height="60" class="support-module"/>
+    <text x="180" y="750" text-anchor="middle" class="text">health</text>
+    <text x="180" y="765" text-anchor="middle" class="label">Health monitoring</text>
+    
+    <rect x="300" y="720" width="200" height="60" class="support-module"/>
+    <text x="400" y="750" text-anchor="middle" class="text">cost</text>
+    <text x="400" y="765" text-anchor="middle" class="label">Cost tracking &amp; budgeting</text>
+    
+    <rect x="520" y="720" width="200" height="60" class="support-module"/>
+    <text x="620" y="750" text-anchor="middle" class="text">cron</text>
+    <text x="620" y="765" text-anchor="middle" class="label">Cron job scheduling</text>
+    
+    <rect x="740" y="720" width="200" height="60" class="support-module"/>
+    <text x="840" y="750" text-anchor="middle" class="text">observability</text>
+    <text x="840" y="765" text-anchor="middle" class="label">Observability &amp; logging</text>
+    
+    <rect x="960" y="720" width="200" height="60" class="support-module"/>
+    <text x="1060" y="750" text-anchor="middle" class="text">doctor</text>
+    <text x="1060" y="765" text-anchor="middle" class="label">Diagnostic checks</text>
+    
+    <rect x="1180" y="720" width="200" height="60" class="support-module"/>
+    <text x="1280" y="750" text-anchor="middle" class="text">heartbeat</text>
+    <text x="1280" y="765" text-anchor="middle" class="label">Heartbeat monitoring</text>
+  </g>
+  
+  <!-- Layer 6: Utilities -->
+  <g id="utilities">
+    <rect x="50" y="800" width="1500" height="80" class="layer"/>
+    <text x="800" y="820" text-anchor="middle" class="title">Utilities Layer</text>
+    
+    <rect x="80" y="840" width="200" height="30" class="module"/>
+    <text x="180" y="858" text-anchor="middle" class="text">util</text>
+    
+    <rect x="300" y="840" width="200" height="30" class="module"/>
+    <text x="400" y="858" text-anchor="middle" class="text">auth</text>
+    
+    <rect x="520" y="840" width="200" height="30" class="module"/>
+    <text x="620" y="858" text-anchor="middle" class="text">migration</text>
+    
+    <rect x="740" y="840" width="200" height="30" class="module"/>
+    <text x="840" y="858" text-anchor="middle" class="text">approval</text>
+  </g>
+  
+  <!-- Arrows showing dependencies -->
+  
+  <!-- Core Runtime to AI Gateway -->
+  <line x1="180" y1="200" x2="180" y2="240" class="arrow"/>
+  <line x1="400" y1="200" x2="400" y2="240" class="arrow"/>
+  <line x1="620" y1="200" x2="620" y2="240" class="arrow"/>
+  <line x1="840" y1="200" x2="840" y2="240" class="arrow"/>
+  <line x1="1060" y1="200" x2="1060" y2="240" class="arrow"/>
+  <line x1="1280" y1="200" x2="1280" y2="240" class="arrow"/>
+  
+  <!-- AI Gateway to Tools &amp; Skills -->
+  <line x1="190" y1="340" x2="190" y2="380" class="arrow"/>
+  <line x1="430" y1="340" x2="430" y2="380" class="arrow"/>
+  <line x1="670" y1="340" x2="670" y2="380" class="arrow"/>
+  <line x1="910" y1="340" x2="910" y2="380" class="arrow"/>
+  <line x1="1150" y1="340" x2="1150" y2="380" class="arrow"/>
+  <line x1="1390" y1="340" x2="1390" y2="380" class="arrow"/>
+  
+  <!-- Tools &amp; Skills to Integrations -->
+  <line x1="190" y1="480" x2="190" y2="520" class="arrow"/>
+  <line x1="430" y1="480" x2="430" y2="520" class="arrow"/>
+  <line x1="670" y1="480" x2="670" y2="520" class="arrow"/>
+  <line x1="910" y1="480" x2="910" y2="520" class="arrow"/>
+  <line x1="1150" y1="480" x2="1150" y2="520" class="arrow"/>
+  <line x1="1390" y1="480" x2="1390" y2="520" class="arrow"/>
+  
+  <!-- Integrations to Support Services -->
+  <line x1="190" y1="640" x2="190" y2="660" class="arrow"/>
+  <line x1="430" y1="640" x2="430" y2="660" class="arrow"/>
+  <line x1="670" y1="640" x2="670" y2="660" class="arrow"/>
+  <line x1="910" y1="640" x2="910" y2="660" class="arrow"/>
+  <line x1="1150" y1="640" x2="1150" y2="660" class="arrow"/>
+  <line x1="1390" y1="640" x2="1390" y2="660" class="arrow"/>
+  
+  <!-- Support Services to Utilities -->
+  <line x1="180" y1="780" x2="180" y2="800" class="arrow"/>
+  <line x1="400" y1="780" x2="400" y2="800" class="arrow"/>
+  <line x1="620" y1="780" x2="620" y2="800" class="arrow"/>
+  <line x1="840" y1="780" x2="840" y2="800" class="arrow"/>
+  <line x1="1060" y1="780" x2="1060" y2="800" class="arrow"/>
+  <line x1="1280" y1="780" x2="1280" y2="800" class="arrow"/>
+  
+  <!-- Labels for dependency directions -->
+  <text x="800" y="220" text-anchor="middle" class="label">Provides runtime services</text>
+  <text x="800" y="360" text-anchor="middle" class="label">Processes AI requests</text>
+  <text x="800" y="500" text-anchor="middle" class="label">Executes tools &amp; skills</text>
+  <text x="800" y="640" text-anchor="middle" class="label">Integrates with external systems</text>
+  <text x="800" y="780" text-anchor="middle" class="label">Monitors &amp; supports</text>
+  
+  <!-- Legend -->
+  <rect x="50" y="900" width="1500" height="80" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="800" y="920" text-anchor="middle" class="title" font-size="14">Architecture Legend</text>
+  
+  <rect x="100" y="940" width="20" height="20" class="core-module"/>
+  <text x="130" y="955" text-anchor="start" class="text">Core Runtime</text>
+  
+  <rect x="300" y="940" width="20" height="20" class="ai-module"/>
+  <text x="330" y="955" text-anchor="start" class="text">AI Gateway &amp; Agent</text>
+  
+  <rect x="500" y="940" width="20" height="20" class="integration-module"/>
+  <text x="530" y="955" text-anchor="start" class="text">Tools &amp; Skills</text>
+  
+  <rect x="700" y="940" width="20" height="20" class="integration-module"/>
+  <text x="730" y="955" text-anchor="start" class="text">Integrations &amp; Channels</text>
+  
+  <rect x="900" y="940" width="20" height="20" class="support-module"/>
+  <text x="930" y="955" text-anchor="start" class="text">Support Services</text>
+  
+  <rect x="1100" y="940" width="20" height="20" class="module"/>
+  <text x="1130" y="955" text-anchor="start" class="text">Utilities</text>
+  
+  <!-- Footer -->
+  <text x="800" y="1000" text-anchor="middle" class="label" font-size="10">ZeroClaw Rust Core - Modular AI Agent Runtime Engine</text>
+  <text x="800" y="1015" text-anchor="middle" class="label" font-size="10">Based on zeroclaw/src module structure. Arrows indicate primary dependency direction.</text>
+</svg>

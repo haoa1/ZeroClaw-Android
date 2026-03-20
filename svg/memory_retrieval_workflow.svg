@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="1400" height="1000" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <style type="text/css">
+    <![CDATA[
+      .title {
+        font-family: Arial, sans-serif;
+        font-size: 24px;
+        font-weight: bold;
+        fill: #2c3e50;
+      }
+      .subtitle {
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        fill: #7f8c8d;
+      }
+      .step {
+        fill: #3498db;
+        stroke: #2980b9;
+        stroke-width: 2;
+        rx: 10;
+        ry: 10;
+      }
+      .step-text {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        fill: white;
+        font-weight: bold;
+        text-anchor: middle;
+      }
+      .step-desc {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        fill: #2c3e50;
+        text-anchor: middle;
+      }
+      .arrow {
+        fill: none;
+        stroke: #7f8c8d;
+        stroke-width: 2;
+        marker-end: url(#arrowhead);
+      }
+      .arrow-text {
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        fill: #7f8c8d;
+      }
+      .user {
+        fill: #2ecc71;
+        stroke: #27ae60;
+      }
+      .system {
+        fill: #e74c3c;
+        stroke: #c0392b;
+      }
+      .ai {
+        fill: #9b59b6;
+        stroke: #8e44ad;
+      }
+      .memory {
+        fill: #8e44ad;
+        stroke: #7d3c98;
+      }
+      .vector {
+        fill: #3498db;
+        stroke: #2980b9;
+      }
+      .database {
+        fill: #f39c12;
+        stroke: #d35400;
+      }
+      .legend-box {
+        fill: #ecf0f1;
+        stroke: #bdc3c7;
+        stroke-width: 1;
+        rx: 5;
+        ry: 5;
+      }
+      .legend-text {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        fill: #2c3e50;
+      }
+    ]]>
+  </style>
+  
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7f8c8d"/>
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="700" y="40" text-anchor="middle" class="title">ZeroClaw Memory Retrieval Workflow</text>
+  <text x="700" y="65" text-anchor="middle" class="subtitle">Semantic search and context retrieval from long-term memory</text>
+  
+  <!-- Legend -->
+  <rect x="50" y="80" width="280" height="160" class="legend-box"/>
+  <text x="190" y="100" text-anchor="middle" class="legend-text" font-weight="bold">Component Types</text>
+  
+  <rect x="70" y="115" width="20" height="20" class="user"/>
+  <text x="100" y="130" class="legend-text">User/Client</text>
+  
+  <rect x="70" y="140" width="20" height="20" class="system"/>
+  <text x="100" y="155" class="legend-text">System Component</text>
+  
+  <rect x="70" y="165" width="20" height="20" class="ai"/>
+  <text x="100" y="180" class="legend-text">AI Component</text>
+  
+  <rect x="70" y="190" width="20" height="20" class="memory"/>
+  <text x="100" y="205" class="legend-text">Memory System</text>
+  
+  <rect x="70" y="215" width="20" height="20" class="vector"/>
+  <text x="100" y="230" class="legend-text">Vector Processing</text>
+  
+  <rect x="70" y="240" width="20" height="20" class="database"/>
+  <text x="100" y="255" class="legend-text">Database</text>
+  
+  <!-- Workflow Steps -->
+  
+  <!-- Left column: Input & Query -->
+  <g id="input-header">
+    <rect x="100" y="270" width="350" height="40" fill="#2c3e50" rx="5" ry="5"/>
+    <text x="275" y="295" text-anchor="middle" class="step-text">Input Processing &amp; Query Generation</text>
+  </g>
+  
+  <!-- Step 1: New Message -->
+  <g id="step1">
+    <rect x="100" y="330" width="350" height="60" class="user"/>
+    <text x="275" y="355" class="step-text">New Message</text>
+    <text x="275" y="375" class="step-desc">User sends new message</text>
+    <text x="275" y="390" class="step-desc">to AI agent</text>
+  </g>
+  
+  <!-- Step 2: Message Analysis -->
+  <g id="step2">
+    <rect x="100" y="410" width="350" height="60" class="ai"/>
+    <text x="275" y="435" class="step-text">Message Analysis</text>
+    <text x="275" y="455" class="step-desc">Extract key concepts,</text>
+    <text x="275" y="470" class="step-desc">entities, and intent</text>
+  </g>
+  
+  <!-- Step 3: Query Generation -->
+  <g id="step3">
+    <rect x="100" y="490" width="350" height="60" class="ai"/>
+    <text x="275" y="515" class="step-text">Query Generation</text>
+    <text x="275" y="535" class="step-desc">Generate semantic search</text>
+    <text x="275" y="550" class="step-desc">queries from message</text>
+  </g>
+  
+  <!-- Step 4: Vectorization -->
+  <g id="step4">
+    <rect x="100" y="570" width="350" height="60" class="vector"/>
+    <text x="275" y="595" class="step-text">Query Vectorization</text>
+    <text x="275" y="615" class="step-desc">Convert queries to</text>
+    <text x="275" y="630" class="step-desc">embedding vectors</text>
+  </g>
+  
+  <!-- Step 5: Search Parameters -->
+  <g id="step5">
+    <rect x="100" y="650" width="350" height="60" class="system"/>
+    <text x="275" y="675" class="step-text">Search Parameters</text>
+    <text x="275" y="695" class="step-desc">Set relevance thresholds,</text>
+    <text x="275" y="710" class="step-desc">time filters, limits</text>
+  </g>
+  
+  <!-- Middle column: Memory Search -->
+  <g id="search-header">
+    <rect x="500" y="270" width="350" height="40" fill="#2c3e50" rx="5" ry="5"/>
+    <text x="675" y="295" text-anchor="middle" class="step-text">Memory Search &amp; Retrieval</text>
+  </g>
+  
+  <!-- Step 6: Vector Search -->
+  <g id="step6">
+    <rect x="500" y="330" width="350" height="60" class="vector"/>
+    <text x="675" y="355" class="step-text">Vector Similarity Search</text>
+    <text x="675" y="375" class="step-desc">Search vector database</text>
+    <text x="675" y="390" class="step-desc">for similar embeddings</text>
+  </g>
+  
+  <!-- Step 7: Memory Retrieval -->
+  <g id="step7">
+    <rect x="500" y="410" width="350" height="60" class="memory"/>
+    <text x="675" y="435" class="step-text">Memory Retrieval</text>
+    <text x="675" y="455" class="step-desc">Retrieve full memory</text>
+    <text x="675" y="470" class="step-desc">records from storage</text>
+  </g>
+  
+  <!-- Step 8: Relevance Scoring -->
+  <g id="step8">
+    <rect x="500" y="490" width="350" height="60" class="ai"/>
+    <text x="675" y="515" class="step-text">Relevance Scoring</text>
+    <text x="675" y="535" class="step-desc">Score memories by</text>
+    <text x="675" y="550" class="step-desc">relevance and recency</text>
+  </g>
+  
+  <!-- Step 9: Result Filtering -->
+  <g id="step9">
+    <rect x="500" y="570" width="350" height="60" class="system"/>
+    <text x="675" y="595" class="step-text">Result Filtering</text>
+    <text x="675" y="615" class="step-desc">Filter by score, remove</text>
+    <text x="675" y="630" class="step-desc">duplicates, apply limits</text>
+  </g>
+  
+  <!-- Step 10: Context Assembly -->
+  <g id="step10">
+    <rect x="500" y="650" width="350" height="60" class="ai"/>
+    <text x="675" y="675" class="step-text">Context Assembly</text>
+    <text x="675" y="695" class="step-desc">Assemble retrieved memories</text>
+    <text x="675" y="710" class="step-desc">into coherent context</text>
+  </g>
+  
+  <!-- Right column: Integration & Output -->
+  <g id="output-header">
+    <rect x="900" y="270" width="350" height="40" fill="#2c3e50" rx="5" ry="5"/>
+    <text x="1075" y="295" text-anchor="middle" class="step-text">Context Integration &amp; Output</text>
+  </g>
+  
+  <!-- Step 11: Context Enrichment -->
+  <g id="step11">
+    <rect x="900" y="330" width="350" height="60" class="ai"/>
+    <text x="1075" y="355" class="step-text">Context Enrichment</text>
+    <text x="1075" y="375" class="step-desc">Add metadata, summaries,</text>
+    <text x="1075" y="390" class="step-desc">and relevance indicators</text>
+  </g>
+  
+  <!-- Step 12: AI Processing -->
+  <g id="step12">
+    <rect x="900" y="410" width="350" height="60" class="ai"/>
+    <text x="1075" y="435" class="step-text">AI Processing with Context</text>
+    <text x="1075" y="455" class="step-desc">AI generates response</text>
+    <text x="1075" y="470" class="step-desc">using enriched context</text>
+  </g>
+  
+  <!-- Step 13: Response Generation -->
+  <g id="step13">
+    <rect x="900" y="490" width="350" height="60" class="system"/>
+    <text x="1075" y="515" class="step-text">Response Generation</text>
+    <text x="1075" y="535" class="step-desc">Generate final response</text>
+    <text x="1075" y="550" class="step-desc">with memory references</text>
+  </g>
+  
+  <!-- Step 14: Memory Update -->
+  <g id="step14">
+    <rect x="900" y="570" width="350" height="60" class="memory"/>
+    <text x="1075" y="595" class="step-text">Memory Update</text>
+    <text x="1075" y="615" class="step-desc">Store new interaction</text>
+    <text x="1075" y="630" class="step-desc">in long-term memory</text>
+  </g>
+  
+  <!-- Step 15: User Response -->
+  <g id="step15">
+    <rect x="900" y="650" width="350" height="60" class="user"/>
+    <text x="1075" y="675" class="step-text">User Response</text>
+    <text x="1075" y="695" class="step-desc">Receive context-aware</text>
+    <text x="1075" y="710" class="step-desc">response from AI</text>
+  </g>
+  
+  <!-- Database Components -->
+  
+  <!-- Vector Database -->
+  <g id="vector-db">
+    <rect x="550" y="740" width="150" height="80" class="database"/>
+    <text x="625" y="765" class="step-text">Vector DB</text>
+    <text x="625" y="785" class="step-desc">FAISS, Qdrant,</text>
+    <text x="625" y="800" class="step-desc">Pinecone, etc.</text>
+  </g>
+  
+  <!-- Memory Storage -->
+  <g id="memory-storage">
+    <rect x="750" y="740" width="150" height="80" class="database"/>
+    <text x="825" y="765" class="step-text">Memory Storage</text>
+    <text x="825" y="785" class="step-desc">SQLite, PostgreSQL,</text>
+    <text x="825" y="800" class="step-desc">Redis, etc.</text>
+  </g>
+  
+  <!-- Embedding Models -->
+  <g id="embedding-models">
+    <rect x="350" y="740" width="150" height="60" class="vector"/>
+    <text x="425" y="765" class="step-text">Embedding Models</text>
+    <text x="425" y="785" class="step-desc">BERT, OpenAI,</text>
+    <text x="425" y="800" class="step-desc">Local models</text>
+  </g>
+  
+  <!-- Memory Types -->
+  <g id="memory-types">
+    <rect x="950" y="740" width="250" height="60" class="memory"/>
+    <text x="1075" y="765" class="step-text">Memory Types</text>
+    <text x="1075" y="785" class="step-desc">Conversations, facts,</text>
+    <text x="1075" y="800" class="step-desc">preferences, events</text>
+  </g>
+  
+  <!-- Arrows -->
+  
+  <!-- New Message to Analysis -->
+  <path d="M 275 390 L 275 410" class="arrow"/>
+  <text x="275" y="405" text-anchor="middle" class="arrow-text">User message</text>
+  
+  <!-- Analysis to Query Generation -->
+  <path d="M 275 470 L 275 490" class="arrow"/>
+  <text x="275" y="485" text-anchor="middle" class="arrow-text">Extracted concepts</text>
+  
+  <!-- Query Generation to Vectorization -->
+  <path d="M 275 550 L 275 570" class="arrow"/>
+  <text x="275" y="565" text-anchor="middle" class="arrow-text">Search queries</text>
+  
+  <!-- Vectorization to Search Parameters -->
+  <path d="M 275 630 L 275 650" class="arrow"/>
+  <text x="275" y="645" text-anchor="middle" class="arrow-text">Query vectors</text>
+  
+  <!-- Search Parameters to Vector Search -->
+  <path d="M 450 680 L 500 680 L 500 390" class="arrow"/>
+  <text x="475" y="675" text-anchor="middle" class="arrow-text">Search request</text>
+  
+  <!-- Vector Search to Memory Retrieval -->
+  <path d="M 675 390 L 675 410" class="arrow"/>
+  <text x="675" y="405" text-anchor="middle" class="arrow-text">Similar vectors</text>
+  
+  <!-- Memory Retrieval to Relevance Scoring -->
+  <path d="M 675 470 L 675 490" class="arrow"/>
+  <text x="675" y="485" text-anchor="middle" class="arrow-text">Memory records</text>
+  
+  <!-- Relevance Scoring to Filtering -->
+  <path d="M 675 550 L 675 570" class="arrow"/>
+  <text x="675" y="565" text-anchor="middle" class="arrow-text">Scored memories</text>
+  
+  <!-- Filtering to Context Assembly -->
+  <path d="M 675 630 L 675 650" class="arrow"/>
+  <text x="675" y="645" text-anchor="middle" class="arrow-text">Filtered memories</text>
+  
+  <!-- Context Assembly to Context Enrichment -->
+  <path d="M 850 680 L 900 680 L 900 390" class="arrow"/>
+  <text x="875" y="675" text-anchor="middle" class="arrow-text">Context data</text>
+  
+  <!-- Context Enrichment to AI Processing -->
+  <path d="M 1075 390 L 1075 410" class="arrow"/>
+  <text x="1075" y="405" text-anchor="middle" class="arrow-text">Enriched context</text>
+  
+  <!-- AI Processing to Response Generation -->
+  <path d="M 1075 470 L 1075 490" class="arrow"/>
+  <text x="1075" y="485" text-anchor="middle" class="arrow-text">AI response</text>
+  
+  <!-- Response Generation to User Response -->
+  <path d="M 1075 550 L 1075 650" class="arrow"/>
+  <text x="1075" y="605" text-anchor="middle" class="arrow-text">Final response</text>
+  
+  <!-- Response Generation to Memory Update -->
+  <path d="M 1075 550 L 1075 570" class="arrow"/>
+  <text x="1075" y="565" text-anchor="middle" class="arrow-text">Interaction data</text>
+  
+  <!-- Embedding Models to Vectorization -->
+  <path d="M 425 740 L 425 630 L 275 630" class="arrow"/>
+  <text x="350" y="685" text-anchor="middle" class="arrow-text">Embedding models</text>
+  
+  <!-- Vector Database to Vector Search -->
+  <path d="M 625 740 L 625 390" class="arrow"/>
+  <text x="625" y="565" text-anchor="middle" class="arrow-text">Vector search</text>
+  
+  <!-- Memory Storage to Memory Retrieval -->
+  <path d="M 825 740 L 825 470" class="arrow"/>
+  <text x="825" y="605" text-anchor="middle" class="arrow-text">Memory retrieval</text>
+  
+  <!-- Memory Update to Memory Storage -->
+  <path d="M 1075 630 L 1075 740 L 900 740" class="arrow"/>
+  <text x="990" y="685" text-anchor="middle" class="arrow-text">Store memory</text>
+  
+  <!-- Memory Types note -->
+  <g>
+    <rect x="100" y="180" width="400" height="50" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1" rx="5" ry="5"/>
+    <text x="300" y="200" text-anchor="middle" class="step-desc">Memory capabilities: Long-term conversations, user preferences,</text>
+    <text x="300" y="215" text-anchor="middle" class="step-desc">factual knowledge, personalized context, event history</text>
+  </g>
+  
+  <!-- Footer -->
+  <text x="700" y="920" text-anchor="middle" class="subtitle">Figure 5: Memory Retrieval Workflow - ZeroClaw Rust Core</text>
+</svg>

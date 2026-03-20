@@ -981,6 +981,7 @@ pub fn send_vision_message(
     image_data: Vec<String>,
     mime_types: Vec<String>,
 ) -> Result<String, FfiError> {
+    log::debug!("send_vision_message: text={}", text);
     catch_unwind(AssertUnwindSafe(|| {
         if estop::is_engaged() {
             return Err(FfiError::EstopEngaged {
@@ -1086,6 +1087,7 @@ pub fn send_message_streaming(
     message: String,
     listener: Box<dyn streaming::FfiStreamListener>,
 ) -> Result<(), FfiError> {
+    log::info!("send_message_streaming({})", message);
     let listener: Arc<dyn streaming::FfiStreamListener> = Arc::from(listener);
     catch_unwind(AssertUnwindSafe(|| {
         if estop::is_engaged() {
@@ -1192,6 +1194,7 @@ pub fn session_send(
     mime_types: Vec<String>,
     listener: Box<dyn session::FfiSessionListener>,
 ) -> Result<(), FfiError> {
+    log::debug!("session_send: message={}", message);
     let listener: Arc<dyn session::FfiSessionListener> = Arc::from(listener);
     catch_unwind(AssertUnwindSafe(|| {
         if estop::is_engaged() {

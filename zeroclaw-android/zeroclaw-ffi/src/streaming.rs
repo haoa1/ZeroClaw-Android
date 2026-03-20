@@ -68,7 +68,7 @@ pub(crate) fn send_message_streaming_inner(
     listener: Arc<dyn FfiStreamListener>,
 ) -> Result<(), FfiError> {
     CANCEL_FLAG.store(false, Ordering::SeqCst);
-
+    log::debug!("send_message_streaming_inner: {}", message);
     let rt = crate::runtime::get_or_create_runtime()?;
 
     let (model, temperature, provider) = with_daemon_config(|config| {

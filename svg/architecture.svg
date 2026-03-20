@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="1200" height="800" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <style type="text/css">
+    <![CDATA[
+      .layer {
+        fill: #f5f5f5;
+        stroke: #333;
+        stroke-width: 2;
+        rx: 10;
+        ry: 10;
+      }
+      .component {
+        fill: #e3f2fd;
+        stroke: #1976d2;
+        stroke-width: 1.5;
+        rx: 5;
+        ry: 5;
+      }
+      .data-store {
+        fill: #e8f5e9;
+        stroke: #388e3c;
+        stroke-width: 1.5;
+      }
+      .external {
+        fill: #fff3e0;
+        stroke: #f57c00;
+        stroke-width: 1.5;
+        rx: 5;
+        ry: 5;
+      }
+      .ffi {
+        fill: #fce4ec;
+        stroke: #c2185b;
+        stroke-width: 1.5;
+      }
+      .text {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        fill: #333;
+      }
+      .title {
+        font-family: Arial, sans-serif;
+        font-size: 18px;
+        font-weight: bold;
+        fill: #111;
+      }
+      .arrow {
+        fill: none;
+        stroke: #555;
+        stroke-width: 2;
+        marker-end: url(#arrowhead);
+      }
+      .label {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        fill: #666;
+      }
+    ]]>
+  </style>
+  
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+    </marker>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  
+  <!-- Title -->
+  <text x="600" y="40" text-anchor="middle" class="title">ZeroClaw-Android Architecture</text>
+  
+  <!-- Layers -->
+  
+  <!-- Layer 1: UI Layer -->
+  <g id="ui-layer">
+    <rect x="100" y="80" width="1000" height="120" class="layer"/>
+    <text x="600" y="100" text-anchor="middle" class="title">UI Layer (Kotlin/Compose)</text>
+    
+    <!-- Components -->
+    <rect x="150" y="130" width="200" height="50" class="component"/>
+    <text x="250" y="160" text-anchor="middle" class="text">App Screens</text>
+    
+    <rect x="400" y="130" width="200" height="50" class="component"/>
+    <text x="500" y="160" text-anchor="middle" class="text">Navigation</text>
+    
+    <rect x="650" y="130" width="200" height="50" class="component"/>
+    <text x="750" y="160" text-anchor="middle" class="text">ViewModels</text>
+  </g>
+  
+  <!-- Layer 2: Android Services -->
+  <g id="android-layer">
+    <rect x="100" y="230" width="1000" height="120" class="layer"/>
+    <text x="600" y="250" text-anchor="middle" class="title">Android Services &amp; Business Logic</text>
+    
+    <rect x="150" y="280" width="200" height="50" class="component"/>
+    <text x="250" y="310" text-anchor="middle" class="text">Foreground Service</text>
+    
+    <rect x="400" y="280" width="200" height="50" class="component"/>
+    <text x="500" y="310" text-anchor="middle" class="text">Daemon Lifecycle</text>
+    
+    <rect x="650" y="280" width="200" height="50" class="component"/>
+    <text x="750" y="310" text-anchor="middle" class="text">Background Tasks</text>
+  </g>
+  
+  <!-- Layer 3: FFI Layer -->
+  <g id="ffi-layer">
+    <rect x="100" y="380" width="1000" height="80" class="layer"/>
+    <text x="600" y="400" text-anchor="middle" class="title">FFI Layer (UniFFI)</text>
+    
+    <rect x="350" y="410" width="500" height="30" class="ffi"/>
+    <text x="600" y="430" text-anchor="middle" class="text">34 FFI Functions (Kotlin ↔ Rust)</text>
+  </g>
+  
+  <!-- Layer 4: Core Engine -->
+  <g id="core-layer">
+    <rect x="100" y="490" width="1000" height="120" class="layer"/>
+    <text x="600" y="510" text-anchor="middle" class="title">Core Engine (Rust - ZeroClaw)</text>
+    
+    <rect x="150" y="540" width="200" height="50" class="component"/>
+    <text x="250" y="570" text-anchor="middle" class="text">AI Agent Gateway</text>
+    
+    <rect x="400" y="540" width="200" height="50" class="component"/>
+    <text x="500" y="570" text-anchor="middle" class="text">Rhai Scripting Engine</text>
+    
+    <rect x="650" y="540" width="200" height="50" class="component"/>
+    <text x="750" y="570" text-anchor="middle" class="text">Provider Integration</text>
+  </g>
+  
+  <!-- Data Storage -->
+  <g id="storage">
+    <rect x="100" y="640" width="480" height="120" class="layer"/>
+    <text x="340" y="660" text-anchor="middle" class="title">Data Storage</text>
+    
+    <rect x="130" y="690" width="130" height="50" class="data-store"/>
+    <text x="195" y="720" text-anchor="middle" class="text">Room DB</text>
+    
+    <rect x="280" y="690" width="130" height="50" class="data-store"/>
+    <text x="345" y="720" text-anchor="middle" class="text">DataStore</text>
+    
+    <rect x="430" y="690" width="130" height="50" class="data-store"/>
+    <text x="495" y="720" text-anchor="middle" class="text">Encrypted Prefs</text>
+  </g>
+  
+  <!-- External Integrations -->
+  <g id="external">
+    <rect x="620" y="640" width="480" height="120" class="layer"/>
+    <text x="860" y="660" text-anchor="middle" class="title">External Integrations</text>
+    
+    <rect x="650" y="690" width="210" height="50" class="external"/>
+    <text x="755" y="720" text-anchor="middle" class="text">32+ AI Providers</text>
+    
+    <rect x="880" y="690" width="190" height="50" class="external"/>
+    <text x="975" y="720" text-anchor="middle" class="text">Plugin System</text>
+  </g>
+  
+  <!-- Arrows and Connections -->
+  
+  <!-- UI to Android Services -->
+  <line x1="250" y1="200" x2="250" y2="230" class="arrow"/>
+  <line x1="500" y1="200" x2="500" y2="230" class="arrow"/>
+  <line x1="750" y1="200" x2="750" y2="230" class="arrow"/>
+  
+  <!-- Android Services to FFI -->
+  <line x1="250" y1="350" x2="250" y2="380" class="arrow"/>
+  <line x1="500" y1="350" x2="500" y2="380" class="arrow"/>
+  <line x1="750" y1="350" x2="750" y2="380" class="arrow"/>
+  
+  <!-- FFI to Core -->
+  <line x1="600" y1="460" x2="600" y2="490" class="arrow"/>
+  
+  <!-- Core to Storage -->
+  <line x1="250" y1="590" x2="195" y2="640" class="arrow"/>
+  <line x1="500" y1="590" x2="345" y2="640" class="arrow"/>
+  <line x1="750" y1="590" x2="755" y2="640" class="arrow"/>
+  
+  <!-- Core to External -->
+  <line x1="750" y1="590" x2="755" y2="640" class="arrow"/>
+  <line x1="500" y1="590" x2="495" y2="640" class="arrow"/>
+  
+  <!-- Labels for arrows -->
+  <text x="600" y="220" text-anchor="middle" class="label">User Interactions</text>
+  <text x="600" y="370" text-anchor="middle" class="label">Service Calls</text>
+  <text x="600" y="475" text-anchor="middle" class="label">34 FFI Functions</text>
+  <text x="200" y="615" text-anchor="middle" class="label">Persist Data</text>
+  <text x="500" y="615" text-anchor="middle" class="label">Store Settings</text>
+  <text x="800" y="615" text-anchor="middle" class="label">API Calls</text>
+  
+  <!-- Project Structure Info -->
+  <g id="info">
+    <rect x="50" y="20" width="1100" height="780" fill="none" stroke="#ccc" stroke-width="1" stroke-dasharray="5,5"/>
+    <text x="600" y="780" text-anchor="middle" class="label">Project Structure: app/ (UI), lib/ (library), zeroclaw/ (Rust core), zeroclaw-android/ (FFI)</text>
+  </g>
+</svg>

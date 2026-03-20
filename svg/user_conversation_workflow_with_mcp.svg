@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="1400" height="900" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <style type="text/css">
+    <![CDATA[
+      .title {
+        font-family: Arial, sans-serif;
+        font-size: 24px;
+        font-weight: bold;
+        fill: #2c3e50;
+      }
+      .subtitle {
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        fill: #7f8c8d;
+      }
+      .step {
+        fill: #3498db;
+        stroke: #2980b9;
+        stroke-width: 2;
+        rx: 10;
+        ry: 10;
+      }
+      .step-text {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        fill: white;
+        font-weight: bold;
+        text-anchor: middle;
+      }
+      .step-desc {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        fill: #2c3e50;
+        text-anchor: middle;
+      }
+      .arrow {
+        fill: none;
+        stroke: #7f8c8d;
+        stroke-width: 2;
+        marker-end: url(#arrowhead);
+      }
+      .arrow-text {
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        fill: #7f8c8d;
+      }
+      .user {
+        fill: #2ecc71;
+        stroke: #27ae60;
+      }
+      .system {
+        fill: #e74c3c;
+        stroke: #c0392b;
+      }
+      .ai {
+        fill: #9b59b6;
+        stroke: #8e44ad;
+      }
+      .storage {
+        fill: #f39c12;
+        stroke: #d35400;
+      }
+      .mcp {
+        fill: #008080;
+        stroke: #006666;
+      }
+      .legend-box {
+        fill: #ecf0f1;
+        stroke: #bdc3c7;
+        stroke-width: 1;
+        rx: 5;
+        ry: 5;
+      }
+      .legend-text {
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        fill: #2c3e50;
+      }
+    ]]>
+  </style>
+  
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7f8c8d"/>
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="700" y="40" text-anchor="middle" class="title">ZeroClaw User Conversation Workflow with MCP</text>
+  <text x="700" y="65" text-anchor="middle" class="subtitle">Complete message processing with Model Context Protocol integration</text>
+  
+  <!-- Legend -->
+  <rect x="50" y="80" width="250" height="140" class="legend-box"/>
+  <text x="175" y="100" text-anchor="middle" class="legend-text" font-weight="bold">Component Types</text>
+  
+  <rect x="70" y="115" width="20" height="20" class="user"/>
+  <text x="100" y="130" class="legend-text">User/Client</text>
+  
+  <rect x="70" y="140" width="20" height="20" class="system"/>
+  <text x="100" y="155" class="legend-text">System Component</text>
+  
+  <rect x="70" y="165" width="20" height="20" class="ai"/>
+  <text x="100" y="180" class="legend-text">AI Component</text>
+  
+  <rect x="70" y="190" width="20" height="20" class="storage"/>
+  <text x="100" y="205" class="legend-text">Storage</text>
+  
+  <rect x="170" y="115" width="20" height="20" class="mcp"/>
+  <text x="200" y="130" class="legend-text">MCP Protocol</text>
+  
+  <!-- Workflow Steps -->
+  
+  <!-- Step 1: User Input -->
+  <g id="step1">
+    <rect x="300" y="150" width="200" height="60" class="user"/>
+    <text x="400" y="175" class="step-text">User</text>
+    <text x="400" y="195" class="step-desc">Sends message via channel</text>
+    <text x="400" y="210" class="step-desc">(CLI, Discord, Web, etc.)</text>
+  </g>
+  
+  <!-- Step 2: Gateway -->
+  <g id="step2">
+    <rect x="300" y="250" width="200" height="60" class="system"/>
+    <text x="400" y="275" class="step-text">Gateway</text>
+    <text x="400" y="295" class="step-desc">HTTP/WebSocket gateway</text>
+    <text x="400" y="310" class="step-desc">Message validation &amp; parsing</text>
+  </g>
+  
+  <!-- Step 3: Agent -->
+  <g id="step3">
+    <rect x="300" y="350" width="200" height="60" class="ai"/>
+    <text x="400" y="375" class="step-text">Agent</text>
+    <text x="400" y="395" class="step-desc">Message processing &amp; context</text>
+    <text x="400" y="410" class="step-desc">management</text>
+  </g>
+  
+  <!-- Step 4: Memory -->
+  <g id="step4">
+    <rect x="550" y="350" width="200" height="60" class="storage"/>
+    <text x="650" y="375" class="step-text">Memory</text>
+    <text x="650" y="395" class="step-desc">Retrieve conversation history</text>
+    <text x="650" y="410" class="step-desc">and relevant context</text>
+  </g>
+  
+  <!-- MCP Context Retrieval -->
+  <g id="mcp-context">
+    <rect x="800" y="350" width="200" height="60" class="mcp"/>
+    <text x="900" y="375" class="step-text">MCP Context</text>
+    <text x="900" y="395" class="step-desc">Retrieve external context</text>
+    <text x="900" y="410" class="step-desc">via Model Context Protocol</text>
+  </g>
+  
+  <!-- Step 5: Provider Selection -->
+  <g id="step5">
+    <rect x="300" y="450" width="200" height="60" class="ai"/>
+    <text x="400" y="475" class="step-text">Provider Selection</text>
+    <text x="400" y="495" class="step-desc">Choose AI provider based on</text>
+    <text x="400" y="510" class="step-desc">config &amp; capabilities</text>
+  </g>
+  
+  <!-- Step 6: AI Generation -->
+  <g id="step6">
+    <rect x="550" y="450" width="200" height="60" class="ai"/>
+    <text x="650" y="475" class="step-text">AI Generation</text>
+    <text x="650" y="495" class="step-desc">Generate response using</text>
+    <text x="650" y="510" class="step-desc">selected provider</text>
+  </g>
+  
+  <!-- MCP Tool Execution Reference -->
+  <g id="mcp-tool-execution">
+    <rect x="800" y="450" width="200" height="80" class="mcp"/>
+    <text x="900" y="475" class="step-text">Tool Execution</text>
+    <text x="900" y="505" class="step-desc">MCP-based tool discovery</text>
+    <text x="900" y="520" class="step-desc">and execution (if needed)</text>
+    <text x="900" y="535" class="step-desc">See Tool Execution Workflow</text>
+  </g>
+  
+  <!-- Step 7: Response -->
+  <g id="step7">
+    <rect x="300" y="550" width="200" height="60" class="system"/>
+    <text x="400" y="575" class="step-text">Response Processing</text>
+    <text x="400" y="595" class="step-desc">Format response &amp; add</text>
+    <text x="400" y="610" class="step-desc">metadata</text>
+  </g>
+  
+  <!-- Step 8: User Output -->
+  <g id="step8">
+    <rect x="300" y="650" width="200" height="60" class="user"/>
+    <text x="400" y="675" class="step-text">User</text>
+    <text x="400" y="695" class="step-desc">Receives response via</text>
+    <text x="400" y="710" class="step-desc">original channel</text>
+  </g>
+  
+  <!-- Step 9: Memory Save -->
+  <g id="step9">
+    <rect x="550" y="650" width="200" height="60" class="storage"/>
+    <text x="650" y="675" class="step-text">Memory Save</text>
+    <text x="650" y="695" class="step-desc">Save conversation to</text>
+    <text x="650" y="710" class="step-desc">long-term memory</text>
+  </g>
+  
+  <!-- MCP Servers -->
+  <g id="mcp-servers">
+    <rect x="800" y="650" width="200" height="60" class="mcp"/>
+    <text x="900" y="675" class="step-text">MCP Servers</text>
+    <text x="900" y="695" class="step-desc">Osaurus, custom MCP,</text>
+    <text x="900" y="710" class="step-desc">external context servers</text>
+  </g>
+  
+  <!-- Arrows -->
+  
+  <!-- Step 1 to 2 -->
+  <path d="M 400 210 L 400 250" class="arrow"/>
+  <text x="400" y="235" text-anchor="middle" class="arrow-text">Message</text>
+  
+  <!-- Step 2 to 3 -->
+  <path d="M 400 310 L 400 350" class="arrow"/>
+  <text x="400" y="335" text-anchor="middle" class="arrow-text">Parsed message</text>
+  
+  <!-- Step 3 to 4 -->
+  <path d="M 500 380 L 550 380" class="arrow"/>
+  <text x="525" y="375" text-anchor="middle" class="arrow-text">Retrieve context</text>
+  
+  <!-- Step 4 to 3 -->
+  <path d="M 550 410 L 500 410" class="arrow"/>
+  <text x="525" y="405" text-anchor="middle" class="arrow-text">Context data</text>
+  
+  <!-- Step 3 to MCP Context -->
+  <path d="M 500 380 L 800 380" class="arrow"/>
+  <text x="650" y="375" text-anchor="middle" class="arrow-text">Request external context</text>
+  
+  <!-- MCP Context to Agent -->
+  <path d="M 800 410 L 500 410" class="arrow"/>
+  <text x="650" y="405" text-anchor="middle" class="arrow-text">MCP context data</text>
+  
+  <!-- Step 3 to 5 -->
+  <path d="M 400 410 L 400 450" class="arrow"/>
+  <text x="400" y="435" text-anchor="middle" class="arrow-text">Processed message</text>
+  
+  <!-- Step 5 to 6 -->
+  <path d="M 500 480 L 550 480" class="arrow"/>
+  <text x="525" y="475" text-anchor="middle" class="arrow-text">Selected provider</text>
+  
+  <!-- Step 5 to MCP Tool Execution -->
+  <path d="M 400 480 L 400 520 L 800 520" class="arrow"/>
+  <text x="600" y="510" text-anchor="middle" class="arrow-text">Tool execution needed</text>
+  
+  <!-- MCP Tool Execution to AI Generation -->
+  <path d="M 800 530 L 800 480 L 650 480" class="arrow"/>
+  <text x="725" y="505" text-anchor="middle" class="arrow-text">Tool execution results</text>
+  
+  <!-- Step 6 to 7 -->
+  <path d="M 650 510 L 650 550 L 400 550" class="arrow"/>
+  <text x="525" y="535" text-anchor="middle" class="arrow-text">AI response</text>
+  
+  <!-- Step 7 to 8 -->
+  <path d="M 400 610 L 400 650" class="arrow"/>
+  <text x="400" y="635" text-anchor="middle" class="arrow-text">Formatted response</text>
+  
+  <!-- Step 7 to 9 -->
+  <path d="M 400 610 L 400 680 L 550 680" class="arrow"/>
+  <text x="475" y="665" text-anchor="middle" class="arrow-text">Save conversation</text>
+  
+  <!-- MCP Servers to MCP Context -->
+  <path d="M 900 710 L 900 410" class="arrow"/>
+  <text x="900" y="560" text-anchor="middle" class="arrow-text">MCP protocol</text>
+  
+  <!-- Loop arrow for conversation -->
+  <path d="M 400 710 L 400 740 L 200 740 L 200 170 L 300 170" class="arrow" stroke-dasharray="5,5"/>
+  <text x="300" y="730" text-anchor="middle" class="arrow-text">Next message</text>
+  
+  <!-- Provider Support Note -->
+  <g>
+    <rect x="300" y="100" width="400" height="30" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1" rx="5" ry="5"/>
+    <text x="500" y="120" text-anchor="middle" class="step-desc">Supported providers: OpenAI, Claude, Gemini, Ollama, Osaurus (with MCP), etc.</text>
+  </g>
+  
+  <!-- MCP Integration Note -->
+  <g>
+    <rect x="750" y="100" width="400" height="30" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1" rx="5" ry="5"/>
+    <text x="950" y="120" text-anchor="middle" class="step-desc">MCP integration: Tool discovery, context retrieval, external server support</text>
+  </g>
+  
+  <!-- Footer -->
+  <text x="700" y="830" text-anchor="middle" class="subtitle">Figure 1: User Conversation Workflow with MCP Integration - ZeroClaw Rust Core</text>
+</svg>

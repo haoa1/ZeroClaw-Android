@@ -2629,7 +2629,10 @@ mod tests {
         assert_eq!(parsed["tool_calls"][0]["id"], "call_123");
         assert_eq!(parsed["tool_calls"][0]["type"], "function");
         assert_eq!(parsed["tool_calls"][0]["function"]["name"], "shell");
-        assert_eq!(parsed["tool_calls"][0]["function"]["arguments"], r#"{"command":"ls"}"#);
+        assert_eq!(
+            parsed["tool_calls"][0]["function"]["arguments"],
+            r#"{"command":"ls"}"#
+        );
         assert_eq!(parsed["tool_calls"][0]["index"], 0);
         assert!(parsed.get("reasoning_content").is_none());
     }

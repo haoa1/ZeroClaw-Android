@@ -35,6 +35,14 @@ cargo {
     packageDirectory = file("../zeroclaw-android/zeroclaw-ffi")
 }
 
+tasks.register<Delete>("cleanRustTarget") {
+    delete(file("${buildDir}/intermediates/rust"))
+}
+
+tasks.named("clean") {
+    dependsOn("cleanRustTarget")
+}
+
 uniffi {
     generateFromLibrary {
         packageName = "com.zeroclaw.ffi"
