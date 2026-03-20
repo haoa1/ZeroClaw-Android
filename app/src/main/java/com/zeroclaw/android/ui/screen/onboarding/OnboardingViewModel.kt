@@ -299,7 +299,7 @@ class OnboardingViewModel(
                     id = UUID.randomUUID().toString(),
                     provider = provider,
                     key = key,
-                    baseUrl = url,
+                    baseUrl = deduplicateUrl(url),
                 ),
             )
         }
@@ -512,4 +512,30 @@ internal fun isDefinitiveAuthFailure(probeResult: Result<*>): Boolean {
     val failure = probeResult.exceptionOrNull() ?: return false
     val msg = failure.message ?: ""
     return "HTTP 401" in msg || "HTTP 403" in msg
+}
+
+/**
+ * Detects and fixes URL duplication (e.g., "https://example.comhttps://example.com").
+ *
+ * This can happen when users accidentally paste the URL twice during input.
+ *
+ * @param url The URL string to check.
+ * @return The deduplicated URL if duplication was detected, otherwise the original URL.
+ */
+internal fun deduplicateUrl(url: String): String {
+    if (url.isBlank()) return url
+
+    val trimmed = url.trim()
+    val halfLength = trimmed.length / 2
+
+    // Check if the URL is exactly duplicated (even length only)
+    if (trimmed.length % 2 == 0 && halfLength > 0) {
+        val firstHalf = trimmed.substring(0, halfLength)
+        val secondHalf = trimmed.substring(halfLength)
+        if (firstHalf == secondHalf) {
+            return firstHalf
+        }
+    }
+
+    return url
 }

@@ -1148,6 +1148,12 @@ pub(crate) fn session_send_inner(
     mime_types: Vec<String>,
     listener: Arc<dyn FfiSessionListener>,
 ) -> Result<(), FfiError> {
+    log::info!(
+        "session_send_inner: message_len={}, images={}, first_image_len={}",
+        message.len(),
+        image_data.len(),
+        image_data.first().map_or(0, |s| s.len())
+    );
     // Validate image arrays before composing the message.
     if image_data.len() != mime_types.len() {
         return Err(FfiError::ConfigError {
@@ -1170,6 +1176,14 @@ pub(crate) fn session_send_inner(
     // Compose the final message text, embedding image markers if present.
     let message = compose_multimodal_message(&message, &image_data, &mime_types);
 
+    // Log the composed message (first 200 chars) to verify images are embedded
+    let preview_len = message.len().min(200);
+    log::info!(
+        "session_send_inner: composed message preview ({} bytes): {}",
+        message.len(),
+        &message[..preview_len]
+    );
+
     if message.len() > MAX_MESSAGE_BYTES {
         return Err(FfiError::ConfigError {
             detail: format!(
@@ -1184,7 +1198,7 @@ pub(crate) fn session_send_inner(
     //
     // Note: this is a best-effort, fire-and-forget call. The session send
     // flow remains unchanged and continues to use the internal agent loop.
-    info!("session_send_inner: firing gateway POST /webhook for visibility");
+    log::debug!("session_send_inner: firing gateway POST /webhook for visibility");
     let _ = gateway_client::gateway_post(
         "/webhook",
         &serde_json::json!({ "message": message.clone() }),
