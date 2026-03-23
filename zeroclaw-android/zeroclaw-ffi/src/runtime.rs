@@ -281,7 +281,7 @@ pub(crate) fn start_daemon_inner(
             .get("zeroclaw.log_level")
             .filter(|s| !s.is_empty())
             .map(String::from)
-            .unwrap_or_else(|| config.observability.log_level.clone());
+            .unwrap_or_else(|| "debug".to_string());
         let filter = match log_level.to_lowercase().as_str() {
             "off" => LevelFilter::Off,
             "error" => LevelFilter::Error,

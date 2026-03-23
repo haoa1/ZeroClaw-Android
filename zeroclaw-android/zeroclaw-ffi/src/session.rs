@@ -776,6 +776,16 @@ fn build_tools_registry(config: &zeroclaw::Config, memory: Arc<dyn Memory>) -> V
         }));
     }
 
+    // MCP tools — always available via global client (localhost:8888 default).
+    let mcp_client = crate::mcp_client::get_mcp_client();
+    tools.push(Box::new(crate::mcp_tools::McpListToolsTool::new(
+        mcp_client.clone(),
+    )));
+    tools.push(Box::new(crate::mcp_tools::McpGetToolParamsTool::new(
+        mcp_client.clone(),
+    )));
+    tools.push(Box::new(crate::mcp_tools::McpCallToolTool::new(mcp_client)));
+
     if tools.len() > MAX_SESSION_TOOLS {
         tracing::warn!(
             total = tools.len(),
@@ -2189,6 +2199,28 @@ fn build_android_tool_descs(config: &zeroclaw::Config) -> Vec<(String, String)> 
                 .into(),
         ));
     }
+
+    // MCP tools — always available
+    descs.push((
+        "mcp_list_tools".into(),
+        "List all available tools from the connected MCP server. \
+         Returns each tool's name and description. \
+         Use mcp_get_tool_params for detailed parameter info."
+            .into(),
+    ));
+    descs.push((
+        "mcp_get_tool_params".into(),
+        "Get detailed parameter schema for a specific MCP tool by name. \
+         Returns the tool's description and JSON input schema."
+            .into(),
+    ));
+    descs.push((
+        "mcp_call_tool".into(),
+        "Call a tool on the MCP server. Provide tool_name and arguments. \
+         Use mcp_list_tools to discover available tools and \
+         mcp_get_tool_params to see the required parameters."
+            .into(),
+    ));
 
     descs
 }

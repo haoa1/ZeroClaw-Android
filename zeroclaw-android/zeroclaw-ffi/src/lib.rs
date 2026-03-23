@@ -23,6 +23,8 @@ mod events;
 mod ffi_health;
 mod gateway_client;
 mod health;
+mod mcp_client;
+mod mcp_tools;
 mod memory_browse;
 mod models;
 mod repl;

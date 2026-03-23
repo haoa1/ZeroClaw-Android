@@ -1396,12 +1396,20 @@ object ConfigTomlBuilder {
 
         val trimmedUrl = baseUrl.trim()
 
-        if (provider == "custom-anthropic" && trimmedUrl.isNotEmpty()) {
-            return "anthropic-custom:$trimmedUrl"
+        if (provider == "custom-anthropic") {
+            if (trimmedUrl.isNotEmpty()) {
+                return "anthropic-custom:$trimmedUrl"
+            }
+            // Without a base URL, the provider cannot be resolved
+            return ""
         }
 
-        if (provider in OPENAI_COMPATIBLE_SELF_HOSTED && trimmedUrl.isNotEmpty()) {
-            return "custom:$trimmedUrl"
+        if (provider in OPENAI_COMPATIBLE_SELF_HOSTED) {
+            if (trimmedUrl.isNotEmpty()) {
+                return "custom:$trimmedUrl"
+            }
+            // Without a base URL, the provider cannot be resolved
+            return ""
         }
 
         if (provider == "ollama" && trimmedUrl.isNotEmpty() && trimmedUrl != OLLAMA_DEFAULT_URL) {

@@ -424,10 +424,17 @@ class TerminalViewModel(
 
         val providerInfo = ProviderRegistry.findById(primary.provider) ?: return false
         return when (providerInfo.authType) {
-            ProviderAuthType.URL_ONLY,
-            ProviderAuthType.URL_AND_OPTIONAL_KEY,
-            ProviderAuthType.NONE,
-            -> true
+            ProviderAuthType.URL_ONLY -> {
+                // URL-only providers require a base URL
+                val key = apiKeyRepository.getByProvider(primary.provider)
+                key != null && key.baseUrl.isNotBlank()
+            }
+            ProviderAuthType.URL_AND_OPTIONAL_KEY -> {
+                // URL-required providers need a base URL; key is optional
+                val key = apiKeyRepository.getByProvider(primary.provider)
+                key != null && key.baseUrl.isNotBlank()
+            }
+            ProviderAuthType.NONE -> true
             ProviderAuthType.API_KEY_ONLY,
             ProviderAuthType.API_KEY_OR_OAUTH,
             -> {
